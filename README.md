@@ -1,4 +1,4 @@
-# Tally
+# SmartTally
 
 Projects describes about merchant consumer usage.
 
