@@ -89,4 +89,20 @@ return list of balances for all coins.
 }
 return list of coin prices we support.
 
+9) Send coins:
+{	CoinType:BTC
+	amount:
+}
+Scan the QR code and send BTCs to that address, by entering the amount (in case of gift giving where value is unknown) 
+or seeing the amount on the QR code for fixed value like the prices of goods in the store.
+
+10) Receive coins:
+Show the QR code with/without amount for people to scan and send BTCs
+
+11) Transfers:
+{	time,
+	amount
+}
+List of BTC transfers.
+
 There will be few more minor apis to add.
