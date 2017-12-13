@@ -46,7 +46,8 @@ Store bank account details in Bank table for that user.
 Create an invoice in Invoice table with type as DEPOSIT, mark the state as CREATED.
 Transfer the amount from customer account (or credit/debit card integration) to our Bank in India in USD using payment gateway 
 (what payment gateway to use, i will leave that for you).  Mark the invoice state as TRANSFERED .
-Once settled call Changely to place a market order to buy bitcoins, mark the invoice state as COIN_ORDER_PLACED.
+Once settled call Changely to place a market order to buy bitcoins, mark the invoice state as COIN_ORDER_PLACED 
+(should be batch few transactions in this state and make one call to changely??? think about this scenario). 
 Give our company bitcoin address to Changely. Company Wallet is generated one time and stored in the database regarding of our company.
 Once bitcoins are transferred, transfer 98% to customer wallet (2% is our cut), mark the invoice as COMPLETED.
 
