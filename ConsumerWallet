@@ -1,0 +1,92 @@
+Build iOS Consumer Wallet:
+
+The following APIs are used to develop the iOS App.  So corresponding screens should also be developed.
+Come up with the UI screens which are intuitive, appealing and easy to use.
+
+Deliverables:
+server components supporting the APIs
+iOS App for the consumer
+Test cases for the flow
+
+Delivery time:
+Ideally i want to build this in a week.
+
+APIs:
+
+1) Register user
+{	 adharId, 
+	full name,
+	 address,
+	 emailid, 
+	phone number, 
+	DOB, 
+	image of photo ID
+}
+Register the user and Validate with adhar API of the government.
+Create entry in user table.
+Create Bitcoin wallet for the customer. 
+
+
+2) Register Bank account
+{
+	Account number,
+	Routing number,
+	method,
+	Bank name, and other details of the bank
+}
+Validate the account name of the bank id same as the user specified name.
+Store bank account details in Bank table for that user.
+
+3) Buy coins
+{
+	Amount In INR,
+	CoinType - this is BTC,
+  credit/debit card details if buying with card
+}
+Create an invoice in Invoice table with type as DEPOSIT, mark the state as CREATED.
+Transfer the amount from customer account (or credit/debit card integration) to our Bank in India in USD using payment gateway 
+(what payment gateway to use, i will leave that for you).  Mark the invoice state as TRANSFERED .
+Once settled call Changely to place a market order to buy bitcoins, mark the invoice state as COIN_ORDER_PLACED.
+Give our company bitcoin address to Changely. Company Wallet is generated one time and stored in the database regarding of our company.
+Once bitcoins are transferred, transfer 98% to customer wallet (2% is our cut), mark the invoice as COMPLETED.
+
+
+5) Sell Bitcoins
+{
+	Amount of Bitcoins to sell
+	CoinType
+}
+Create an invoice with type as WITHDRAW, mark the state as CREATED.
+Make a transaction with 2 outputs, one output to our company wallet address taking 2% cut and remaining 98% to Changely address, mark the order as COIN_ORDER_PACED
+ Giver our company bank account to deposit cash.
+Once deposit is done, mark the state as TRANSFERED.
+ Transfer the cash to customer account, mark the state as COMPLETED.
+
+6) Show Invoices:
+{
+	Invoice-id,
+	type: - DEPOSIT / WITHDRAW
+	time,
+	amountInINR,
+	CoinType,
+	CoinValue,
+	state
+}
+return the list fo all invoices.
+7) Balance:
+{
+	CoinType: BTC
+	Available-amount,
+	Estimated-amount,
+}
+return list of balances for all coins.
+
+8) Prices:
+{
+	CoinType:BTC
+	buy: buy-value
+	sell: sell-value
+}
+return list of coin prices we support.
+
+There will be few more minor apis to add.
