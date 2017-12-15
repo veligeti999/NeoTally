@@ -44,7 +44,7 @@ Store bank account details in Bank table for that user.
 	CoinType - this is BTC,
   credit/debit card details if buying with card
 }
-Create an invoice in Invoice table with type as DEPOSIT, mark the state as CREATED.
+Create an invoice in Invoice table with type as BUY, mark the state as CREATED.
 Transfer the amount from customer account (or credit/debit card integration) to our Bank in India in USD using payment gateway 
 (what payment gateway to use, i will leave that for you).  Mark the invoice state as TRANSFERED .
 Once settled call Changely to place a market order to buy bitcoins, mark the invoice state as COIN_ORDER_PLACED 
@@ -58,11 +58,10 @@ Once bitcoins are transferred, transfer 98% to customer wallet (2% is our cut), 
 	Amount of Bitcoins to sell
 	CoinType
 }
-Create an invoice with type as WITHDRAW, mark the state as CREATED.
-Make a transaction with 2 outputs, one output to our company wallet address taking 2% cut and remaining 98% to Changely address, mark the order as COIN_ORDER_PACED
- Giver our company bank account to deposit cash.
+Create an invoice with type as SELL, mark the state as CREATED.
+Make a transaction with 2 outputs, one output to our company wallet address taking 2% cut of the BTC and remaining 98% to Changely address, mark the order as COIN_ORDER_PACED, Give our company bank account to deposit cash in USD.
 Once deposit is done, mark the state as TRANSFERED.
- Transfer the cash to customer account, mark the state as COMPLETED.
+ Transfer the cash from USD to customer account, mark the state as COMPLETED.
 
 6) Show Invoices:
 {
@@ -75,6 +74,7 @@ Once deposit is done, mark the state as TRANSFERED.
 	state
 }
 return the list fo all invoices.
+
 7) Balance:
 {
 	CoinType: BTC
@@ -98,12 +98,16 @@ return list of coin prices we support.
 Scan the QR code and send BTCs to that address, by entering the amount (in case of gift giving where value is unknown) 
 or seeing the amount on the QR code for fixed value like the prices of goods in the store.
 
+After 1 confirmation the person who sends the coins should receive notification on his app.
+Similarly if the person who is using NewTally App for receiving coins, he should also recevie notificaiton.
+
 10) Receive coins:
 Show the QR code with/without amount for people to scan and send BTCs
 
 11) Transfers:
 {	time,
-	amount
+	amount,
+	type: SENT or RECEIVE
 }
 List of BTC transfers.
 
