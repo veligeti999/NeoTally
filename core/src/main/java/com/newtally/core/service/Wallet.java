@@ -4,17 +4,17 @@ import com.newtally.core.model.*;
 
 public class Wallet {
     private CoinType coinType;
+
+    private String [] seed;
+    private String pubAddr;
+
     private User user;
 
     public CoinBalance getBalance() {
         return null;
     }
 
-    public Invoice[] getInvoices() {
-        return null;
-    }
-
-    public Transaction[] getTransfers() {
+    public Transaction[] getTransactions() {
         return null;
     }
 
@@ -23,6 +23,6 @@ public class Wallet {
     }
 
     public String getPublicAddress() {
-        return null;
+        return pubAddr;
     }
 }

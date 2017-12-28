@@ -4,7 +4,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class User {
-    private String id;
+    private long id;
     private String firstName;
     private String middleName;
     private String lastName;
@@ -97,5 +97,13 @@ public class User {
 
     public void setAddress(UserAddress address) {
         this.address = address;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }

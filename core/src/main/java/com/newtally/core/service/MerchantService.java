@@ -10,6 +10,25 @@ public class MerchantService {
         return null;
     }
 
+    @RolesAllowed({Role.MERCHANT})
+    public Merchant updateMerchant(Merchant merchant) {
+        return null;
+    }
+
+    @RolesAllowed({Role.MERCHANT})
+    public MerchantBranch registerBranch(MerchantBranch branch) {
+        return null;
+    }
+
+    @RolesAllowed(Role.MERCHANT)
+    public MerchantBranch [] getAllBranches() {
+        return null;
+    }
+
+    @RolesAllowed(Role.MERCHANT)
+    public void deleteBranch(long branchId) {
+    }
+
     public Merchant getCurrentMerchant() {
         return null;
     }
@@ -19,33 +38,9 @@ public class MerchantService {
         return null;
     }
 
+
     @RolesAllowed({Role.SYSTEM})
     public void activateMerchant(String merchantId) {
-    }
-
-    @RolesAllowed({Role.MERCHANT})
-    public MerchantBranch registerBranch() {
-        return null;
-    }
-
-    @RolesAllowed(Role.MERCHANT)
-    public MerchantBranch [] getAllBranches() {
-        return null;
-    }
-
-    @RolesAllowed(Role.BRANCH_MANAGER)
-    public MerchantBranch getCurrentBranch() {
-        return null;
-    }
-
-    public MerchantCounter registerMerchantCounter(String phone) {
-        return null;
-    }
-
-
-    @RolesAllowed(Role.BRANCH_COUNTER)
-    public String handlePayment(CoinType type, double amount) {
-        return null;
     }
 
 }

@@ -8,6 +8,8 @@ public class Merchant {
     private String ownerName;
     private String email;
 
+    private MerchantConfiguration configuration;
+
     public String getId() {
         return id;
     }
@@ -54,5 +56,13 @@ public class Merchant {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public MerchantConfiguration getConfiguration() {
+        return configuration;
+    }
+
+    public void setConfiguration(MerchantConfiguration configuration) {
+        this.configuration = configuration;
     }
 }
