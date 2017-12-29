@@ -11,7 +11,7 @@ public class User {
 
     private String adharId;
     private String dob;
-    private String gender;
+    private boolean male;
     private String phone;
     private String email;
     private String password;
@@ -59,14 +59,6 @@ public class User {
         this.dob = dob;
     }
 
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
     public String getPhone() {
         return phone;
     }
@@ -105,5 +97,13 @@ public class User {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public boolean isMale() {
+        return male;
+    }
+
+    public void setMale(boolean male) {
+        this.male = male;
     }
 }

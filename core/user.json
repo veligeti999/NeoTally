@@ -1,0 +1,16 @@
+{
+"firstName" : "vinod",
+"lastName" : "eligeti",
+"phone" : "4088384729",
+"email": "veligeti999@gmail.com",
+"dob" : "1981-06-01",
+"male" : true,
+"adharId" : "12345",
+"password" : "test123",
+
+"address" : { "address" : "3411",
+"city" : "warangal",
+"state" : "telangana",
+"zip" : 506001,
+"country" : "India"}
+}

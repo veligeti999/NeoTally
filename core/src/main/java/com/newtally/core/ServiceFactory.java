@@ -1,5 +1,6 @@
 package com.newtally.core;
 
+import com.newtally.core.resource.ThreadContext;
 import com.newtally.core.service.UserService;
 
 import javax.persistence.EntityManager;
@@ -12,11 +13,12 @@ public class ServiceFactory {
     private static  ServiceFactory factory;
 
     private final UserService userService;
+    private final ThreadContext sessionContext = new ThreadContext();
 
     private ServiceFactory(EntityManagerFactory emf) {
         this.emf = emf;
         em = emf.createEntityManager();
-        userService = new UserService(em);
+        userService = new UserService(em, sessionContext);
     }
 
     static synchronized void initializeFactory(EntityManagerFactory emf) {
@@ -37,5 +39,9 @@ public class ServiceFactory {
 
     public UserService getUserService() {
          return userService;
+    }
+
+    public ThreadContext getSessionContext() {
+        return sessionContext;
     }
 }

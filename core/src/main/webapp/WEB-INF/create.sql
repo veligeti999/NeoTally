@@ -6,7 +6,7 @@ create table user (
     password varchar(100) not null,
     adhar_id varchar(100) not null,
     dob date not null,
-    gender bool not null,
+    male bool not null,
     phone varchar(100) not null,
     email varchar(100),
 
@@ -16,6 +16,12 @@ create table user (
     zip long not null,
     country varchar(100) not null,
 
+    active bool not null,
+
     primary key (id),
     unique key(adhar_id)
 );
+
+drop table user;
+
+
