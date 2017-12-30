@@ -2,17 +2,19 @@ package com.newtally.core.model;
 
 public class MerchantCounter {
 
-    private String id;
+    private long id;
+
+    private long branchId;
 
     private String phone;
 
-    private String code;
+    private String password;
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -24,11 +26,19 @@ public class MerchantCounter {
         this.phone = phone;
     }
 
-    public String getCode() {
-        return code;
+    public long getBranchId() {
+        return branchId;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setBranchId(long branchId) {
+        this.branchId = branchId;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

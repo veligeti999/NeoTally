@@ -1,5 +1,6 @@
 package com.newtally.core.service;
 
+import com.newtally.core.CollectionUtil;
 import com.newtally.core.resource.ThreadContext;
 import com.newtally.core.model.*;
 
@@ -7,12 +8,12 @@ import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Date;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class UserService extends  AbstractService{
 
@@ -21,6 +22,9 @@ public class UserService extends  AbstractService{
     }
 
     public User registerUser(User user) {
+
+        // TODO: validate user object
+        // after that validate with official adhar api
 
         EntityTransaction trn = em.getTransaction();
         trn.begin();
@@ -31,12 +35,14 @@ public class UserService extends  AbstractService{
                     "values(:id, :first_name, :last_name, :middle_name, :password, :adhar_id," +
                     " :dob, :male, :phone, :email, :address, :city, :state, :zip, :country, false)");
 
-            user.setId(idGen.nextId());
+            user.setId(nextId());
             setCreateParams(user, query);
 
             query.executeUpdate();
 
             trn.commit();
+
+            user.setPassword(null);
             return user;
         } catch (Exception e) {
             trn.rollback();
@@ -61,7 +67,7 @@ public class UserService extends  AbstractService{
         query.setParameter("phone", user.getPhone());
         query.setParameter("email", user.getEmail());
 
-        UserAddress address = user.getAddress();
+        PhysicalAddress address = user.getAddress();
         query.setParameter("address", address.getAddress());
         query.setParameter("city", address.getCity());
         query.setParameter("state", address.getState());
@@ -117,24 +123,24 @@ public class UserService extends  AbstractService{
 
     @RolesAllowed( {Role.SYSTEM, Role.USER_ADMIN})
     public User getUserById(long id) {
+        return getUserOfWhereClause("WHERE id = :id", CollectionUtil.getSingleEntryMap("id", id));
+    }
+
+    private User getUserOfWhereClause(String whereClause, Map<String, Object> params) {
         Query query = em.createNativeQuery("SELECT  id, first_name, last_name, " +
                 "middle_name, adhar_id, dob, male, phone, email, address, " +
-                "city, state, zip, country FROM user WHERE id = :id");
+                "city, state, zip, country FROM user " + whereClause);
 
-        query.setParameter("id", id);
+        setParams(params, query);
 
         List list =  query.getResultList();
 
-        try {
-            User user = readUser((Object[]) list.get(0));
+        User user = readUser((Object[]) list.get(0));
 
-            return user;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return user;
     }
 
-    private User readUser(Object[] fields) throws SQLException {
+    private User readUser(Object[] fields){
         User user = new User();
         user.setId( ((BigInteger) fields[0]).longValue());
         user.setLastName((String) fields[1]);
@@ -143,35 +149,17 @@ public class UserService extends  AbstractService{
         user.setAdharId((String) fields[4]);
         user.setDob(((Date) fields[5]).toString());
         user.setMale((Boolean) fields[6]);
+
         user.setPhone((String) fields[7]);
         user.setEmail((String) fields[8]);
-
-
-        UserAddress address = new UserAddress();
-        address.setAddress((String) fields[9]);
-        address.setCity((String) fields[10]);
-        address.setState((String) fields[11]);
-        address.setZip((String) fields[12]);
-        address.setCountry((String) fields[13]);
+        user.setAddress(readAddress(9, fields));
 
         return user;
     }
 
     @RolesAllowed( {Role.SYSTEM, Role.USER_ADMIN})
     public User getInActiveUser() {
-        Query query = em.createNativeQuery("SELECT  id, first_name, last_name, " +
-                "middle_name, adhar_id, dob, male, phone, email, address, " +
-                "city, state, zip, country FROM user WHERE active = false LIMIT 1");
-
-        try {
-
-            User user = readUser((Object[]) query.getResultList().get(0));
-
-            return user;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
+        return getUserOfWhereClause("WHERE active = false", Collections.EMPTY_MAP);
     }
 
     @RolesAllowed( {Role.SYSTEM, Role.USER_ADMIN})

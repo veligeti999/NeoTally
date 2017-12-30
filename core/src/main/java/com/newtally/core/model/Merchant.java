@@ -1,20 +1,23 @@
 package com.newtally.core.model;
 
 public class Merchant {
-    private String id;
+    private long id;
     private String name;
     private String password;
     private String licenseId;
     private String ownerName;
+    private String phone;
     private String email;
 
     private MerchantConfiguration configuration;
 
-    public String getId() {
+    private PhysicalAddress address;
+
+    public long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -64,5 +67,21 @@ public class Merchant {
 
     public void setConfiguration(MerchantConfiguration configuration) {
         this.configuration = configuration;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public PhysicalAddress getAddress() {
+        return address;
+    }
+
+    public void setAddress(PhysicalAddress address) {
+        this.address = address;
     }
 }

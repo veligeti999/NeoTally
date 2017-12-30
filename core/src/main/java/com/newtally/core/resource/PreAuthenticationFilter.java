@@ -56,6 +56,8 @@ public class PreAuthenticationFilter implements ContainerRequestFilter {
         RolesAllowed rolesAnnotation = method.getAnnotation(RolesAllowed.class);
         Set<String> rolesSet = new HashSet<String>(Arrays.asList(rolesAnnotation.value()));
 
+        // TODO: handle session authorization
+        
 //        if (req.isRequestedSessionIdValid()) {
 //            HttpSession session = req.getSession();
 //
@@ -89,6 +91,8 @@ public class PreAuthenticationFilter implements ContainerRequestFilter {
 
             if (valid) {
                 validateRoles(Role.USER, rolesSet);
+
+
 //                HttpSession session = req.getSession(true);
 //                session.setAttribute(USER_ID_SESSION_ATTR, username);
 //                session.setAttribute(ROLE_SESSION_ATTR, Role.USER);

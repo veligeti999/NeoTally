@@ -12,11 +12,12 @@ public class User {
     private String adharId;
     private String dob;
     private boolean male;
-    private String phone;
+
     private String email;
+    private String phone;
     private String password;
 
-    private UserAddress address;
+    private PhysicalAddress address;
 
 
     public String getFirstName() {
@@ -83,11 +84,11 @@ public class User {
         this.password = password;
     }
 
-    public UserAddress getAddress() {
+    public PhysicalAddress getAddress() {
         return address;
     }
 
-    public void setAddress(UserAddress address) {
+    public void setAddress(PhysicalAddress address) {
         this.address = address;
     }
 

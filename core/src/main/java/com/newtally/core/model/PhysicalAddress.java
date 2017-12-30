@@ -1,6 +1,6 @@
 package com.newtally.core.model;
 
-public class UserAddress {
+public class PhysicalAddress {
 
     private String address;
 
