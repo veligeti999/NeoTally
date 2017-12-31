@@ -1,4 +1,4 @@
-package com.newtally.core;
+package com.newtally.core.util;
 
 import java.util.HashMap;
 import java.util.Map;

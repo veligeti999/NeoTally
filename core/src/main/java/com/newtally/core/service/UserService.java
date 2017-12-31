@@ -1,6 +1,6 @@
 package com.newtally.core.service;
 
-import com.newtally.core.CollectionUtil;
+import com.newtally.core.util.CollectionUtil;
 import com.newtally.core.resource.ThreadContext;
 import com.newtally.core.model.*;
 
@@ -10,7 +10,6 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 import java.math.BigInteger;
 import java.sql.Date;
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;

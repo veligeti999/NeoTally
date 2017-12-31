@@ -1,10 +1,10 @@
 package com.newtally.core.resource;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.newtally.core.ServiceFactory;
 import com.newtally.core.model.Role;
 import com.newtally.core.model.User;
 import com.newtally.core.service.UserService;
+import com.newtally.core.util.JsonParser;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
@@ -15,12 +15,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 
-@Path("/user")
-public class UserResource {
+@Path("/users")
+public class UserResource extends BaseResource {
 
     private UserService usrService = ServiceFactory.getInstance().getUserService();
-
-    private JsonParser parser = new JsonParser();
 
     @PermitAll
     @POST
@@ -81,7 +79,7 @@ public class UserResource {
         return Response.ok(user).build();
     }
 
-    @RolesAllowed({Role.USER})
+    @RolesAllowed( {Role.SYSTEM, Role.USER_ADMIN})
     @PUT
     @Path("/<id>/changestatus?active=<active>")
     @Consumes(MediaType.APPLICATION_JSON)

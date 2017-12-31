@@ -1,6 +1,6 @@
 package com.newtally.core.service;
 
-import com.newtally.core.CollectionUtil;
+import com.newtally.core.util.CollectionUtil;
 import com.newtally.core.ServiceFactory;
 import com.newtally.core.model.*;
 import com.newtally.core.resource.ThreadContext;
@@ -42,11 +42,13 @@ public class MerchantService extends AbstractService {
 
             MerchantBranch branch = new MerchantBranch();
             branch.setMerchantId(merchant.getId());
+            branch.setName(merchant.getName());
+            branch.setManagerName(merchant.getOwnerName());
             branch.setPassword(merchant.getPassword());
             branch.setPhone(merchant.getPhone());
             branch.setEmail(merchant.getEmail());
             branch.setAddress(merchant.getAddress());
-            branch.setPrimary(true);
+            branch.setHeadQuarter(true);
 
             createBranch(branch);
 
@@ -100,10 +102,18 @@ public class MerchantService extends AbstractService {
         }
     }
 
-    public Merchant getCurrentMerchant() {
+    public void updateCurrentMerchant(Merchant merchant) {
+        merchant.setId(ctx.getCurrentMerchantId());
+    }
 
+    public Merchant getCurrentMerchant() {
         return getMerchantWithWhereClause("WHERE id = :id",
                 CollectionUtil.getSingleEntryMap("id", ctx.getCurrentMerchantId()));
+    }
+
+    public Merchant getMerchantById(long merchantId) {
+        return getMerchantWithWhereClause("WHERE id = :id",
+                CollectionUtil.getSingleEntryMap("id", merchantId));
     }
 
     private Merchant getMerchantWithWhereClause(String whereClause, Map params) {
@@ -114,6 +124,7 @@ public class MerchantService extends AbstractService {
         setParams(params, query);
 
         Object [] fields = (Object[]) query.getResultList().get(0);
+
         Merchant merchant = new Merchant();
         merchant.setId( ((BigInteger) fields[0]).longValue());
         merchant.setName((String) fields[1]);
@@ -127,7 +138,7 @@ public class MerchantService extends AbstractService {
     }
 
     @RolesAllowed({Role.SYSTEM})
-    public Merchant getNextUnActiveMerchant() {
+    public Merchant getInActiveMerchant() {
         return getMerchantWithWhereClause("WHERE active = false", Collections.EMPTY_MAP);
     }
 
@@ -157,7 +168,7 @@ public class MerchantService extends AbstractService {
     private void setBranchParams(MerchantBranch branch, Query query) {
         query.setParameter("id", branch.getId());
         query.setParameter("merchant_id", branch.getMerchantId());
-        query.setParameter("primary", branch.isPrimary() ? true : null);
+        query.setParameter("head_quarter", branch.isHeadQuarter() ? true : null);
 
         query.setParameter("name", branch.getName());
         query.setParameter("phone", branch.getPhone());
@@ -168,9 +179,9 @@ public class MerchantService extends AbstractService {
 
     private void createBranch(MerchantBranch branch) {
         Query query = em.createNativeQuery("INSERT INTO merchant_branch ( " +
-                "id, merchant_id, name, manager_name, password, primary, phone, email, " +
+                "id, merchant_id, name, manager_name, password, head_quarter, phone, email, " +
                 "address, city, state, zip, country) " +
-                "VALUES( :id, :merchant_id, :name, :manager_name, :password, :primary, :phone, " +
+                "VALUES( :id, :merchant_id, :name, :manager_name, :password, :head_quarter, :phone, " +
                 ":email, :address, :city, :state, :zip, :country)");
 
         branch.setId(nextId());
@@ -182,6 +193,7 @@ public class MerchantService extends AbstractService {
 
         MerchantCounter counter = new MerchantCounter();
         counter.setPhone(branch.getPhone());
+        counter.setBranchId(branch.getId());
 
         ServiceFactory.getInstance().getMerchantBranchService()._registerCounter(counter);
     }
@@ -194,7 +206,7 @@ public class MerchantService extends AbstractService {
         try {
             branch.setMerchantId(ctx.getCurrentMerchantId());
 
-            branch.setPrimary(false);
+            branch.setHeadQuarter(false);
             createBranch(branch);
 
             trn.commit();
@@ -213,7 +225,7 @@ public class MerchantService extends AbstractService {
         trn.begin();
         try {
             Query query = em.createNativeQuery("UPDATE merchant_branch " +
-                    "SET name = :name, manager_name = :manager_name, primary = :primary," +
+                    "SET name = :name, manager_name = :manager_name, head_quarter = :head_quarter," +
                     " phone = :phone, email = :email, address = :address, city = :city, " +
                     "state = :state, zip = :zip, country = :country " +
                     "WHERE id = :id and mercant_id = :merchant_id");
@@ -231,7 +243,6 @@ public class MerchantService extends AbstractService {
         }
     }
 
-    @RolesAllowed(Role.MERCHANT)
     public List<MerchantBranch> getAllBranches() {
         return getBranchesOfWhereClause("WHERE merchant_id = :merchant_id",
                 CollectionUtil.getSingleEntryMap("merchant_id", ctx.getCurrentMerchantId()));
@@ -240,7 +251,7 @@ public class MerchantService extends AbstractService {
     List<MerchantBranch> getBranchesOfWhereClause(
             String whereClause, Map<String, Object> params) {
         Query query = em.createNativeQuery("SELECT  id, name, manager_name, " +
-                "primary, phone, email, address, city, state, zip, country " +
+                "head_quarter, phone, email, address, city, state, zip, country " +
                 "FROM merchant_branch " + whereClause);
 
         setParams(params, query);
@@ -255,12 +266,26 @@ public class MerchantService extends AbstractService {
             branch.setId( ((BigInteger) fields[0]).longValue());
             branch.setName((String) fields[1]);
             branch.setManagerName((String) fields[2]);
-            branch.setPrimary((Boolean) fields[3]);
+            branch.setHeadQuarter((Boolean) fields[3]);
             branch.setPhone((String) fields[4]);
             branch.setEmail((String) fields[5]);
             branch.setAddress(readAddress(6, fields));
+
+            branches.add(branch);
         }
 
         return branches;
+    }
+
+    public boolean authenticateMerchant(String merchantId, String password) {
+        Query query = em.createNativeQuery("SELECT  count(*) FROM merchant " +
+                "WHERE id = :id AND password = :password");
+
+        query.setParameter("id", Long.parseLong(merchantId));
+        query.setParameter("password", password);
+
+        BigInteger count = (BigInteger) query.getSingleResult();
+
+        return count.intValue() == 1;
     }
 }

@@ -2,6 +2,7 @@ package com.newtally.core.resource;
 
 import com.newtally.core.ServiceFactory;
 import com.newtally.core.model.Role;
+import com.newtally.core.service.MerchantService;
 import com.newtally.core.service.UserService;
 
 import javax.annotation.Priority;
@@ -28,9 +29,10 @@ public class PreAuthenticationFilter implements ContainerRequestFilter {
     private static final String AUTHENTICATION_SCHEME = "Basic";
     public static final String USER_ID_SESSION_ATTR = "id";
     public static final String ROLE_SESSION_ATTR = "role";
-//    private final RuntimeException ACCESS_DENY = new RuntimeException("Access denied");
+    private final RuntimeException ACCESS_DENY = new RuntimeException("Access denied");
 
     private UserService usrService = ServiceFactory.getInstance().getUserService();
+    private MerchantService mrctServ = ServiceFactory.getInstance().getMerchantService();
     private ThreadContext sessionCtx = ServiceFactory.getInstance().getSessionContext();
 
     @Context
@@ -74,35 +76,37 @@ public class PreAuthenticationFilter implements ContainerRequestFilter {
             throw new RuntimeException("Access denied");
         }
 
-        //Get encoded username and password
+        //Get encoded userId and password
         final String encodedUserPassword = authorization.replaceFirst(AUTHENTICATION_SCHEME + " ", "");
 
-        //Decode username and password
+        //Decode userId and password
         String usernameAndPassword = new String(Base64.getDecoder().decode(encodedUserPassword));
 
-        //Split username and password tokens
+        //Split userId and password tokens
         final StringTokenizer tokenizer = new StringTokenizer(usernameAndPassword, ":");
         final String userType = tokenizer.nextToken().toLowerCase();
-        final String username = tokenizer.nextToken();
+        final String userId = tokenizer.nextToken();
         final String password = tokenizer.nextToken();
 
         if (userType.equals(Role.USER)) {
-            boolean valid = usrService.authenticateUser(username, password);
+            boolean valid = usrService.authenticateUser(userId, password);
 
             if (valid) {
                 validateRoles(Role.USER, rolesSet);
-
-
-//                HttpSession session = req.getSession(true);
-//                session.setAttribute(USER_ID_SESSION_ATTR, username);
-//                session.setAttribute(ROLE_SESSION_ATTR, Role.USER);
-//                session.setMaxInactiveInterval(30 * 60);
-
-                setContextVariables(Role.USER, username);
-            } else {
-                throw new RuntimeException("Access denied");
+                setContextVariables(Role.USER, userId);
+                return;
             }
+        } else if(userType.equals(Role.MERCHANT)) {
+                boolean valid = mrctServ.authenticateMerchant(userId, password);
+
+                if (valid) {
+                    validateRoles(Role.MERCHANT, rolesSet);
+                    setContextVariables(Role.MERCHANT, userId);
+                    return;
+                }
+
         }
+        throw new RuntimeException("Access denied");
     }
 
     private void validateRoles(String role, Set<String> rolesSet) throws AccessDeniedException {
@@ -114,6 +118,10 @@ public class PreAuthenticationFilter implements ContainerRequestFilter {
 
         if(role.equals(Role.USER)) {
             sessionCtx.setCurrentUserId(Long.parseLong(id));
+        } else if(role.equals(Role.MERCHANT)) {
+            sessionCtx.setCurrentMerchantId(Long.parseLong(id));
+        } else {
+            throw new IllegalArgumentException("Unknown role: " + role + " specified");
         }
     }
 }

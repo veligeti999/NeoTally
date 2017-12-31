@@ -25,7 +25,7 @@ public abstract class AbstractService {
         query.setParameter("city", address.getCity());
         query.setParameter("state", address.getState());
         query.setParameter("zip", address.getZip());
-        query.setParameter("country", address.getCity());
+        query.setParameter("country", address.getCountry());
     }
 
     protected PhysicalAddress readAddress(int fromIndex, Object[] fields) {

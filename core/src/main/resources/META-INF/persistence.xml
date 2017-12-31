@@ -20,8 +20,8 @@
             <property name="hibernate.connection.serverTimeZone" value="UTC"></property>
 
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
-            <property name="hibernate.show_sql" value="true" />
             <property name="hibernate.hbm2ddl.auto" value="create" />
+            <property name="hibernate.connection.autocommit" value="false"/>
         </properties>
 
     </persistence-unit>

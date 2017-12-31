@@ -20,13 +20,12 @@ CREATE TABLE user (
 
     PRIMARY KEY (id),
     UNIQUE KEY (adhar_id)
-);
+) ENGINE = INNODB;
 
 CREATE TABLE merchant (
     id BIGINT NOT NULL,
     name VARCHAR(100) NOT NULL,
     owner_name VARCHAR(100) NOT NULL,
-    password VARCHAR(100) NOT NULL,
     license_id VARCHAR(100) NOT NULL,
     active BOOL NOT NULL,
 
@@ -41,17 +40,15 @@ CREATE TABLE merchant (
 
 
     PRIMARY KEY (id),
-    UNIQUE KEY(license)
-);
+    UNIQUE KEY(license_id)
+) ENGINE = INNODB;
 
 CREATE TABLE merchant_branch (
     id BIGINT NOT NULL,
     merchant_id BIGINT NOT NULL,
     name VARCHAR(100) NOT NULL,
     manager_name VARCHAR(100) NOT NULL,
-    
-    -- should be only set to true otherwise null
-    primary BOOL, 
+    head_quarter BOOL,
 
     password VARCHAR(100) NOT NULL,
     phone VARCHAR(100) NOT NULL,
@@ -62,20 +59,21 @@ CREATE TABLE merchant_branch (
     zip long NOT NULL,
     country VARCHAR(100) NOT NULL,
 
-    UNIQUE KEY (merchant_id, primary)
-    UNIQUE KEY (merchant_id, name)
+    UNIQUE KEY (merchant_id, head_quarter),
+    UNIQUE KEY (merchant_id, name),
     PRIMARY KEY (id),
     FOREIGN KEY (merchant_id) REFERENCES merchant(id) ON DELETE CASCADE
-);
+) ENGINE = INNODB;
 
 CREATE TABLE merchant_counter (
-    id BIGINT NOT NULL,
     branch_id BIGINT NOT NULL,
     password VARCHAR(100) NOT NULL,
     phone VARCHAR(100) NOT NULL,
     active BOOL NOT NULL,
 
-    UNIQUE KEY (branch_id, id)
+    UNIQUE KEY (branch_id, phone),
+    PRIMARY KEY (password),
 
     FOREIGN KEY (branch_id) REFERENCES merchant_branch(id) ON DELETE CASCADE
-);
+)  ENGINE = INNODB;
+

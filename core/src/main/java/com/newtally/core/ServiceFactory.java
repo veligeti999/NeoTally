@@ -8,6 +8,7 @@ import com.newtally.core.service.UserService;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.FlushModeType;
 
 public class ServiceFactory {
 
@@ -24,6 +25,8 @@ public class ServiceFactory {
     private ServiceFactory(EntityManagerFactory emf) {
         this.emf = emf;
         em = emf.createEntityManager();
+        em.setFlushMode(FlushModeType.COMMIT);
+
         userService = new UserService(em, sessionContext);
         counterService = new MerchantCounterService(em, sessionContext);
         branchService = new MerchantBranchService(em, sessionContext);

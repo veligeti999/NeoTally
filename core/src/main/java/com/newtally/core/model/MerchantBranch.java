@@ -8,7 +8,7 @@ public class MerchantBranch {
     private String password;
     private String phone;
     private String email;
-    private boolean primary;
+    private boolean headQuarter;
     private PhysicalAddress address;
 
 
@@ -60,12 +60,12 @@ public class MerchantBranch {
         this.managerName = managerName;
     }
 
-    public boolean isPrimary() {
-        return primary;
+    public boolean isHeadQuarter() {
+        return headQuarter;
     }
 
-    public void setPrimary(boolean primary) {
-        this.primary = primary;
+    public void setHeadQuarter(boolean headQuarter) {
+        this.headQuarter = headQuarter;
     }
 
     public long getMerchantId() {

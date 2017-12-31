@@ -1,8 +1,7 @@
 package com.newtally.core.service;
 
-import com.newtally.core.CollectionUtil;
+import com.newtally.core.util.CollectionUtil;
 import com.newtally.core.ServiceFactory;
-import com.newtally.core.model.Merchant;
 import com.newtally.core.model.MerchantBranch;
 import com.newtally.core.model.MerchantCounter;
 import com.newtally.core.resource.ThreadContext;
@@ -29,40 +28,42 @@ public class MerchantBranchService extends AbstractService{
     public MerchantCounter registerCounter(MerchantCounter counter) {
         counter.setBranchId(ctx.getCurrentBranchId());
 
-        return _registerCounter(counter);
-    }
+        EntityTransaction trx = em.getTransaction();
 
-    MerchantCounter _registerCounter(MerchantCounter counter) {
-
-        EntityTransaction trn = em.getTransaction();
-        trn.begin();
-
+        trx.begin();
         try {
-            Query query = em.createNativeQuery("INSERT INTO merchant_counter ( " +
-                    "id, branch_id, password, phone) " +
-                    "VALUES( :id, :branch_id, :password, :phone )");
+            counter = _registerCounter(counter);
 
-            counter.setPhone(generateNewPassword());
-
-            query.setParameter("id", nextId());
-            query.setParameter("branch_id", counter.getBranchId());
-            query.setParameter("phone", counter.getPhone());
-            query.setParameter("password", counter.getPassword());
-
-            query.executeUpdate();
-
-            trn.commit();
+            trx.commit();
 
             return counter;
         } catch (Exception e) {
-            trn.rollback();
+            trx.rollback();
+
             throw e;
         }
     }
 
+    MerchantCounter _registerCounter(MerchantCounter counter) {
+
+        Query query = em.createNativeQuery("INSERT INTO merchant_counter ( " +
+                "branch_id, password, phone, active) " +
+                "VALUES( :branch_id, :password, :phone, true )");
+
+        counter.setPassword(generateNewPassword());
+
+        query.setParameter("branch_id", counter.getBranchId());
+        query.setParameter("phone", counter.getPhone());
+        query.setParameter("password", counter.getPassword());
+
+        query.executeUpdate();
+
+        return counter;
+    }
+
 
     public List<MerchantCounter> getCounters() {
-        Query query = em.createNativeQuery("SELECT  id, branch_id, phone, password " +
+        Query query = em.createNativeQuery("SELECT  branch_id, phone, password " +
                 " FROM merchant_counter WHERE branch_id = :branch_id");
 
         List rs = query.getResultList();
@@ -72,9 +73,9 @@ public class MerchantBranchService extends AbstractService{
             Object [] fields = (Object[]) ele;
 
             MerchantCounter counter = new MerchantCounter();
-            counter.setId( ((BigInteger) fields[0]).longValue());
-            counter.setBranchId(((BigInteger) fields[1]).longValue());
-            counter.setPhone((String) fields[2]);
+            counter.setBranchId(((BigInteger) fields[0]).longValue());
+            counter.setPhone((String) fields[1]);
+            counter.setPassword((String) fields[2]);
         }
 
         return branches;
@@ -90,7 +91,7 @@ public class MerchantBranchService extends AbstractService{
 
         try {
             Query query = em.createNativeQuery("UPDATE merchant_counter ( " +
-                    "SET :password = :password  " +
+                    "SET :password = :password, active = true  " +
                     " WHERE branch_id = :branch_id AND phone = :phone");
 
             MerchantCounter counter = new MerchantCounter();
