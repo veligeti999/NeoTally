@@ -14,6 +14,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.List;
 
 @Path("/merchants")
@@ -28,11 +29,11 @@ public class MerchantResource extends BaseResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerMerchant(@Context HttpServletRequest req) throws IOException {
 
-        Merchant merchant = parser.parseObject(Merchant.class, req.getInputStream());
+        Merchant merchant = gson.fromJson(new InputStreamReader(req.getInputStream()), Merchant.class);
 
         merchant = mrctServ.registerMerchant(merchant);
 
-        return Response.ok(merchant).build();
+        return Response.ok(gson.toJson(merchant)).build();
     }
 
     @RolesAllowed({Role.MERCHANT})
@@ -40,7 +41,7 @@ public class MerchantResource extends BaseResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateCurrentMerchant(@Context HttpServletRequest req) throws IOException {
 
-        Merchant merchant = parser.parseObject(Merchant.class, req.getInputStream());
+        Merchant merchant = gson.fromJson(req.getReader(), Merchant.class);
 
         mrctServ.updateCurrentMerchant(merchant);
 
@@ -54,7 +55,7 @@ public class MerchantResource extends BaseResource {
 
         Merchant merchant = mrctServ.getCurrentMerchant();
 
-        return Response.ok(merchant).build();
+        return Response.ok(gson.toJson(merchant)).build();
     }
 
     @RolesAllowed( {Role.SYSTEM, Role.USER_ADMIN})
@@ -65,7 +66,7 @@ public class MerchantResource extends BaseResource {
 
         Merchant merchant = mrctServ.getMerchantById(id);
 
-        return Response.ok(merchant).build();
+        return Response.ok(gson.toJson(merchant)).build();
     }
 
     @RolesAllowed( {Role.SYSTEM, Role.USER_ADMIN})
@@ -76,7 +77,7 @@ public class MerchantResource extends BaseResource {
 
         Merchant merchant = mrctServ.getInActiveMerchant();
 
-        return Response.ok(merchant).build();
+        return Response.ok(gson.toJson(merchant)).build();
     }
 
     @RolesAllowed( {Role.SYSTEM, Role.USER_ADMIN})
@@ -98,7 +99,7 @@ public class MerchantResource extends BaseResource {
 
         List<MerchantBranch> branches = mrctServ.getAllBranches();
 
-        return Response.ok(branches).build();
+        return Response.ok(gson.toJson(branches)).build();
     }
 
     @RolesAllowed({Role.MERCHANT})
@@ -107,11 +108,11 @@ public class MerchantResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response registerBranch(@Context HttpServletRequest req ) throws IOException {
 
-        MerchantBranch branch = parser.parseObject(MerchantBranch.class, req.getInputStream());
+        MerchantBranch branch = gson.fromJson(req.getReader(), MerchantBranch.class);
 
         branch = mrctServ.registerBranch(branch);
 
-        return Response.ok(branch).build();
+        return Response.ok(gson.toJson(branch)).build();
     }
 
     @RolesAllowed({Role.MERCHANT})
@@ -120,7 +121,7 @@ public class MerchantResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateBranch(@Context HttpServletRequest req ) throws IOException {
 
-        MerchantBranch branch = parser.parseObject(MerchantBranch.class, req.getInputStream());
+        MerchantBranch branch = gson.fromJson(req.getReader(), MerchantBranch.class);
 
         mrctServ.updateBranch(branch);
 

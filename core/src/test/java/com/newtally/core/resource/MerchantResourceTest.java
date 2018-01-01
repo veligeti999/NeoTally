@@ -31,6 +31,8 @@ public class MerchantResourceTest extends AbstractResourceTest {
 
         merchant.setAddress(address);
 
+
+
         Merchant createdMrct = post("/merchants/register", merchant, null, null);
 
         Merchant getMrct = get("/merchants", Merchant.class,
@@ -71,4 +73,5 @@ public class MerchantResourceTest extends AbstractResourceTest {
         assertEquals(expected.getZip(), actual.getZip());
         assertEquals(expected.getCountry(), actual.getCountry());
     }
+
 }

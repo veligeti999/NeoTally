@@ -4,7 +4,6 @@ import com.newtally.core.ServiceFactory;
 import com.newtally.core.model.Role;
 import com.newtally.core.model.User;
 import com.newtally.core.service.UserService;
-import com.newtally.core.util.JsonParser;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
@@ -27,7 +26,7 @@ public class UserResource extends BaseResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerUser(@Context HttpServletRequest req) throws IOException {
 
-        User user = parser.parseObject(User.class, req.getInputStream());
+        User user = gson.fromJson(req.getReader(), User.class);
 
         user = usrService.registerUser(user);
 
@@ -39,7 +38,7 @@ public class UserResource extends BaseResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateCurrentUser(@Context HttpServletRequest req) throws IOException {
 
-        User user = parser.parseObject(User.class, req.getInputStream());
+        User user = gson.fromJson(req.getReader(), User.class);
 
         usrService.updateCurrentUser(user);
 

@@ -1,6 +1,10 @@
 package com.newtally.core.resource;
 
-import com.newtally.core.util.JsonParser;
+import com.blockcypher.utils.gson.GsonFactory;
+import com.blockcypher.utils.gson.ListOfJson;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.newtally.core.model.Merchant;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 
@@ -8,28 +12,31 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.client.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.lang.reflect.Array;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AbstractResourceTest {
 
-    private JsonParser parser = new JsonParser();
+    private Gson parser = GsonFactory.getGson();
 
     protected <T>  T post(String path, T obj, String userName, String password) {
         Response res = getWebTarget(path, userName, password).post(
-                Entity.entity(parser.toString(obj), MediaType.APPLICATION_JSON));
+                Entity.entity(parser.toJson(obj), MediaType.APPLICATION_JSON));
 
         String resStr = res.readEntity(String.class);
 
         if(res.getStatus() != HttpServletResponse.SC_OK) {
             throw new RuntimeException(resStr);
         } else {
-            return parser.parseObject((Class<T>) obj.getClass(), resStr);
+            return parser.fromJson(resStr, (Class<T>) obj.getClass());
         }
     }
 
     protected <T>  void put(String path, T obj, String userName, String password) {
         Response res = getWebTarget(path, userName, password).put(
-                Entity.entity(parser.toString(obj), MediaType.APPLICATION_JSON));
+                Entity.entity(parser.toJson(obj), MediaType.APPLICATION_JSON));
 
         String resStr = res.readEntity(String.class);
 
@@ -39,13 +46,15 @@ public class AbstractResourceTest {
     }
 
     protected <T>  T get(String path, Class<T> clazz, String userName, String password) {
-        return parser.parseObject(clazz, _get(path, userName, password));
+        return parser.fromJson(_get(path, userName, password), clazz);
     }
 
     private String _get(String path, String userName, String password) {
         Response res = getWebTarget(path, userName, password).get();
 
         String resStr = res.readEntity(String.class);
+
+        System.out.println(resStr);
 
         if(res.getStatus() != HttpServletResponse.SC_OK) {
             throw new RuntimeException(resStr);
@@ -55,7 +64,7 @@ public class AbstractResourceTest {
     }
 
     protected <T> List<T> getList(String path, Class<T> clazz, String userName, String password) {
-        return parser.parseObjectAsList(clazz, _get(path, userName, password));
+        return parser.fromJson(_get(path, userName, password), new ListOfJson<T>(clazz));
     }
 
     private Invocation.Builder getWebTarget(String path, String userName, String password) {
@@ -84,7 +93,5 @@ public class AbstractResourceTest {
         } else {
             return path;
         }
-
     }
-
 }

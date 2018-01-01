@@ -1,10 +1,11 @@
 package com.newtally.core.resource;
 
-import com.newtally.core.util.JsonParser;
+import com.blockcypher.utils.gson.GsonFactory;
+import com.google.gson.Gson;
 
 public class BaseResource {
 
-    protected final JsonParser parser = new JsonParser();
+    protected final Gson gson = GsonFactory.getGson();
 
 
 }
