@@ -2,7 +2,7 @@ package com.newtally.core;
 
 import com.newtally.core.resource.ThreadContext;
 import com.newtally.core.service.MerchantBranchService;
-import com.newtally.core.service.MerchantCounterService;
+import com.newtally.core.service.BranchCounterService;
 import com.newtally.core.service.MerchantService;
 import com.newtally.core.service.UserService;
 
@@ -20,7 +20,7 @@ public class ServiceFactory {
     private final ThreadContext sessionContext = new ThreadContext();
     private final MerchantService merchantService;
     private final MerchantBranchService branchService;
-    private final MerchantCounterService counterService;
+    private final BranchCounterService counterService;
 
     private ServiceFactory(EntityManagerFactory emf) {
         this.emf = emf;
@@ -28,7 +28,7 @@ public class ServiceFactory {
         em.setFlushMode(FlushModeType.COMMIT);
 
         userService = new UserService(em, sessionContext);
-        counterService = new MerchantCounterService(em, sessionContext);
+        counterService = new BranchCounterService(em, sessionContext);
         branchService = new MerchantBranchService(em, sessionContext);
         merchantService = new MerchantService(em, sessionContext);
     }
@@ -65,7 +65,7 @@ public class ServiceFactory {
         return branchService;
     }
 
-    public MerchantCounterService getMerchantCounterService() {
+    public BranchCounterService getMerchantCounterService() {
         return counterService;
     }
 }

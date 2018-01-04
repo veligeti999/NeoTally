@@ -10,9 +10,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.math.BigInteger;
 
-public class MerchantCounterService extends AbstractService implements IAuthenticator {
+public class BranchCounterService extends AbstractService implements IAuthenticator {
 
-    public MerchantCounterService(EntityManager em, ThreadContext ctx) {
+    public BranchCounterService(EntityManager em, ThreadContext ctx) {
         super(em, ctx);
     }
 
@@ -28,7 +28,7 @@ public class MerchantCounterService extends AbstractService implements IAuthenti
 
     public boolean authenticate(String merchantId, String password) {
         Query query = em.createNativeQuery("SELECT  count(*) FROM branch_counter " +
-                "WHERE password = :password");
+                "WHERE password = :password AND active = true");
 
         query.setParameter("password", password);
 
