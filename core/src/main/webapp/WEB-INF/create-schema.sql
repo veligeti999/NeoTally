@@ -65,7 +65,7 @@ CREATE TABLE merchant_branch (
     FOREIGN KEY (merchant_id) REFERENCES merchant(id) ON DELETE CASCADE
 ) ENGINE = INNODB;
 
-CREATE TABLE merchant_counter (
+CREATE TABLE branch_counter (
     branch_id BIGINT NOT NULL,
     password VARCHAR(100) NOT NULL,
     phone VARCHAR(100) NOT NULL,

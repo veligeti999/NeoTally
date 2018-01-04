@@ -9,6 +9,7 @@ public class ThreadContext {
     private ThreadLocal<Long> merchantLocal = new ThreadLocal<>();
 
     private ThreadLocal<Long> mrctBranchId = new ThreadLocal<>();
+    private ThreadLocal<String> mrctCtrId = new ThreadLocal<>();
 
     public long getCurrentUserId() {
         return userLocal.get();
@@ -30,6 +31,10 @@ public class ThreadContext {
         return mrctBranchId.get();
     }
 
+    public void setCurrentMerchantCounterId(String mrctCtrId) {
+        this.mrctCtrId.set(mrctCtrId);
+    }
+
     /**
      * should be called after the request is served
      */
@@ -37,6 +42,7 @@ public class ThreadContext {
         userLocal.remove();
         merchantLocal.remove();
         mrctBranchId.remove();
+        mrctCtrId.remove();
     }
 
 }

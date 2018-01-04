@@ -1,10 +1,15 @@
 package com.newtally.core.wallet;
 
 import com.blockcypher.model.transaction.Transaction;
+import com.blockcypher.model.transaction.summary.TransactionSummary;
 
 import java.util.List;
 
+/**
+ * TODO: implement this
+ */
 public class BitcoinMerchantWallet extends AbstractCryptoWallet implements IMerchantWallet{
+
     public BitcoinMerchantWallet(String identifier) {
         super(identifier);
     }
@@ -35,17 +40,12 @@ public class BitcoinMerchantWallet extends AbstractCryptoWallet implements IMerc
     }
 
     @Override
-    public Transaction sendTo(String address, long amount) {
+    public Transaction sendTo(String toAddress, long amount) {
         return null;
     }
 
     @Override
-    public List<Transaction> getTransactions(long fromInSecs) {
+    public List<TransactionSummary> getTransactions(long fromInSecs) {
         return null;
-    }
-
-    @Override
-    public void notifyOnSendOrReceiveConfirmation() {
-
     }
 }

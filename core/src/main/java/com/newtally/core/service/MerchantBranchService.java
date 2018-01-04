@@ -13,7 +13,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MerchantBranchService extends AbstractService{
+public class MerchantBranchService extends AbstractService implements IAuthenticator {
 
     public MerchantBranchService(EntityManager em, ThreadContext ctx) {
         super(em, ctx);
@@ -113,4 +113,17 @@ public class MerchantBranchService extends AbstractService{
             throw e;
         }
     }
+
+    public boolean authenticate(String merchantId, String password) {
+        Query query = em.createNativeQuery("SELECT  count(*) FROM merchant_branch " +
+                "WHERE id = :id AND password = :password");
+
+        query.setParameter("id", Long.parseLong(merchantId));
+        query.setParameter("password", password);
+
+        BigInteger count = (BigInteger) query.getSingleResult();
+
+        return count.intValue() == 1;
+    }
+
 }

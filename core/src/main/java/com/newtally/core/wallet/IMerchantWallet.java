@@ -1,5 +1,9 @@
 package com.newtally.core.wallet;
 
+/**
+ * TODO: Should we use HD wallet here? I emailed blockcypher
+ * and they mentioned to use HD. How is this different from normal wallet?
+ */
 public interface IMerchantWallet extends IWallet {
 
     /**

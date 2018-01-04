@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class MerchantService extends AbstractService {
+public class MerchantService extends AbstractService implements IAuthenticator {
 
 
     public MerchantService(EntityManager em, ThreadContext ctx ) {
@@ -277,7 +277,7 @@ public class MerchantService extends AbstractService {
         return branches;
     }
 
-    public boolean authenticateMerchant(String merchantId, String password) {
+    public boolean authenticate(String merchantId, String password) {
         Query query = em.createNativeQuery("SELECT  count(*) FROM merchant " +
                 "WHERE id = :id AND password = :password");
 

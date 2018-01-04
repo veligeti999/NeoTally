@@ -2,6 +2,8 @@ package com.newtally.core.resource;
 
 import com.newtally.core.ServiceFactory;
 import com.newtally.core.model.Role;
+import com.newtally.core.service.IAuthenticator;
+import com.newtally.core.service.MerchantBranchService;
 import com.newtally.core.service.MerchantService;
 import com.newtally.core.service.UserService;
 
@@ -31,12 +33,24 @@ public class PreAuthenticationFilter implements ContainerRequestFilter {
     public static final String ROLE_SESSION_ATTR = "role";
     private final RuntimeException ACCESS_DENY = new RuntimeException("Access denied");
 
-    private UserService usrService = ServiceFactory.getInstance().getUserService();
-    private MerchantService mrctServ = ServiceFactory.getInstance().getMerchantService();
-    private ThreadContext sessionCtx = ServiceFactory.getInstance().getSessionContext();
+    private final Map<String, IAuthenticator> roleVsAuth = new HashMap<>();
+
+    private final ThreadContext threadCtx = ServiceFactory.getInstance().getSessionContext();
 
     @Context
     private ResourceInfo resInfo;
+
+    @Context
+    private HttpServletRequest req;
+
+    public PreAuthenticationFilter() {
+        ServiceFactory instance = ServiceFactory.getInstance();
+
+        roleVsAuth.put(Role.USER, instance.getUserService());
+        roleVsAuth.put(Role.MERCHANT, instance.getMerchantService());
+        roleVsAuth.put(Role.BRANCH_MANAGER, instance.getMerchantBranchService());
+        roleVsAuth.put(Role.BRANCH_COUNTER, instance.getMerchantCounterService());
+    }
 
     @Override
     public void filter(ContainerRequestContext ctx) throws IOException {
@@ -49,24 +63,25 @@ public class PreAuthenticationFilter implements ContainerRequestFilter {
         if (method.isAnnotationPresent(DenyAll.class)) {
             throw new RuntimeException("Access denied");
         }
-
         if (!method.isAnnotationPresent(RolesAllowed.class)) {
             return;
         }
 
-//        HttpServletRequest req = (HttpServletRequest) ctx.getRequest();
         RolesAllowed rolesAnnotation = method.getAnnotation(RolesAllowed.class);
         Set<String> rolesSet = new HashSet<String>(Arrays.asList(rolesAnnotation.value()));
 
         // TODO: handle session authorization
-        
-//        if (req.isRequestedSessionIdValid()) {
-//            HttpSession session = req.getSession();
-//
-//            setContextVariables(session);
-//
-//            validateRoles(session, rolesSet);
-//        }
+        HttpSession session = req.getSession(false);
+        if (session != null) {
+
+            String role = (String) session.getAttribute(ROLE_SESSION_ATTR);
+            String userId = (String) session.getAttribute(USER_ID_SESSION_ATTR);
+
+
+            validateRoles(role, rolesSet);
+            setPrincipalOnThreadContext(role, userId);
+            return;
+        }
 
         //Fetch authorization header
         final String authorization = ctx.getHeaderString(AUTHORIZATION_PROPERTY);
@@ -88,25 +103,28 @@ public class PreAuthenticationFilter implements ContainerRequestFilter {
         final String userId = tokenizer.nextToken();
         final String password = tokenizer.nextToken();
 
-        if (userType.equals(Role.USER)) {
-            boolean valid = usrService.authenticateUser(userId, password);
+
+        IAuthenticator iAuthenticator = roleVsAuth.get(userType);
+
+        if(iAuthenticator != null) {
+            boolean valid = iAuthenticator.authenticate(userId, password);
 
             if (valid) {
-                validateRoles(Role.USER, rolesSet);
-                setContextVariables(Role.USER, userId);
+                _authorizeAndSetSession(rolesSet, userId, userType);
                 return;
             }
-        } else if(userType.equals(Role.MERCHANT)) {
-                boolean valid = mrctServ.authenticateMerchant(userId, password);
-
-                if (valid) {
-                    validateRoles(Role.MERCHANT, rolesSet);
-                    setContextVariables(Role.MERCHANT, userId);
-                    return;
-                }
-
         }
         throw new RuntimeException("Access denied");
+    }
+
+    private void _authorizeAndSetSession(Set<String> rolesSet, String userId, String role) throws AccessDeniedException {
+        validateRoles(role, rolesSet);
+        setPrincipalOnThreadContext(role, userId);
+
+        HttpSession session = req.getSession(true);
+        session.setMaxInactiveInterval(60 * 30 ); // 30 minutes
+        session.setAttribute(ROLE_SESSION_ATTR, role);
+        session.setAttribute(USER_ID_SESSION_ATTR, userId);
     }
 
     private void validateRoles(String role, Set<String> rolesSet) throws AccessDeniedException {
@@ -114,12 +132,16 @@ public class PreAuthenticationFilter implements ContainerRequestFilter {
             throw new RuntimeException("Access denied");;
     }
 
-    public void setContextVariables(String role, String id) {
+    public void setPrincipalOnThreadContext(String role, String id) {
+        // clear previous ones
+        threadCtx.clearContext();
 
         if(role.equals(Role.USER)) {
-            sessionCtx.setCurrentUserId(Long.parseLong(id));
+            threadCtx.setCurrentUserId(Long.parseLong(id));
         } else if(role.equals(Role.MERCHANT)) {
-            sessionCtx.setCurrentMerchantId(Long.parseLong(id));
+            threadCtx.setCurrentMerchantId(Long.parseLong(id));
+        } else if(role.equals(Role.BRANCH_COUNTER)) {
+            threadCtx.setCurrentMerchantCounterId(id);
         } else {
             throw new IllegalArgumentException("Unknown role: " + role + " specified");
         }

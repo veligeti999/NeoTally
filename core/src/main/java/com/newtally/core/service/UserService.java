@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class UserService extends  AbstractService{
+public class UserService extends  AbstractService implements IAuthenticator {
 
     public UserService(EntityManager em, ThreadContext ctx) {
         super(em, ctx);
@@ -186,11 +186,7 @@ public class UserService extends  AbstractService{
         return null;
     }
 
-    public Wallet getCurrentUserWalletOfCoin(CoinType coinType) {
-        return null;
-    }
-
-    public boolean authenticateUser(String id, String password) {
+    public boolean authenticate(String id, String password) {
         Query query = em.createNativeQuery("SELECT  count(*) FROM user " +
                 "WHERE id = :id AND password = :password");
 

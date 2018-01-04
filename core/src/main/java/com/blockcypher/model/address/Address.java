@@ -107,6 +107,12 @@ public class Address {
     public Address() {
     }
 
+    public Address(String address, String publicAddress, String privateAddress ) {
+        this.privateAddress = privateAddress;
+        this.publicAddress = publicAddress;
+        this.address = address;
+    }
+
     public String getAddress() {
         return address;
     }
