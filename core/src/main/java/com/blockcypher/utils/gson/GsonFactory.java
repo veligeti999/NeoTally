@@ -19,7 +19,7 @@ public final class GsonFactory {
     static {
         GsonBuilder builder = new GsonBuilder();
         //builder.registerTypeAdapter(DateTime.class, new DateTimeTypeConverter());
-        builder.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES);
+//        builder.se.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES);
         GSON = builder.create();
         GsonBuilder builderPretty = new GsonBuilder();
         //builderPretty.registerTypeAdapter(DateTime.class, new DateTimeTypeConverter());
