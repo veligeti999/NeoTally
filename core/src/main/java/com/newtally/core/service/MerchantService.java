@@ -30,9 +30,9 @@ public class MerchantService extends AbstractService implements IAuthenticator {
         trn.begin();
         try {
             Query query = em.createNativeQuery("INSERT INTO merchant ( " +
-                    "id, name, owner_name, password, license_id, phone, email, " +
+                    "id, name, owner_name, password, pan, phone, email, " +
                     "address, city, state, zip, country, active) " +
-                    "VALUES( :id, :name, :owner_name, :password, :license_id, :phone, " +
+                    "VALUES( :id, :name, :owner_name, :password, :pan, :phone, " +
                     ":email, :address, :city, :state, :zip, :country, false)");
 
             merchant.setId(nextId());
@@ -65,7 +65,7 @@ public class MerchantService extends AbstractService implements IAuthenticator {
     private void setCreateParams(Merchant merchant, Query query) {
         query.setParameter("name", merchant.getName());
         query.setParameter("owner_name", merchant.getOwnerName());
-        query.setParameter("license_id", merchant.getLicenseId());
+        query.setParameter("pan", merchant.getPan());
         query.setParameter("password", merchant.getPassword());
 
         setUpdateParams(merchant, query);
@@ -118,7 +118,7 @@ public class MerchantService extends AbstractService implements IAuthenticator {
 
     private Merchant getMerchantWithWhereClause(String whereClause, Map params) {
         Query query = em.createNativeQuery("SELECT  id, name, owner_name, " +
-                "license_id, phone, email, address, " +
+                "pan, phone, email, address, " +
                 "city, state, zip, country FROM merchant WHERE id = :id");
 
         setParams(params, query);
@@ -129,7 +129,7 @@ public class MerchantService extends AbstractService implements IAuthenticator {
         merchant.setId( ((BigInteger) fields[0]).longValue());
         merchant.setName((String) fields[1]);
         merchant.setOwnerName((String) fields[2]);
-        merchant.setLicenseId((String) fields[3]);
+        merchant.setPan((String) fields[3]);
         merchant.setPhone((String) fields[4]);
         merchant.setEmail((String) fields[5]);
         merchant.setAddress(readAddress(6, fields));
@@ -250,7 +250,7 @@ public class MerchantService extends AbstractService implements IAuthenticator {
 
     List<MerchantBranch> getBranchesOfWhereClause(
             String whereClause, Map<String, Object> params) {
-        Query query = em.createNativeQuery("SELECT  id, name, manager_name, " +
+        Query query = em.createNativeQuery("SELECT  id, merchant_id, name, manager_name, " +
                 "head_quarter, phone, email, address, city, state, zip, country " +
                 "FROM merchant_branch " + whereClause);
 
@@ -264,12 +264,13 @@ public class MerchantService extends AbstractService implements IAuthenticator {
 
             MerchantBranch branch = new MerchantBranch();
             branch.setId( ((BigInteger) fields[0]).longValue());
-            branch.setName((String) fields[1]);
-            branch.setManagerName((String) fields[2]);
-            branch.setHeadQuarter((Boolean) fields[3]);
-            branch.setPhone((String) fields[4]);
-            branch.setEmail((String) fields[5]);
-            branch.setAddress(readAddress(6, fields));
+            branch.setMerchantId( ((BigInteger) fields[1]).longValue());
+            branch.setName((String) fields[2]);
+            branch.setManagerName((String) fields[3]);
+            branch.setHeadQuarter((Boolean) fields[4]);
+            branch.setPhone((String) fields[5]);
+            branch.setEmail((String) fields[6]);
+            branch.setAddress(readAddress(7, fields));
 
             branches.add(branch);
         }

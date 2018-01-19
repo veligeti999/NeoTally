@@ -11,12 +11,12 @@ import java.util.List;
 
 public class MerchantResourceTest extends AbstractResourceTest {
 
-    @Test
+//    @Test
     public void registerMerchant() {
 
         Merchant merchant = new Merchant();
         merchant.setName(System.currentTimeMillis() + "");
-        merchant.setLicenseId(System.currentTimeMillis() + "");
+        merchant.setPan(System.currentTimeMillis() + "");
         merchant.setOwnerName("vinod");
         merchant.setPassword("test123");
         merchant.setEmail("help@gmail.com");
@@ -59,7 +59,7 @@ public class MerchantResourceTest extends AbstractResourceTest {
     private void assertMerchant(Merchant expected, Merchant actual) {
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getEmail(), actual.getEmail());
-        assertEquals(expected.getLicenseId(), actual.getLicenseId());
+        assertEquals(expected.getPan(), actual.getPan());
         assertEquals(expected.getName(), actual.getName());
         assertEquals(expected.getOwnerName(), actual.getOwnerName());
         assertEquals(expected.getPhone(), actual.getPhone());

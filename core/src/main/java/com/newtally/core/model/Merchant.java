@@ -4,7 +4,7 @@ public class Merchant {
     private long id;
     private String name;
     private String password;
-    private String licenseId;
+    private String pan;
     private String ownerName;
     private String phone;
     private String email;
@@ -37,12 +37,12 @@ public class Merchant {
         this.password = password;
     }
 
-    public String getLicenseId() {
-        return licenseId;
+    public String getPan() {
+        return pan;
     }
 
-    public void setLicenseId(String licenseId) {
-        this.licenseId = licenseId;
+    public void setPan(String pan) {
+        this.pan = pan;
     }
 
     public String getOwnerName() {

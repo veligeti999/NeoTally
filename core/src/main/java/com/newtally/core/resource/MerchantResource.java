@@ -1,6 +1,7 @@
 package com.newtally.core.resource;
 
 import com.newtally.core.ServiceFactory;
+import com.newtally.core.dto.ResponseDto;
 import com.newtally.core.model.MerchantBranch;
 import com.newtally.core.model.Role;
 import com.newtally.core.model.Merchant;
@@ -32,8 +33,13 @@ public class MerchantResource extends BaseResource {
         Merchant merchant = gson.fromJson(new InputStreamReader(req.getInputStream()), Merchant.class);
 
         merchant = mrctServ.registerMerchant(merchant);
+        
+        ResponseDto dto=new ResponseDto();
+        dto.setResponse_code(0);
+        dto.setResponse_message("Merchant has been registered successfully");
+        dto.setResponse_data(merchant);
 
-        return Response.ok(gson.toJson(merchant)).build();
+        return Response.ok(gson.toJson(dto)).build();
     }
 
     @RolesAllowed({Role.MERCHANT})
@@ -44,8 +50,12 @@ public class MerchantResource extends BaseResource {
         Merchant merchant = gson.fromJson(req.getReader(), Merchant.class);
 
         mrctServ.updateCurrentMerchant(merchant);
+        
+        ResponseDto dto=new ResponseDto();
+        dto.setResponse_code(0);
+        dto.setResponse_message("Successfully updated the current merchant details");
 
-        return Response.ok().build();
+        return Response.ok(gson.toJson(dto)).build();
     }
 
     @RolesAllowed({Role.MERCHANT})
@@ -54,8 +64,13 @@ public class MerchantResource extends BaseResource {
     public Response getCurrentMerchant(@Context HttpServletRequest req) throws IOException {
 
         Merchant merchant = mrctServ.getCurrentMerchant();
+        
+        ResponseDto dto=new ResponseDto();
+        dto.setResponse_code(0);
+        dto.setResponse_message("Successfully get the current merchant details");
+        dto.setResponse_data(merchant);
 
-        return Response.ok(gson.toJson(merchant)).build();
+        return Response.ok(gson.toJson(dto)).build();
     }
 
     @RolesAllowed( {Role.SYSTEM, Role.USER_ADMIN})

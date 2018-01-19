@@ -1,6 +1,7 @@
 package com.newtally.core.resource;
 
 import com.newtally.core.ServiceFactory;
+import com.newtally.core.model.Merchant;
 import com.newtally.core.model.Role;
 import com.newtally.core.model.User;
 import com.newtally.core.service.UserService;
@@ -12,7 +13,10 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 @Path("/users")
 public class UserResource extends BaseResource {
@@ -26,8 +30,7 @@ public class UserResource extends BaseResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response registerUser(@Context HttpServletRequest req) throws IOException {
 
-        User user = gson.fromJson(req.getReader(), User.class);
-
+        User user = gson.fromJson(new InputStreamReader(req.getInputStream()), User.class);
         user = usrService.registerUser(user);
 
         return Response.ok(user).build();
@@ -88,5 +91,4 @@ public class UserResource extends BaseResource {
 
         return Response.ok().build();
     }
-
 }

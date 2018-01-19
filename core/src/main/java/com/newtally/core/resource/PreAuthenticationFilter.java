@@ -142,7 +142,10 @@ public class PreAuthenticationFilter implements ContainerRequestFilter {
             threadCtx.setCurrentMerchantId(Long.parseLong(id));
         } else if(role.equals(Role.BRANCH_COUNTER)) {
             threadCtx.setCurrentMerchantCounterId(id);
-        } else {
+        } else if(role.equals(Role.BRANCH_MANAGER)) {
+            threadCtx.setMerchantBranchId(Long.parseLong(id));
+        } 
+        else {
             throw new IllegalArgumentException("Unknown role: " + role + " specified");
         }
     }

@@ -30,9 +30,17 @@ public class ThreadContext {
     public long getCurrentBranchId() {
         return mrctBranchId.get();
     }
+    
+    public String getCurrentCounterCode() {
+        return mrctCtrId.get();
+    }
 
     public void setCurrentMerchantCounterId(String mrctCtrId) {
         this.mrctCtrId.set(mrctCtrId);
+    }
+    
+    public void setMerchantBranchId(Long mrctBranchId) {
+        this.mrctBranchId.set(mrctBranchId);
     }
 
     /**

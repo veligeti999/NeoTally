@@ -21,8 +21,8 @@ public class MerchantBranchService extends AbstractService implements IAuthentic
 
     public MerchantBranch getCurrentBranch() {
         return ServiceFactory.getInstance().getMerchantService()
-                .getBranchesOfWhereClause("WHERE branch_id = :branchId",
-                CollectionUtil.getSingleEntryMap("branch_id", ctx.getCurrentBranchId())).get(0);
+                .getBranchesOfWhereClause("WHERE id = :branchId",
+                CollectionUtil.getSingleEntryMap("branchId", ctx.getCurrentBranchId())).get(0);
     }
 
     public MerchantCounter registerCounter(MerchantCounter counter) {
