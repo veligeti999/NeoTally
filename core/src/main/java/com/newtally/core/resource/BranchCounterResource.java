@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -27,12 +28,14 @@ import com.newtally.core.model.MerchantCounter;
 import com.newtally.core.model.Order;
 import com.newtally.core.model.Role;
 import com.newtally.core.service.BranchCounterService;
+import com.newtally.core.service.OrderInvoiceService;
 
 
 @Path("/counters")
 public class BranchCounterResource extends BaseResource{
     
     private final BranchCounterService counterServ = ServiceFactory.getInstance().getMerchantCounterService();
+    private final OrderInvoiceService orderInvoiceService = ServiceFactory.getInstance().getOrderInvoiceService();
 
     @RolesAllowed({Role.BRANCH_COUNTER})
     @GET
@@ -49,9 +52,9 @@ public class BranchCounterResource extends BaseResource{
         return Response.ok(gson.toJson(dto)).build();
     }
     
-    @RolesAllowed({Role.BRANCH_COUNTER})
+    @RolesAllowed({Role.BRANCH_MANAGER, Role.MERCHANT})
     @GET
-    @Path("/<id>")
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response getCounter(@PathParam("id") long id) throws IOException {
@@ -97,7 +100,7 @@ public class BranchCounterResource extends BaseResource{
 
         Order order = gson_pretty.fromJson(new InputStreamReader(req.getInputStream()), Order.class);
         
-        order=counterServ.createOrder(order);
+        order=orderInvoiceService.createOrder(order);
        
         
         ResponseDto dto=new ResponseDto();
@@ -124,6 +127,23 @@ public class BranchCounterResource extends BaseResource{
         dto.setResponse_code(0);
         dto.setResponse_message("QR code has been generated successfully");
         dto.setResponse_data(orders);
+
+        return Response.ok(gson.toJson(dto)).build();
+    }
+    
+    @RolesAllowed({Role.BRANCH_COUNTER})
+    @PUT
+    @Path("/order/{id}/cancel")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response cancelOrder(@PathParam("id") long id) throws IOException {
+
+       
+        orderInvoiceService.cancelOrders(id);
+        
+        ResponseDto dto=new ResponseDto();
+        dto.setResponse_code(0);
+        dto.setResponse_message("Cancelled the Order");
 
         return Response.ok(gson.toJson(dto)).build();
     }

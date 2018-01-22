@@ -1,9 +1,11 @@
 package com.newtally.core;
 
+import com.newtally.core.resource.BaseResource;
 import com.newtally.core.resource.ThreadContext;
 import com.newtally.core.service.MerchantBranchService;
 import com.newtally.core.service.BranchCounterService;
 import com.newtally.core.service.MerchantService;
+import com.newtally.core.service.OrderInvoiceService;
 import com.newtally.core.service.UserService;
 
 import javax.persistence.EntityManager;
@@ -21,6 +23,7 @@ public class ServiceFactory {
     private final MerchantService merchantService;
     private final MerchantBranchService branchService;
     private final BranchCounterService counterService;
+    private final OrderInvoiceService orderInvoiceService;
 
     private ServiceFactory(EntityManagerFactory emf) {
         this.emf = emf;
@@ -31,6 +34,7 @@ public class ServiceFactory {
         counterService = new BranchCounterService(em, sessionContext);
         branchService = new MerchantBranchService(em, sessionContext);
         merchantService = new MerchantService(em, sessionContext);
+        orderInvoiceService= new OrderInvoiceService(em, sessionContext);
     }
 
     static synchronized void initializeFactory(EntityManagerFactory emf) {
@@ -67,5 +71,8 @@ public class ServiceFactory {
 
     public BranchCounterService getMerchantCounterService() {
         return counterService;
+    }
+    public OrderInvoiceService getOrderInvoiceService() {
+        return orderInvoiceService;
     }
 }

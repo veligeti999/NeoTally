@@ -75,7 +75,7 @@ public class MerchantResource extends BaseResource {
 
     @RolesAllowed( {Role.SYSTEM, Role.USER_ADMIN})
     @GET
-    @Path("/<id>")
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getMerchantById(@PathParam("id") long id) throws IOException {
 
@@ -97,7 +97,7 @@ public class MerchantResource extends BaseResource {
 
     @RolesAllowed( {Role.SYSTEM, Role.USER_ADMIN})
     @PUT
-    @Path("/<id>/changestatus?active=<active>")
+    @Path("/{id}/changestatus?active=<active>")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response setMerchantState(@PathParam("id") long id, @QueryParam("active") boolean isActive) {
 
@@ -113,8 +113,13 @@ public class MerchantResource extends BaseResource {
     public Response getBranches() throws IOException {
 
         List<MerchantBranch> branches = mrctServ.getAllBranches();
+        
+        ResponseDto dto=new ResponseDto();
+        dto.setResponse_code(0);
+        dto.setResponse_message("Successfully get the branches");
+        dto.setResponse_data(branches);
 
-        return Response.ok(gson.toJson(branches)).build();
+        return Response.ok(gson.toJson(dto)).build();
     }
 
     @RolesAllowed({Role.MERCHANT})

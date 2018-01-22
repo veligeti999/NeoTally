@@ -193,6 +193,7 @@ public class MerchantService extends AbstractService implements IAuthenticator {
 
         MerchantCounter counter = new MerchantCounter();
         counter.setPhone(branch.getPhone());
+        counter.setEmail(branch.getEmail());
         counter.setBranchId(branch.getId());
 
         ServiceFactory.getInstance().getMerchantBranchService()._registerCounter(counter);

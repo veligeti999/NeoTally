@@ -2,6 +2,7 @@ package com.newtally.core.resource;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
@@ -10,6 +11,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -56,6 +58,23 @@ public class MerchantBranchResource extends BaseResource{
         dto.setResponse_code(0);
         dto.setResponse_message("successfully get the branch details");
         dto.setResponse_data(branch);
+
+        return Response.ok(gson.toJson(dto)).build();
+    }
+    
+    @RolesAllowed({Role.MERCHANT})
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getBranchCounters(@PathParam("id") long id) throws IOException {
+
+        System.out.println("branchId"+id);
+        List<MerchantCounter> counters = branchServ.getCounters(id);
+        
+        ResponseDto dto=new ResponseDto();
+        dto.setResponse_code(0);
+        dto.setResponse_message("successfully get the branch counters");
+        dto.setResponse_data(counters);
 
         return Response.ok(gson.toJson(dto)).build();
     }

@@ -8,6 +8,7 @@ public class CounterDto {
     private String merchant_name;
     private String branch_name;
     private PhysicalAddress address;
+    private String email;
     public Long getCounter_id() {
         return counter_id;
     }
@@ -38,7 +39,11 @@ public class CounterDto {
     public void setAddress(PhysicalAddress address) {
         this.address = address;
     }
-    
-    
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
 }

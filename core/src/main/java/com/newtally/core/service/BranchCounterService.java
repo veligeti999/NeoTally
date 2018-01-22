@@ -59,7 +59,7 @@ public class BranchCounterService extends AbstractService implements IAuthentica
     
     List<MerchantCounter> getCountersOfWhereClause(
             String whereClause, Map<String, Object> params) {
-        Query query = em.createNativeQuery("SELECT  id, branch_id, password, phone, active " +
+        Query query = em.createNativeQuery("SELECT  id, branch_id, password, phone, email, active " +
                 "FROM branch_counter " + whereClause);
 
         setParams(params, query);
@@ -75,6 +75,7 @@ public class BranchCounterService extends AbstractService implements IAuthentica
             counter.setBranchId( ((BigInteger) fields[1]).longValue());
             counter.setPassword((String) fields[2]); 
             counter.setPhone((String) fields[3]);
+            counter.setEmail((String) fields[4]);
            
             
             counters.add(counter);
@@ -94,6 +95,7 @@ public class BranchCounterService extends AbstractService implements IAuthentica
         counterDto.setCounter_id(counter.getId());
         counterDto.setCounter_name("Counter #"+counter.getId());
         counterDto.setMerchant_name(merchant.getName());
+        counterDto.setEmail(counter.getEmail());
          return counterDto;       
     }
 
@@ -121,38 +123,6 @@ public class BranchCounterService extends AbstractService implements IAuthentica
             currencies.add(currency);
         }
         return currencyDiscountDtos;
-    }
-
-    public Order createOrder(Order order) {
-        EntityTransaction trn = em.getTransaction();
-        trn.begin();
-        try {
-            String q="INSERT INTO order_invoice ( " +
-                    "id, wallet_address, currency_amount, discount_amount, currency_id, currency_code, counter_id, status) " +
-                    "VALUES( :id, :wallet_address, :currency_amount, :discount_amount, :currency_id, :currency_code, :counter_id, :status)";
-            Query query = em.createNativeQuery(q);
-
-            order.setId(nextId());
-            setCreateParams(order, query);
-            query.executeUpdate();
-            trn.commit();
-            order.setQrCode("http://newTally.com/paymentOrder/qr_code/werwqerasd");
-            return order;
-        } catch (Exception e) {
-            trn.rollback();
-            throw e;
-        }
-        
-    }
-    private void setCreateParams(Order order, Query query) {
-        query.setParameter("id", order.getId());
-        query.setParameter("wallet_address", "asdfsadf124124124124");
-        query.setParameter("currency_amount", order.getCurrencyAmount());
-        query.setParameter("discount_amount", order.getDiscountAmount());
-        query.setParameter("currency_id", order.getCurrencyId());
-        query.setParameter("currency_code", order.getCurrencyCode());
-        query.setParameter("status", OrderStatus.Pending.toString());
-        query.setParameter("counter_id", order.getCounterId());
     }
 
     public List<Order> getOrders(HashMap<String, Object> input) {

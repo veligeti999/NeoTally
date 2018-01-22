@@ -47,14 +47,15 @@ public class MerchantBranchService extends AbstractService implements IAuthentic
     MerchantCounter _registerCounter(MerchantCounter counter) {
 
         Query query = em.createNativeQuery("INSERT INTO branch_counter ( " +
-                "branch_id, password, phone, active) " +
-                "VALUES( :branch_id, :password, :phone, true )");
+                "branch_id, password, phone, email, active) " +
+                "VALUES( :branch_id, :password, :phone, :email true )");
 
         counter.setPassword(generateNewPassword());
 
         query.setParameter("branch_id", counter.getBranchId());
         query.setParameter("phone", counter.getPhone());
         query.setParameter("password", counter.getPassword());
+        query.setParameter("email", counter.getEmail());
 
         query.executeUpdate();
 
@@ -62,23 +63,29 @@ public class MerchantBranchService extends AbstractService implements IAuthentic
     }
 
 
-    public List<MerchantCounter> getCounters() {
-        Query query = em.createNativeQuery("SELECT  branch_id, phone, password " +
+    public List<MerchantCounter> getCounters(Long branchId) {
+        Query query = em.createNativeQuery("SELECT  branch_id, phone, email, password, id" +
                 " FROM branch_counter WHERE branch_id = :branch_id");
-
+        
+        query.setParameter("branch_id", branchId);
         List rs = query.getResultList();
 
-        List<MerchantCounter> branches = new ArrayList<>();
+        List<MerchantCounter> counters = new ArrayList<>();
+        System.out.println("size"+rs.size());
         for(Object ele : rs) {
             Object [] fields = (Object[]) ele;
 
             MerchantCounter counter = new MerchantCounter();
             counter.setBranchId(((BigInteger) fields[0]).longValue());
             counter.setPhone((String) fields[1]);
-            counter.setPassword((String) fields[2]);
+            counter.setEmail((String) fields[2]);
+            counter.setPassword((String) fields[3]);
+            counter.setId(((BigInteger) fields[4]).longValue());
+            counters.add(counter);
+            
         }
 
-        return branches;
+        return counters;
 
     }
 
