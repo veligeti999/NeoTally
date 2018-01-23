@@ -9,11 +9,15 @@ import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
+
+import org.w3c.dom.css.Counter;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class MerchantService extends AbstractService implements IAuthenticator {
 
@@ -166,9 +170,10 @@ public class MerchantService extends AbstractService implements IAuthenticator {
 
 
     private void setBranchParams(MerchantBranch branch, Query query) {
+        System.out.println(branch);
         query.setParameter("id", branch.getId());
         query.setParameter("merchant_id", branch.getMerchantId());
-        query.setParameter("head_quarter", branch.isHeadQuarter() ? true : null);
+        query.setParameter("head_quarter", branch.isHeadQuarter() ? true : false);
 
         query.setParameter("name", branch.getName());
         query.setParameter("phone", branch.getPhone());
@@ -289,5 +294,37 @@ public class MerchantService extends AbstractService implements IAuthenticator {
         BigInteger count = (BigInteger) query.getSingleResult();
 
         return count.intValue() == 1;
+    }
+
+    public List<Order> getAllOrders() {
+        List<MerchantBranch> branches=getAllBranches();
+        List<Long> counterIds=new ArrayList<>();
+        
+        for(MerchantBranch branch:branches) {
+            List<MerchantCounter> counters=ServiceFactory.getInstance().getMerchantBranchService().getCounters(branch.getId());
+            counterIds.addAll(counters.stream()
+                    .map(MerchantCounter::getId).collect(Collectors.toList()));
+        }
+        System.out.println("counterIds:::"+counterIds.size());
+        Query queryForOrders = em.createNativeQuery("SELECT  id, currency_amount, discount_amount,currency_id, currency_code, status FROM order_invoice " +
+                "WHERE counter_id IN :counterIds");
+        queryForOrders.setParameter("counterIds", counterIds);
+        List rs = queryForOrders.getResultList();
+        System.out.println(rs.size());
+        List<Order> orders = new ArrayList<>();
+        for(Object ele : rs) {
+            Object [] fields = (Object[]) ele;
+
+            Order order = new Order();
+            order.setId(((BigInteger) fields[0]).longValue());
+            order.setCurrencyAmount((Double)fields[1]);
+            order.setDiscountAmount((Double)fields[2]);
+            order.setCurrencyId((Integer)fields[3]);
+            order.setCurrencyCode((String)fields[4]);
+            order.setStatus(OrderStatus.valueOf((String)fields[5]));
+            
+            orders.add(order);
+        }
+        return orders;
     }
 }

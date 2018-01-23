@@ -48,7 +48,7 @@ public class MerchantBranchService extends AbstractService implements IAuthentic
 
         Query query = em.createNativeQuery("INSERT INTO branch_counter ( " +
                 "branch_id, password, phone, email, active) " +
-                "VALUES( :branch_id, :password, :phone, :email true )");
+                "VALUES( :branch_id, :password, :phone, :email, true )");
 
         counter.setPassword(generateNewPassword());
 
@@ -71,7 +71,6 @@ public class MerchantBranchService extends AbstractService implements IAuthentic
         List rs = query.getResultList();
 
         List<MerchantCounter> counters = new ArrayList<>();
-        System.out.println("size"+rs.size());
         for(Object ele : rs) {
             Object [] fields = (Object[]) ele;
 
