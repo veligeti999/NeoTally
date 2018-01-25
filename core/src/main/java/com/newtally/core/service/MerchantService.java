@@ -3,6 +3,7 @@ package com.newtally.core.service;
 import com.newtally.core.util.CollectionUtil;
 import com.newtally.core.ServiceFactory;
 import com.newtally.core.model.*;
+import com.newtally.core.resource.NewTallyRandomNumberGenerator;
 import com.newtally.core.resource.ThreadContext;
 
 import javax.annotation.security.RolesAllowed;
@@ -10,11 +11,14 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 
+import org.bitcoinj.crypto.MnemonicCode;
+import org.bitcoinj.crypto.MnemonicException.MnemonicLengthException;
 import org.w3c.dom.css.Counter;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -26,7 +30,7 @@ public class MerchantService extends AbstractService implements IAuthenticator {
         super(em, ctx);
     }
 
-    public Merchant registerMerchant(Merchant merchant) {
+    public Merchant registerMerchant(Merchant merchant) throws Exception {
         // TODO: validate merchant object
         // after that validate with official merchant license api
 
@@ -39,10 +43,14 @@ public class MerchantService extends AbstractService implements IAuthenticator {
                     "VALUES( :id, :name, :owner_name, :password, :pan, :phone, " +
                     ":email, :address, :city, :state, :zip, :country, false)");
 
-            merchant.setId(nextId());
+            long merchantId = nextId();
+            merchant.setId(merchantId);
             setCreateParams(merchant, query);
-
             query.executeUpdate();
+            //generating mnemonic and setting it to the merchant
+            //TO-DO -> we need to store the encrypted the mnemonic string in the DB
+            List<String> mnemonicWords= this.generateMnemonic();
+            this.setMnemonicForMerchant(String.join(",", mnemonicWords), merchantId);
 
             MerchantBranch branch = new MerchantBranch();
             branch.setMerchantId(merchant.getId());
@@ -327,4 +335,29 @@ public class MerchantService extends AbstractService implements IAuthenticator {
         }
         return orders;
     }
+
+    /**
+     * Setting mnemonic for a merchant during merchant registration.This is where the entire
+     * tree of keys get generated from.
+     * @param mnemonic
+     * @param merchantId
+     */
+	public void setMnemonicForMerchant(String mnemonic, long merchantId) {
+		Query query = em.createNativeQuery("insert into mnemonic(mnemonic_id, mnemonic_code, created_on, merchant_id)"
+				+ "values(:mnemonic_id, :mnemonic_code, :created_on, :merchant_id)");
+		query.setParameter("mnemonic_id", nextId());
+		query.setParameter("mnemonic_code", mnemonic);
+		query.setParameter("created_on", new Date().getTime());
+		query.setParameter("merchant_id", merchantId);
+		query.executeUpdate();
+	}
+
+    /**
+     * Generating 24 mnemonic words during merchant registration
+     * @return
+     * @throws MnemonicLengthException
+     */
+	private List<String> generateMnemonic() throws MnemonicLengthException {
+		return MnemonicCode.INSTANCE.toMnemonic(new NewTallyRandomNumberGenerator().getRandomNumber());
+	}
 }

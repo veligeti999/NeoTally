@@ -29,7 +29,7 @@ public class MerchantResource extends BaseResource {
     @Path("/register")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response registerMerchant(@Context HttpServletRequest req) throws IOException {
+    public Response registerMerchant(@Context HttpServletRequest req) throws Exception {
 
         Merchant merchant = gson.fromJson(new InputStreamReader(req.getInputStream()), Merchant.class);
 

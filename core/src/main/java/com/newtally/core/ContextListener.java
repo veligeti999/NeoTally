@@ -1,14 +1,12 @@
 package com.newtally.core;
 
-import com.mysql.cj.jdbc.MysqlDataSource;
-import com.mysql.cj.jdbc.MysqlDataSourceFactory;
-
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
-import java.sql.Connection;
+
+import org.bitcoinj.store.BlockStoreException;
 
 @WebListener
 public class ContextListener implements ServletContextListener {
@@ -19,7 +17,12 @@ public class ContextListener implements ServletContextListener {
 
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("mysqlpersistence");
 
-        ServiceFactory.initializeFactory(emf);
+        try {
+			ServiceFactory.initializeFactory(emf);
+		} catch (BlockStoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     @Override
