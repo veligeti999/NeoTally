@@ -128,15 +128,16 @@
 
                                                         <thead>
                                                             <tr>
-                                                                <th>NAME</th>
-                                                                <th>MOBILE</th>
-                                                                <th>CITY</th>
-                                                                <th>COUNTERS</th>
-<th></th>
+                                                                <th>Name</th>
+                                                                <th>Manager</th>
+                                                                <th>Phone</th>
+                                                                <th>Email</th>
+                                                                <th>Head quaters?</th>
+                                                                <th>Actions</th>
                                                             </tr>
                                                         </thead>
 
-                                                        <tbody>
+                                                        <!-- <tbody>
                                                             <tr>
                                                                 <td>Secendrabad Branch</td>
                                                                 <td>9876543210</td>
@@ -153,7 +154,7 @@
                                                             </tr>
                                                            
                                                       
-                                                        </tbody>
+                                                        </tbody> -->
                                                     </table>
 
   </div>
@@ -206,11 +207,54 @@
                                             <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
                                             <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
                                             <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
-
+                                            <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.7/angular.min.js"></script>
                                             <script>
                                                 $(document).ready(function () {
-                                                    $('#branch_table').DataTable();
+                                                    var response={};
+                                                    $.ajax
+                                                          ({
+                                                            type: "GET",
+                                                            url: "http://localhost:8080/new-tally/rest/merchants/branches",
+                                                            dataType: 'json',
+                                                            async: false,
+                                                            success: function(result){
+                                                              console.log(result.response_data);
+                                                              response.data=result.response_data;
+                                                              $('#branch_table').DataTable(
+                                                                {
+                                                                "data": response.data,
+                                                                "columns": [
+                                                                    { "data": "name" },
+                                                                    { "data": "manager_name" },
+                                                                    { "data": "phone" },
+                                                                    { "data": "email" },
+                                                                    { "data": "head_quarter" },
+                                                                     { "data": function(data, type, full) {
+                                                                            return '<a class="btn btn-info btn-sm">' + 'Edit' + '</a>';
+                                                                          }
+                                                                      }
+                                                                ]
+                                                            });
+                                                            }
+                                                          });
+                                                    
+
                                                 });
+
+                                                window.onhashchange = function(e) {
+      e.preventDefault();
+      /*var oldURL = e.oldURL.split('#')[1];
+      var newURL = e.newURL.split('#')[1];
+
+      if (oldURL == 'share') {
+        $('.share').fadeOut();
+        
+        return false;
+      }*/
+      //console.log('old:'+oldURL+' new:'+newURL);
+    }
+
+
                                             </script>
                                             </body>
 
