@@ -130,15 +130,15 @@
       
       
   
-      <li>   Business Name : Jon Doe Foods </li>
+      <li id="merchant-name">   Business Name : Jon Doe Foods </li>
           
-              <li> Business PAN : ABCD123GG7</li>
+              <li id="merchant-pan"> Business PAN : ABCD123GG7</li>
           
-           <li> Business Name Contact : Doe Foods </li>
+           <li id="owner-name"> Business Name Contact : Doe Foods </li>
           
-           <li> Business Mobile : 98112345670 </li>
+           <li id="phone"> Business Mobile : 98112345670 </li>
           
-           <li> Business Email : JonDoeFoods@jondeo.com </li>
+           <li id="email"> Business Email : JonDoeFoods@jondeo.com </li>
           
        
           
@@ -222,6 +222,28 @@
   <script src="js/misc.js"></script>
   <script src="js/chart.js"></script>
   <script src="js/maps.js"></script>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script language="javascript" type="text/javascript">
+    function init() {
+      $.ajax
+          ({
+            type: "GET",
+            url: "http://localhost:8080/new-tally/rest/merchants",
+            dataType: 'json',
+            async: false,
+            success: function(result){
+              console.log(result);
+              document.getElementById("merchant-name").innerHTML = "Business Name : "+result.response_data.name;
+              document.getElementById("owner-name").innerHTML =  "Business Name Contact : "+ result.response_data.ownerName;
+              document.getElementById("merchant-pan").innerHTML = "Business PAN : "+result.response_data.pan;
+              document.getElementById("phone").innerHTML = "Business Name Contact : "+result.response_data.phone;
+              document.getElementById("email").innerHTML = "Business Email : "+result.response_data.email;
+
+            }
+          });
+    }
+    init();
+  </script>
 </body>
 
 </html>

@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="css/style.css" />
   <link rel="shortcut icon" href="images/favicon.png" />
   
-  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   
 </head>
 <body>
@@ -23,19 +23,20 @@
           <div class="card col-lg-4 mx-auto">
             <div class="card-body px-5 py-5">
               <h3 class="card-title text-left mb-3">Login</h3>
-              <form>
+              <form onsubmit="return false">
                 <div class="form-group">
-                  <input type="text" class="form-control p_input" placeholder="Username">
+                  <input type="text" id="username" class="form-control p_input" placeholder="Username">
                 </div>
                 <div class="form-group">
-                  <input type="text" class="form-control p_input" placeholder="Password">
+                  <input type="password" id="password" class="form-control p_input" placeholder="Password">
                 </div>
                 <div class="form-group d-flex align-items-center justify-content-between">
                   <div class="form-check"><label><input type="checkbox" class="form-check-input">Remember me</label></div>
+                  <a href="signup.html" class="signup">Signup</a>
                   <a href="#" class="forgot-pass">Forgot password</a>
                 </div>
                 <div class="text-center">
-                  <button type="submit" class="btn btn-primary btn-block enter-btn">LOG IN</button>
+                  <button class="btn btn-primary btn-block enter-btn" onclick="login()">LOG IN</button>
                 </div>
               
               </form>
@@ -45,6 +46,27 @@
       </div>
     </div>
   </div>
+  <script language="javascript" type="text/javascript">
+    function login() {
+      var username = document.getElementById('username').value;
+      var password = document.getElementById('password').value;
+      console.log(username+":::"+password)
+      $.ajax
+          ({
+            type: "GET",
+            url: "http://localhost:8080/new-tally/rest/merchants",
+            dataType: 'json',
+            async: false,
+            headers: {
+              "Authorization": "Basic " + btoa("mrct:"+username + ":" + password)
+            },
+            success: function(result){
+              console.log(result);
+              window.location.href = "index.html";
+            }
+          });
+    }
+  </script>
 
   
 </body>

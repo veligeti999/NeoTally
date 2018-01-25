@@ -47,8 +47,8 @@
         <nav class="bg-white sidebar sidebar-offcanvas" id="sidebar">
           <div class="user-info">
             <img src="images/face.jpg" alt="">
-            <p class="name">john Doe Foods</p>
-            <p class="designation">Manager</p>
+            <p id="merchant-name"class="name">john Doe Foods</p>
+            <p id="owner-name" class="designation">Manager</p>
             <span class="online"></span>
           </div>
           <ul class="nav">
@@ -221,6 +221,24 @@
   <script src="js/misc.js"></script>
   <script src="js/chart.js"></script>
   <script src="js/maps.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+   <script language="javascript" type="text/javascript">
+    function init() {
+      $.ajax
+          ({
+            type: "GET",
+            url: "http://localhost:8080/new-tally/rest/merchants",
+            dataType: 'json',
+            async: false,
+            success: function(result){
+              console.log(result);
+              document.getElementById("merchant-name").innerHTML = result.response_data.name;
+              document.getElementById("owner-name").innerHTML = result.response_data.ownerName;
+            }
+          });
+    }
+    init();
+  </script>
 </body>
 
 </html>

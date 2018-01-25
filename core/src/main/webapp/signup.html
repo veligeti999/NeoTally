@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>NewTally</title>
+  <link rel="stylesheet" href="node_modules/tally-font-awesome/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="node_modules/tally-perfect-scrollbar/dist/css/perfect-scrollbar.min.css" />
+  <link rel="stylesheet" href="node_modules/tally-flag-icon-css/css/flag-icon.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="shortcut icon" href="images/favicon.png" />
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  
+</head>
+<body>
+  <div class="container-scroller">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="content-wrapper full-page-wrapper d-flex align-items-center auth-pages">
+          <div class="card col-lg-4 mx-auto">
+            <div class="card-body px-5 py-5">
+              <h3 class="card-title text-left mb-3">Signup</h3>
+              <form onsubmit="return false">
+                <div class="form-group">
+                  <input type="text" id="name" class="form-control p_input" placeholder="Merchant Name">
+                </div>
+                 <div class="form-group">
+                  <input type="text" id="owner-name" class="form-control p_input" placeholder="Owner Name">
+                </div>
+                <div class="form-group">
+                  <input type="text" id="pan" class="form-control p_input" placeholder="PAN">
+                </div>
+                <div class="form-group">
+                  <input type="text" id="email" class="form-control p_input" placeholder="Email">
+                </div>
+                <div class="form-group">
+                  <input type="text" id="phone" class="form-control p_input" placeholder="Phone">
+                </div>
+                <div class="form-group">
+                  <input type="password" id="password" class="form-control p_input" placeholder="Password">
+                </div>
+                <div class="form-group">
+                  <input type="password" id="confirmPassword" class="form-control p_input" placeholder="Confirm Password">
+                </div>
+                <div class="form-group">
+                  <input type="text" id="address" class="form-control p_input" placeholder="Address">
+                </div>
+                 <div class="form-group">
+                  <input type="text" id="city" class="form-control p_input" placeholder="City">
+                </div>
+                 <div class="form-group">
+                  <select type="dropdown" id="state" class="form-control p_input" placeholder="State">
+                    <option value="">-State-</option>
+                    <option value="Andhra Pradesh">Andhra Pradesh</option>
+                    <option value="Telangana">Telangana</option>
+                  </select>
+                </div>
+                 <div class="form-group">
+                  <select type="text" id="country" class="form-control p_input" placeholder="Country">
+                    <option value="">-Country-</option>
+                    <option value="India">India</option>
+                    <option value="USA">United States of America</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <input type="text" id="zip" class="form-control p_input" placeholder="Zip Code">
+                </div>
+                <div class="text-center">
+                  <button class="btn btn-primary btn-block enter-btn" onclick="register()">Submit</button>
+                </div>
+              
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script language="javascript" type="text/javascript">
+    function register() {
+      var postJson={};
+      postJson.name = document.getElementById('name').value;
+      postJson.password = document.getElementById('password').value;
+      postJson.ownerName = document.getElementById('owner-name').value;
+      postJson.pan = document.getElementById('pan').value;
+      postJson.phone = document.getElementById('phone').value;
+      postJson.email = document.getElementById('email').value;
+      var address={};
+      address.address=document.getElementById('address').value;
+      address.city=document.getElementById('city').value;
+      address.state=document.getElementById('state').value;
+      address.country=document.getElementById('country').value;
+      address.zip=document.getElementById('zip').value;
+      postJson.address=address;
+      console.log(postJson);
+      $.ajax
+          ({
+            type: "POST",
+            url: "http://localhost:8080/new-tally/rest/merchants/register",
+            dataType: 'json',
+            async: false,
+            data: JSON.stringify(postJson),
+             headers: {
+              "Content-Type": "application/json"
+            },
+            success: function(result){
+              console.log(result);
+              window.location.href = "login.html";
+            }
+          });
+    }
+  </script>
+
+  
+</body>
+
+</html>
