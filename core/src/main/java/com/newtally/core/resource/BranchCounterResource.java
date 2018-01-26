@@ -147,4 +147,22 @@ public class BranchCounterResource extends BaseResource{
 
         return Response.ok(gson.toJson(dto)).build();
     }
+    
+    @RolesAllowed({Role.BRANCH_COUNTER})
+    @GET
+    @Path("/transactions")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response getTransactions(@Context HttpServletRequest req) throws IOException {
+
+       
+        List<Order> orders=counterServ.getAllOrders();
+        
+        ResponseDto dto=new ResponseDto();
+        dto.setResponse_code(0);
+        dto.setResponse_message("Cancelled the Order");
+        dto.setResponse_data(orders);
+
+        return Response.ok(gson.toJson(dto)).build();
+    }
 }

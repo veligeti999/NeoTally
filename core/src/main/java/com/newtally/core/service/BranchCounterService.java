@@ -160,4 +160,24 @@ public class BranchCounterService extends AbstractService implements IAuthentica
         counterDto.setMerchant_name(merchant.getName());
          return counterDto;  
     }
+
+    public List<Order> getAllOrders() {
+        Query query = em.createNativeQuery("SELECT  id, currency_amount, discount_amount,currency_id, "+
+                "currency_code, status FROM order_invoice where counter_id=:counter_id");
+            query.setParameter("counter_id", ctx.getCurrentCounterCode());
+            List rs = query.getResultList();
+            List<Order> orders=new ArrayList<>();
+            for(Object ele : rs) {
+            Object [] fields = (Object[]) ele;
+            Order order=new Order();
+            order.setId(((BigInteger) fields[0]).longValue());
+            order.setCurrencyAmount((Double)fields[1]);
+            order.setDiscountAmount((Double)fields[2]);
+            order.setCurrencyId((Integer)fields[3]);
+            order.setCurrencyCode((String)fields[4]);
+            order.setStatus(OrderStatus.valueOf((String)fields[5]));
+            orders.add(order);
+            }
+           return orders;
+    }
 }
