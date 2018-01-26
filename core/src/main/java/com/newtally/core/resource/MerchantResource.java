@@ -11,6 +11,7 @@ import com.newtally.core.service.MerchantService;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -172,6 +173,20 @@ public class MerchantResource extends BaseResource {
         dto.setResponse_code(0);
         dto.setResponse_message("Successfully get all transactions");
         dto.setResponse_data(orders);
+
+        return Response.ok(dto).build();
+    }
+    
+    @GET
+    @Path("/logout")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response logout(@Context HttpServletRequest req ) throws IOException {
+        HttpSession session = req.getSession(false);
+        session.invalidate();
+        System.out.println("logout");
+        ResponseDto dto=new ResponseDto();
+        dto.setResponse_code(0);
+        dto.setResponse_message("Successfully logout");
 
         return Response.ok(dto).build();
     }

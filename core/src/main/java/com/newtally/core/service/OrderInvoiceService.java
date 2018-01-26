@@ -27,7 +27,7 @@ public class OrderInvoiceService extends AbstractService{
             setCreateParams(order, query);
             query.executeUpdate();
             trn.commit();
-            order.setQrCode("http://newTally.com/paymentOrder/qr_code/werwqerasd");
+            order.setQrCode("http://localhost:8080/new-tally/images/dummy-QR.jpg");
             return order;
         } catch (Exception e) {
             trn.rollback();
@@ -38,7 +38,8 @@ public class OrderInvoiceService extends AbstractService{
     
     private void setCreateParams(Order order, Query query) {
         query.setParameter("id", order.getId());
-        query.setParameter("wallet_address", "asdfsadf124124124124");
+        order.setWalletAddress("mgmz3TqrTeUGUhr1JNe6M7Urdci9B3ygmt");
+        query.setParameter("wallet_address", order.getWalletAddress());
         query.setParameter("currency_amount", order.getCurrencyAmount());
         query.setParameter("discount_amount", order.getDiscountAmount());
         query.setParameter("currency_id", order.getCurrencyId());

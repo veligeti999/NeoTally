@@ -1,9 +1,9 @@
 package com.newtally.core.service;
 
 import com.newtally.core.util.CollectionUtil;
+import com.newtally.core.util.RandomNumberGenerator;
 import com.newtally.core.ServiceFactory;
 import com.newtally.core.model.*;
-import com.newtally.core.resource.NewTallyRandomNumberGenerator;
 import com.newtally.core.resource.ThreadContext;
 
 import javax.annotation.security.RolesAllowed;
@@ -49,8 +49,8 @@ public class MerchantService extends AbstractService implements IAuthenticator {
             query.executeUpdate();
             //generating mnemonic and setting it to the merchant
             //TO-DO -> we need to store the encrypted the mnemonic string in the DB
-            List<String> mnemonicWords= this.generateMnemonic();
-            this.setMnemonicForMerchant(String.join(",", mnemonicWords), merchantId);
+            //List<String> mnemonicWords= this.generateMnemonic();
+            //this.setMnemonicForMerchant(String.join(",", mnemonicWords), merchantId);
 
             MerchantBranch branch = new MerchantBranch();
             branch.setMerchantId(merchant.getId());
@@ -358,6 +358,6 @@ public class MerchantService extends AbstractService implements IAuthenticator {
      * @throws MnemonicLengthException
      */
 	private List<String> generateMnemonic() throws MnemonicLengthException {
-		return MnemonicCode.INSTANCE.toMnemonic(new NewTallyRandomNumberGenerator().getRandomNumber());
+		return MnemonicCode.INSTANCE.toMnemonic(new RandomNumberGenerator().getRandomNumber());
 	}
 }
