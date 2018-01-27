@@ -41,14 +41,19 @@ public class BranchCounterResource extends BaseResource{
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response currentCounter(@Context HttpServletRequest req) throws IOException {
-
-        CounterDto counter = counterServ.getCounterDetails();
+    public Response currentCounter(@Context HttpServletRequest req){
+        
         ResponseDto dto=new ResponseDto();
+        try {
+        CounterDto counter = counterServ.getCounterDetails();
         dto.setResponse_code(0);
-        dto.setResponse_message("Counter has been registered successfully");
+        dto.setResponse_message("Successfully get the counter details");
         dto.setResponse_data(counter);
-
+        } catch(Exception e) {
+            dto.setResponse_code(1);
+            dto.setResponse_message("Failed to get the counter details");
+            dto.setResponse_data(e.getLocalizedMessage());
+        }
         return Response.ok(gson.toJson(dto)).build();
     }
     
@@ -57,14 +62,19 @@ public class BranchCounterResource extends BaseResource{
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response getCounter(@PathParam("id") long id) throws IOException {
-
-        CounterDto counter = counterServ.getCounterById(id);
+    public Response getCounter(@PathParam("id") long id) {
+        
         ResponseDto dto=new ResponseDto();
+        try {
+        CounterDto counter = counterServ.getCounterById(id);
         dto.setResponse_code(0);
         dto.setResponse_message("Get Counter details in successfully");
         dto.setResponse_data(counter);
-
+        } catch(Exception e) {
+            dto.setResponse_code(1);
+            dto.setResponse_message("Failed to get the counter details");
+            dto.setResponse_data(e.getLocalizedMessage());
+        }
         return Response.ok(gson.toJson(dto)).build();
     }
     
@@ -73,8 +83,10 @@ public class BranchCounterResource extends BaseResource{
     @Path("/currency/discounts")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response calculateDiscount(@Context HttpServletRequest req) throws IOException {
-
+    public Response calculateDiscount(@Context HttpServletRequest req) {
+        
+        ResponseDto dto=new ResponseDto();
+        try {
         HashMap<String, Object> input = gson.fromJson(new InputStreamReader(req.getInputStream()), HashMap.class);
         
         
@@ -83,11 +95,14 @@ public class BranchCounterResource extends BaseResource{
         List<CurrencyDiscountDto> currencyDiscounts=counterServ.getCurrencyDiscounts((Double)input.get("payment_amount"));
         reponseJson.put("currency_discounts", currencyDiscounts);
         
-        ResponseDto dto=new ResponseDto();
         dto.setResponse_code(0);
         dto.setResponse_message("Payment Discounts has been generated successfully");
         dto.setResponse_data(reponseJson);
-
+        } catch(Exception e) {
+            dto.setResponse_code(1);
+            dto.setResponse_message("Failed to generate discount details");
+            dto.setResponse_data(e.getLocalizedMessage());
+        }
         return Response.ok(gson.toJson(dto)).build();
     }
     
@@ -96,18 +111,22 @@ public class BranchCounterResource extends BaseResource{
     @Path("/currency/qrCode")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response generateQRCode(@Context HttpServletRequest req) throws IOException {
-
+    public Response generateQRCode(@Context HttpServletRequest req) {
+        
+        ResponseDto dto=new ResponseDto();
+        try {
         Order order = gson_pretty.fromJson(new InputStreamReader(req.getInputStream()), Order.class);
         
         order=orderInvoiceService.createOrder(order);
-       
         
-        ResponseDto dto=new ResponseDto();
         dto.setResponse_code(0);
         dto.setResponse_message("QR code has been generated successfully");
         dto.setResponse_data(order);
-
+        } catch(Exception e) {
+            dto.setResponse_code(1);
+            dto.setResponse_message("Failed to generate QR code details");
+            dto.setResponse_data(e.getLocalizedMessage());
+        }
         return Response.ok(gson.toJson(dto)).build();
     }
     
@@ -116,18 +135,22 @@ public class BranchCounterResource extends BaseResource{
     @Path("/order/submit")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response submitOrder(@Context HttpServletRequest req) throws IOException {
-
+    public Response submitOrder(@Context HttpServletRequest req) {
+        
+        ResponseDto dto=new ResponseDto();
+        try {
         HashMap<String, Object> input = gson_pretty.fromJson(new InputStreamReader(req.getInputStream()), HashMap.class);
-        System.out.println(input);
         
         List<Order> orders=counterServ.getOrders(input);
         
-        ResponseDto dto=new ResponseDto();
         dto.setResponse_code(0);
-        dto.setResponse_message("QR code has been generated successfully");
+        dto.setResponse_message("order submitted successfully");
         dto.setResponse_data(orders);
-
+        } catch(Exception e) {
+            dto.setResponse_code(1);
+            dto.setResponse_message("Failed to submit the order");
+            dto.setResponse_data(e.getLocalizedMessage());
+        }
         return Response.ok(gson.toJson(dto)).build();
     }
     
@@ -136,15 +159,41 @@ public class BranchCounterResource extends BaseResource{
     @Path("/order/{id}/cancel")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response cancelOrder(@PathParam("id") long id) throws IOException {
+    public Response cancelOrder(@PathParam("id") long id) {
 
-       
+        ResponseDto dto=new ResponseDto();
+        try {
         orderInvoiceService.cancelOrders(id);
         
-        ResponseDto dto=new ResponseDto();
         dto.setResponse_code(0);
         dto.setResponse_message("Cancelled the Order");
+        } catch(Exception e) {
+            dto.setResponse_code(1);
+            dto.setResponse_message("Failed to cancel the order");
+            dto.setResponse_data(e.getLocalizedMessage());
+        }
+        return Response.ok(gson.toJson(dto)).build();
+    }
+    
+    @RolesAllowed({Role.BRANCH_COUNTER})
+    @GET
+    @Path("/transactions")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response getTransactions(@Context HttpServletRequest req){
 
+        ResponseDto dto=new ResponseDto();
+        try {
+        List<Order> orders=counterServ.getAllOrders();
+        
+        dto.setResponse_code(0);
+        dto.setResponse_message("Successfully get all transactions");
+        dto.setResponse_data(orders);
+        } catch(Exception e) {
+            dto.setResponse_code(1);
+            dto.setResponse_message("Failed to get the transactions");
+            dto.setResponse_data(e.getLocalizedMessage());
+        }
         return Response.ok(gson.toJson(dto)).build();
     }
 }

@@ -30,7 +30,7 @@
         </form>
         <ul class="navbar-nav ml-lg-auto d-flex align-items-center flex-row">
           <li class="nav-item">
-              <a class="nav-link profile-pic" href="login.html"><img class="rounded-circle" src="images/icons/logout.png" alt=""></a>
+              <a class="nav-link profile-pic" href="#" onClick="logout();"><img class="rounded-circle" src="images/icons/logout.png" alt=""></a>
           </li>
          
         </ul>
@@ -238,6 +238,33 @@
           });
     }
     init();
+    function logout() {
+      $.ajax
+          ({
+            type: "GET",
+            url: "http://localhost:8080/new-tally/rest/merchants/logout",
+            dataType: 'json',
+            async: false,
+            success: function(result){
+              console.log(result);
+              window.history.go(-window.history.length);
+              window.location.href = "login.html";
+            }
+          });
+          localStorage.removeItem('myCat');
+    }
+    window.onhashchange = function(e) {
+      e.preventDefault();
+      /*var oldURL = e.oldURL.split('#')[1];
+      var newURL = e.newURL.split('#')[1];
+
+      if (oldURL == 'share') {
+        $('.share').fadeOut();
+        
+        return false;
+      }*/
+      //console.log('old:'+oldURL+' new:'+newURL);
+    }
   </script>
 </body>
 

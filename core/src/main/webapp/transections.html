@@ -128,18 +128,17 @@
                                                         <thead>
                                                             <tr>
                                                                 <th>ORDER ID</th>
-                                                                <th>TXN ID</th>
-                                                                <th>AMOUNT</th>
                                                                 <th>CURRENCY</th>
+                                                                <th>AMOUNT</th>
+                                                                <th>DISCOUNT</th>
                                                               
-                                                                 <th>AMOUNT (INR)</th>
-                                                                 <th>TXN TIME</th>
-                                                                  <th>STATUS</th>
+                                                                 <th>STATUS</th>
+                                                                 <th>ACTIONS</th>
                                                                    
                                                             </tr>
                                                         </thead>
 
-                                                        <tbody>
+                                                       <!-- <tbody>
                                                             <tr>
                                                                 <td>Secendrabad Branch</td>
                                                                 <td>9876543210</td>
@@ -187,7 +186,7 @@
                                                            
                                                            
                                                       
-                                                        </tbody>
+                                                        </tbody>-->
                                                     </table>
 
   </div>
@@ -243,8 +242,51 @@
 
                                             <script>
                                                 $(document).ready(function () {
-                                                    $('#branch_table').DataTable();
+                                                    var response={};
+                                                    $.ajax
+                                                          ({
+                                                            type: "GET",
+                                                            url: "http://localhost:8080/new-tally/rest/merchants/transactions",
+                                                            dataType: 'json',
+                                                            async: false,
+                                                            success: function(result){
+                                                              console.log(result.response_data);
+                                                              response.data=result.response_data;
+                                                              $('#branch_table').DataTable(
+                                                                {
+                                                                "data": response.data,
+                                                                "columns": [
+                                                                    { "data": "id" },
+                                                                    { "data": "currencyCode" },
+                                                                    { "data": "currencyAmount" },
+                                                                    { "data": "discountAmount" },
+                                                                    { "data": "status" },
+                                                                     { "data": function(data, type, full) {
+                                                                            return '<img src="images/icons/right.png"> <span style="margin-left: 10px;"><button type="button" class="btn btn-primary mr-2">Details</button></span>';
+                                                                          }
+                                                                      }
+                                                                ]
+                                                            });
+                                                            }
+                                                          });
+                                                    
+
                                                 });
+
+                                                window.onhashchange = function(e) {
+      e.preventDefault();
+      /*var oldURL = e.oldURL.split('#')[1];
+      var newURL = e.newURL.split('#')[1];
+
+      if (oldURL == 'share') {
+        $('.share').fadeOut();
+        
+        return false;
+      }*/
+      //console.log('old:'+oldURL+' new:'+newURL);
+    }
+
+
                                             </script>
                                             </body>
 
