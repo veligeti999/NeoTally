@@ -34,31 +34,42 @@ public class MerchantBranchResource extends BaseResource{
     @Path("/counter/register")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response registerCounter(@Context HttpServletRequest req) throws IOException {
-
+    public Response registerCounter(@Context HttpServletRequest req) {
+        
+        ResponseDto dto=new ResponseDto();
+        try {
         MerchantCounter counter = gson.fromJson(new InputStreamReader(req.getInputStream()), MerchantCounter.class);
 
         counter = branchServ.registerCounter(counter);
         
-        ResponseDto dto=new ResponseDto();
         dto.setResponse_code(0);
         dto.setResponse_message("Counter has been registered successfully");
         dto.setResponse_data(counter);
-        return Response.ok(gson.toJson(counter)).build();
+        } catch(Exception e) {
+            dto.setResponse_code(1);
+            dto.setResponse_message("Failed to register counter");
+            dto.setResponse_data(e.getLocalizedMessage());
+        }
+        return Response.ok(gson.toJson(dto)).build();
     }
     
     @RolesAllowed({Role.BRANCH_MANAGER})
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getCurrentBranch(@Context HttpServletRequest req) throws IOException {
-
-        MerchantBranch branch = branchServ.getCurrentBranch();
+    public Response getCurrentBranch(@Context HttpServletRequest req) {
         
         ResponseDto dto=new ResponseDto();
+        try {
+        MerchantBranch branch = branchServ.getCurrentBranch();
+        
         dto.setResponse_code(0);
         dto.setResponse_message("successfully get the branch details");
         dto.setResponse_data(branch);
-
+        } catch(Exception e) {
+            dto.setResponse_code(1);
+            dto.setResponse_message("Failed to get the branch details");
+            dto.setResponse_data(e.getLocalizedMessage());
+        }
         return Response.ok(gson.toJson(dto)).build();
     }
     
@@ -66,16 +77,20 @@ public class MerchantBranchResource extends BaseResource{
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getBranchCounters(@PathParam("id") long id) throws IOException {
-
-        System.out.println("branchId"+id);
-        List<MerchantCounter> counters = branchServ.getCounters(id);
+    public Response getBranchCounters(@PathParam("id") long id) {
         
         ResponseDto dto=new ResponseDto();
+        try {
+        List<MerchantCounter> counters = branchServ.getCounters(id);
+        
         dto.setResponse_code(0);
         dto.setResponse_message("successfully get the branch counters");
         dto.setResponse_data(counters);
-
+        } catch(Exception e) {
+            dto.setResponse_code(1);
+            dto.setResponse_message("Failed to get the branch counters");
+            dto.setResponse_data(e.getLocalizedMessage());
+        }
         return Response.ok(gson.toJson(dto)).build();
     }
 }
