@@ -55,7 +55,6 @@ public class OrderInvoiceService extends AbstractService{
 		Wallet wallet = wallets.get(branchId);
 		DeterministicKey counterKey = wallet.freshReceiveKey();
 		String address = counterKey.toAddress(walletManager.getBitcoinConfiguration().getParams()).toString();
-		System.out.println(counterKey);
 		System.out.println(address);
 		query.setParameter("id", order.getId());
 		order.setWalletAddress(address);

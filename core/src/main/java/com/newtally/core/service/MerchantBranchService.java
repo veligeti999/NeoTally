@@ -132,4 +132,23 @@ public class MerchantBranchService extends AbstractService implements IAuthentic
         return count.intValue() == 1;
     }
 
+	public String getMerchantIdByBranchId(long branchId) {
+		Query query = em.createNativeQuery("select merchant_id from merchant_branch where id=:id");
+		query.setParameter("id", branchId);
+		return query.getResultList().get(0).toString();
+	}
+
+	/**
+	 * The branch number for a merchant starts with zero.This is used to created
+	 * the deterministic key-chain for each branch
+	 *
+	 * @param merchantId
+	 * @return
+	 */
+	public int getMaxBranchNoForAMerchant(long merchantId) {
+		Query query = em.createNativeQuery("select max(branch_no) from merchant_branch where merchant_id=:merchantId");
+		query.setParameter("merchantId", merchantId);
+		return (int) query.getResultList().get(0);
+	}
+
 }

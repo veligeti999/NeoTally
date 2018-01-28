@@ -2,10 +2,12 @@ package com.newtally.core.resource;
 
 import com.newtally.core.ServiceFactory;
 import com.newtally.core.model.Role;
+import com.newtally.core.service.BranchCounterService;
 import com.newtally.core.service.IAuthenticator;
 import com.newtally.core.service.MerchantBranchService;
 import com.newtally.core.service.MerchantService;
 import com.newtally.core.service.UserService;
+import com.newtally.core.wallet.WalletManager;
 
 import javax.annotation.Priority;
 import javax.annotation.security.DenyAll;
@@ -19,6 +21,10 @@ import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.ext.Provider;
+
+import org.bitcoinj.wallet.UnreadableWalletException;
+import org.bitcoinj.wallet.Wallet;
+
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.nio.file.AccessDeniedException;
@@ -35,7 +41,12 @@ public class PreAuthenticationFilter implements ContainerRequestFilter {
 
     private final Map<String, IAuthenticator> roleVsAuth = new HashMap<>();
 
-    private final ThreadContext threadCtx = ServiceFactory.getInstance().getSessionContext();
+    ServiceFactory serviceFactory = ServiceFactory.getInstance();
+    private final ThreadContext threadCtx = serviceFactory.getSessionContext();
+    private final WalletManager walletManager = serviceFactory.getWalletManager();
+    private final BranchCounterService branchCounterService = serviceFactory.getMerchantCounterService();
+    private final MerchantService merchantService = serviceFactory.getMerchantService();
+    private final MerchantBranchService branchService = serviceFactory.getMerchantBranchService();
 
     @Context
     private ResourceInfo resInfo;
@@ -100,6 +111,7 @@ public class PreAuthenticationFilter implements ContainerRequestFilter {
         //Split userId and password tokens
         final StringTokenizer tokenizer = new StringTokenizer(usernameAndPassword, ":");
         final String userType = tokenizer.nextToken().toLowerCase();
+        System.out.println(userType);
         final String userId = tokenizer.nextToken();
         final String password = tokenizer.nextToken();
 
@@ -111,6 +123,15 @@ public class PreAuthenticationFilter implements ContainerRequestFilter {
 
             if (valid) {
                 _authorizeAndSetSession(rolesSet, userId, userType);
+                //This is how it needs to be done even in case of merchant
+                if(userType.equals(Role.BRANCH_COUNTER) || userType.equals(Role.BRANCH_MANAGER)){
+                try {
+						initializeWallet(userId, userType);
+					} catch (UnreadableWalletException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+                }
                 return;
             }
         }
@@ -126,6 +147,30 @@ public class PreAuthenticationFilter implements ContainerRequestFilter {
         session.setAttribute(ROLE_SESSION_ATTR, role);
         session.setAttribute(USER_ID_SESSION_ATTR, userId);
     }
+
+	/**
+	 * Load the wallet during authentication(branch and counter -> at the
+	 * moment) Check whether the wallet already exists in memory or load it from
+	 * the wallet file
+	 *
+	 * @param userId
+	 * @param role
+	 * @throws IOException
+	 * @throws UnreadableWalletException
+	 */
+	private void initializeWallet(String userId, String role) throws UnreadableWalletException, IOException {
+		if (role.equals(Role.BRANCH_COUNTER)) {
+			userId = branchCounterService.getBranchIdByCounterPwd(userId);
+		}
+		Map<String, Wallet> wallets = walletManager.getBranchWallets();
+		if (!wallets.containsKey(userId)) {
+			String merchantId = branchService.getMerchantIdByBranchId(Long.valueOf(userId));
+			// fetch the mnemonic for the merchant and load up the wallet
+			String mnemonic = merchantService.getMnenonicForAMerchant(Long.valueOf(merchantId));
+			List<String> mnemonicList = Arrays.asList(mnemonic.split(","));
+			walletManager.createOrLoadWallet(mnemonicList, userId);
+		}
+	}
 
     private void validateRoles(String role, Set<String> rolesSet) throws AccessDeniedException {
         if(!rolesSet.contains(role))

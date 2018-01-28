@@ -49,8 +49,8 @@ public class MerchantService extends AbstractService implements IAuthenticator {
             query.executeUpdate();
             //generating mnemonic and setting it to the merchant
             //TO-DO -> we need to store the encrypted the mnemonic string in the DB
-            //List<String> mnemonicWords= this.generateMnemonic();
-            //this.setMnemonicForMerchant(String.join(",", mnemonicWords), merchantId);
+            List<String> mnemonicWords= this.generateMnemonic();
+            this.setMnemonicForMerchant(String.join(",", mnemonicWords), merchantId);
 
             MerchantBranch branch = new MerchantBranch();
             branch.setMerchantId(merchant.getId());
@@ -61,12 +61,14 @@ public class MerchantService extends AbstractService implements IAuthenticator {
             branch.setEmail(merchant.getEmail());
             branch.setAddress(merchant.getAddress());
             branch.setHeadQuarter(true);
+            branch.setBranchNo(0);
 
             createBranch(branch);
 
             trn.commit();
 
             merchant.setPassword(null);
+            //
             return merchant;
         } catch (Exception e) {
             trn.rollback();
@@ -187,23 +189,24 @@ public class MerchantService extends AbstractService implements IAuthenticator {
         query.setParameter("phone", branch.getPhone());
         query.setParameter("manager_name", branch.getManagerName());
         query.setParameter("email", branch.getEmail());
+        query.setParameter("branch_no", branch.getBranchNo());
         setPhysicalAddressParams(query, branch.getAddress());
     }
 
     private void createBranch(MerchantBranch branch) {
         Query query = em.createNativeQuery("INSERT INTO merchant_branch ( " +
                 "id, merchant_id, name, manager_name, password, head_quarter, phone, email, " +
-                "address, city, state, zip, country) " +
+                "address, city, state, zip, country, branch_no) " +
                 "VALUES( :id, :merchant_id, :name, :manager_name, :password, :head_quarter, :phone, " +
-                ":email, :address, :city, :state, :zip, :country)");
+                ":email, :address, :city, :state, :zip, :country, :branch_no)");
 
-        branch.setId(nextId());
+        long branchId = nextId();
+        branch.setId(branchId);
 
         query.setParameter("password", branch.getPassword());
         setBranchParams(branch, query);
 
         query.executeUpdate();
-
         MerchantCounter counter = new MerchantCounter();
         counter.setPhone(branch.getPhone());
         counter.setEmail(branch.getEmail());
@@ -219,12 +222,13 @@ public class MerchantService extends AbstractService implements IAuthenticator {
         trn.begin();
         try {
             branch.setMerchantId(ctx.getCurrentMerchantId());
-
             branch.setHeadQuarter(false);
+            //incrementing the branch_no based on the previous branch
+            int existingBranchNumber = ServiceFactory.getInstance().getMerchantBranchService().getMaxBranchNoForAMerchant(ctx.getCurrentMerchantId());
+            branch.setBranchNo(existingBranchNumber+1);
             createBranch(branch);
 
             trn.commit();
-
             branch.setPassword(null);
 
             return branch;
@@ -360,4 +364,11 @@ public class MerchantService extends AbstractService implements IAuthenticator {
 	private List<String> generateMnemonic() throws MnemonicLengthException {
 		return MnemonicCode.INSTANCE.toMnemonic(new RandomNumberGenerator().getRandomNumber());
 	}
+
+	public String getMnenonicForAMerchant(long merchantId) {
+		Query query = em.createNativeQuery("select mnemonic_code from mnemonic where merchant_id=:merchant_id");
+	    query.setParameter("merchant_id", merchantId);
+        return query.getResultList().get(0).toString();
+	}
+
 }

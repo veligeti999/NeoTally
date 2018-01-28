@@ -38,12 +38,6 @@ public class ServiceFactory {
         this.emf = emf;
         em = emf.createEntityManager();
         em.setFlushMode(FlushModeType.COMMIT);
-        userService = new UserService(em, sessionContext);
-        counterService = new BranchCounterService(em, sessionContext);
-        branchService = new MerchantBranchService(em, sessionContext);
-        merchantService = new MerchantService(em, sessionContext);
-        orderInvoiceService= new OrderInvoiceService(em, sessionContext);
-
         //Setting up bitcoin environment with SPV block-store and Regression Test environment for the moment.
         //We will change this to a different block-store based on our requirement
         //The environment is going to become MainNet eventually when moving to production
@@ -52,6 +46,12 @@ public class ServiceFactory {
         blockStore = new SPVBlockStore(params, new File("block_store"));
         bitcoinConfiguration = new BitcoinConfiguration(params, blockStore);
         walletManager = new WalletManager(bitcoinConfiguration, sessionContext);
+
+        userService = new UserService(em, sessionContext);
+        counterService = new BranchCounterService(em, sessionContext);
+        branchService = new MerchantBranchService(em, sessionContext);
+        merchantService = new MerchantService(em, sessionContext);
+        orderInvoiceService= new OrderInvoiceService(em, sessionContext, counterService, walletManager);
     }
 
     static synchronized void initializeFactory(EntityManagerFactory emf) throws BlockStoreException {
@@ -89,6 +89,7 @@ public class ServiceFactory {
     public BranchCounterService getMerchantCounterService() {
         return counterService;
     }
+
     public OrderInvoiceService getOrderInvoiceService() {
         return orderInvoiceService;
     }
