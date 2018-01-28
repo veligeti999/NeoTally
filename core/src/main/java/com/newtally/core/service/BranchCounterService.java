@@ -118,6 +118,7 @@ public class BranchCounterService extends AbstractService implements IAuthentica
             currencyDiscountDto.setCurrency_name(currency.getName());
             currencyDiscountDto.setDiscount(20d);
             currencyDiscountDto.setDiscount_amount(paymentAmount*currencyDiscountDto.getDiscount()/100);
+            currencyDiscountDto.setCurrency_amount(paymentAmount-currencyDiscountDto.getDiscount_amount());
            
             currencyDiscountDtos.add(currencyDiscountDto);
             currencies.add(currency);

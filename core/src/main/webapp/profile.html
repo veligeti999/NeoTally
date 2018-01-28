@@ -33,7 +33,7 @@
         </form>
         <ul class="navbar-nav ml-lg-auto d-flex align-items-center flex-row">
           <li class="nav-item">
-              <a class="nav-link profile-pic" href="login.html"><img class="rounded-circle" src="images/icons/logout.png" alt=""></a>
+               <a class="nav-link profile-pic" href="#" onClick="logout();"><img class="rounded-circle" src="images/icons/logout.png" alt=""></a>
           </li>
          
         </ul>
@@ -50,8 +50,8 @@
         <nav class="bg-white sidebar sidebar-offcanvas" id="sidebar">
           <div class="user-info">
             <img src="images/face.jpg" alt="">
-          <p class="name">john Doe Foods</p>
-            <p class="designation">Manager</p>
+         <p id="merchant-name"class="name">john Doe Foods</p>
+            <p id="owner-name" class="designation">Manager</p>
             <span class="online"></span>
           </div>
           <ul class="nav">
@@ -77,9 +77,9 @@
             
          
             <li class="nav-item">
-                <a class="nav-link" href="transections.html">
+                <a class="nav-link" href="transactions.html">
                 <img src="images/icons/2.png" alt="">
-                <span class="menu-title">Transections <span>
+                <span class="menu-title">Transactions <span>
               </a>
             </li>
             <li class="nav-item">
@@ -243,6 +243,50 @@
           });
     }
     init();
+  </script>
+   <script language="javascript" type="text/javascript">
+    function init() {
+      $.ajax
+          ({
+            type: "GET",
+            url: "http://localhost:8080/new-tally/rest/merchants",
+            dataType: 'json',
+            async: false,
+            success: function(result){
+              console.log(result);
+              document.getElementById("merchant-name").innerHTML = result.response_data.name;
+              document.getElementById("owner-name").innerHTML = result.response_data.ownerName;
+            }
+          });
+    }
+    init();
+    function logout() {
+      $.ajax
+          ({
+            type: "GET",
+            url: "http://localhost:8080/new-tally/rest/merchants/logout",
+            dataType: 'json',
+            async: false,
+            success: function(result){
+              console.log(result);
+              window.history.go(-window.history.length);
+              window.location.href = "login.html";
+            }
+          });
+          localStorage.removeItem('myCat');
+    }
+    window.onhashchange = function(e) {
+      e.preventDefault();
+      /*var oldURL = e.oldURL.split('#')[1];
+      var newURL = e.newURL.split('#')[1];
+
+      if (oldURL == 'share') {
+        $('.share').fadeOut();
+        
+        return false;
+      }*/
+      //console.log('old:'+oldURL+' new:'+newURL);
+    }
   </script>
 </body>
 

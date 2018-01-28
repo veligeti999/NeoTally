@@ -50,7 +50,7 @@ public abstract class AbstractService {
     }
 
     protected String generateNewPassword() {
-        return UUID.randomUUID().toString();
+        return Long.toHexString(Double.doubleToLongBits(Math.random()));
     }
 
 
