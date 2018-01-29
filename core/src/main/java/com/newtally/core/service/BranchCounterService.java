@@ -1,5 +1,7 @@
 package com.newtally.core.service;
 
+import com.blockcypher.utils.gson.GsonFactory;
+import com.google.gson.Gson;
 import com.newtally.core.ServiceFactory;
 import com.newtally.core.dto.CounterDto;
 import com.newtally.core.dto.CurrencyDiscountDto;
@@ -31,6 +33,8 @@ import java.util.List;
 import java.util.Map;
 
 public class BranchCounterService extends AbstractService implements IAuthenticator {
+    
+    protected final Gson gson = GsonFactory.getGson();
 
     public BranchCounterService(EntityManager em, ThreadContext ctx) {
         super(em, ctx);
@@ -180,7 +184,7 @@ public class BranchCounterService extends AbstractService implements IAuthentica
     public List<Order> getAllOrders() {
         Query query = em.createNativeQuery("SELECT  id, currency_amount, discount_amount,currency_id, "+
                 "currency_code, status FROM order_invoice where counter_id=:counter_id");
-            query.setParameter("counter_id", ctx.getCurrentCounterCode());
+            query.setParameter("counter_id", getCurrentCounter().getId());
             List rs = query.getResultList();
             List<Order> orders=new ArrayList<>();
             for(Object ele : rs) {
@@ -201,7 +205,7 @@ public class BranchCounterService extends AbstractService implements IAuthentica
         
         System.out.println("sendGet");
 
-        String url = "https://www.unocoin.com/trade?avg";
+        String url = "https://api.coindesk.com/v1/bpi/currentprice/INR.json";
 
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -220,10 +224,7 @@ public class BranchCounterService extends AbstractService implements IAuthentica
         String inputLine;
         StringBuffer response = new StringBuffer();
 
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
-        }
-        in.close();
+        HashMap<String, Object> input = gson.fromJson(in, HashMap.class);
 
         //print result
         System.out.println(response.toString());
