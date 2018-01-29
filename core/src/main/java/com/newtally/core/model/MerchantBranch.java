@@ -8,6 +8,7 @@ public class MerchantBranch {
     private String password;
     private String phone;
     private String email;
+    private int branchNo;
     private boolean headQuarter;
     private PhysicalAddress address;
 
@@ -83,4 +84,13 @@ public class MerchantBranch {
     public void setPhone(String phone) {
         this.phone = phone;
     }
+
+	public int getBranchNo() {
+		return branchNo;
+	}
+
+	public void setBranchNo(int branchNo) {
+		this.branchNo = branchNo;
+	}
+
 }

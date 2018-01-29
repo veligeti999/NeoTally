@@ -1,15 +1,12 @@
 package com.newtally.core.resource;
 
-import com.newtally.core.model.User;
-
 public class ThreadContext {
 
     private ThreadLocal<Long> userLocal = new ThreadLocal<>();
-
     private ThreadLocal<Long> merchantLocal = new ThreadLocal<>();
-
     private ThreadLocal<Long> mrctBranchId = new ThreadLocal<>();
     private ThreadLocal<String> mrctCtrId = new ThreadLocal<>();
+    private ThreadLocal<Integer> branchAccountNum = new ThreadLocal<>();
 
     public long getCurrentUserId() {
         return userLocal.get();
@@ -43,6 +40,13 @@ public class ThreadContext {
         this.mrctBranchId.set(mrctBranchId);
     }
 
+    public void setCurrentBranchAccNum(Integer branchAccountNum){
+        this.branchAccountNum.set(branchAccountNum);
+    }
+
+    public int getCurrentBranchAccountNum(){
+        return branchAccountNum.get();
+    }
     /**
      * should be called after the request is served
      */
@@ -51,6 +55,7 @@ public class ThreadContext {
         merchantLocal.remove();
         mrctBranchId.remove();
         mrctCtrId.remove();
+        branchAccountNum.remove();
     }
 
 }

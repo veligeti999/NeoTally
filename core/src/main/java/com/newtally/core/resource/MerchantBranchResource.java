@@ -1,10 +1,7 @@
 package com.newtally.core.resource;
 
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
-
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;

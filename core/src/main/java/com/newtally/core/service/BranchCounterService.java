@@ -231,4 +231,15 @@ public class BranchCounterService extends AbstractService implements IAuthentica
         return response.toString();
 
     }
+    public String getBranchIdByCounterPwd(String counterPassword){
+        Query query = em.createNativeQuery("select branch_id from branch_counter where password=:counterPassword");
+        query.setParameter("counterPassword", counterPassword);
+        return query.getResultList().get(0).toString();
+    }
+
+    public String getBranchIdByCounterId(int counterId){
+        Query query = em.createNativeQuery("select branch_id from branch_counter where id=:id");
+        query.setParameter("id", counterId);
+        return query.getResultList().get(0).toString();
+    }
 }
