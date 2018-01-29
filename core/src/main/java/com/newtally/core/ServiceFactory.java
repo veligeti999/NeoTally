@@ -43,7 +43,12 @@ public class ServiceFactory {
         //The environment is going to become MainNet eventually when moving to production
         //This is a one time operation and is going to take time(not sure how long)
         params = RegTestParams.get();
-        blockStore = new SPVBlockStore(params, new File("block_store"));
+        //deleting this file is only for testing..the deletion process will be handled in a separate class later
+        File blockStoreFile=new File("block_store"); 
+        if(blockStoreFile.exists()) {
+            blockStoreFile.delete();
+        }
+        blockStore = new SPVBlockStore(params, blockStoreFile);
         bitcoinConfiguration = new BitcoinConfiguration(params, blockStore);
         walletManager = new WalletManager(bitcoinConfiguration, sessionContext);
 
