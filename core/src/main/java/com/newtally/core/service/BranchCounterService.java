@@ -2,6 +2,7 @@ package com.newtally.core.service;
 
 import com.blockcypher.utils.gson.GsonFactory;
 import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
 import com.newtally.core.ServiceFactory;
 import com.newtally.core.dto.CounterDto;
 import com.newtally.core.dto.CurrencyDiscountDto;
@@ -24,6 +25,7 @@ import javax.persistence.Query;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -109,7 +111,7 @@ public class BranchCounterService extends AbstractService implements IAuthentica
          return counterDto;       
     }
 
-    public List<CurrencyDiscountDto> getCurrencyDiscounts(Double paymentAmount) {
+    public List<CurrencyDiscountDto> getCurrencyDiscounts(Double paymentAmount) throws Exception {
         Query query = em.createNativeQuery("SELECT  id, code, name FROM currency") ;
 
         List rs = query.getResultList();
@@ -138,7 +140,11 @@ public class BranchCounterService extends AbstractService implements IAuthentica
             currencyDiscountDto.setDiscount_amount(paymentAmount*currencyDiscountDto.getDiscount()/100);
             }
             payableAmount=paymentAmount-currencyDiscountDto.getDiscount_amount();
-            currencyDiscountDto.setCurrency_amount(payableAmount);
+            Double coinAmount=0d;
+            if(getBitCoinCostInINR()>0) {
+            coinAmount=payableAmount/getBitCoinCostInINR();
+            }
+            currencyDiscountDto.setCurrency_amount(coinAmount);
             currencyDiscountDtos.add(currencyDiscountDto);
             currencies.add(currency);
         }
@@ -200,36 +206,31 @@ public class BranchCounterService extends AbstractService implements IAuthentica
             }
            return orders;
     }
- // HTTP GET request
-    public String sendGet() throws Exception {
+
+    public Double getBitCoinCostInINR() throws Exception {
         
-        System.out.println("sendGet");
 
         String url = "https://api.coindesk.com/v1/bpi/currentprice/INR.json";
 
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
-        // optional default is GET
-        con.setRequestMethod("GET");
-
-        
+        con.setRequestMethod("GET"); 
+        con.setRequestProperty("authority", "api.coindesk.com");
+        con.setRequestProperty("User-Agent", "Mozilla/5.0 (X11; Linux x86_64)");
 
         int responseCode = con.getResponseCode();
-        System.out.println("\nSending 'GET' request to URL : " + url);
-        System.out.println("Response Code : " + responseCode);
-
+        if(responseCode == 200) {
         BufferedReader in = new BufferedReader(
                 new InputStreamReader(con.getInputStream()));
-        String inputLine;
-        StringBuffer response = new StringBuffer();
 
-        HashMap<String, Object> input = gson.fromJson(in, HashMap.class);
-
-        //print result
-        System.out.println(response.toString());
+        LinkedTreeMap<String, Object> input = gson.fromJson(in, LinkedTreeMap.class);
+        LinkedTreeMap<String, Object> bpi=(LinkedTreeMap<String, Object>) input.get("bpi");
+        LinkedTreeMap<String, Object> inr=(LinkedTreeMap<String, Object>) bpi.get("INR");
         
-        return response.toString();
+        return (Double) inr.get("rate_float");
+        }
+        return 0d;
 
     }
     public String getBranchIdByCounterPwd(String counterPassword){
