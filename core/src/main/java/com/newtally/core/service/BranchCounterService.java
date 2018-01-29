@@ -19,7 +19,12 @@ import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.math.BigInteger;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -95,6 +100,7 @@ public class BranchCounterService extends AbstractService implements IAuthentica
         counterDto.setCounter_id(counter.getId());
         counterDto.setCounter_name("Counter #"+counter.getId());
         counterDto.setMerchant_name(merchant.getName());
+        counterDto.setMerchant_id(merchant.getId());
         counterDto.setEmail(counter.getEmail());
          return counterDto;       
     }
@@ -105,21 +111,30 @@ public class BranchCounterService extends AbstractService implements IAuthentica
         List rs = query.getResultList();
         List<Currency> currencies = new ArrayList<>();
         List<CurrencyDiscountDto> currencyDiscountDtos=new ArrayList<>();
+        CounterDto counter=getCounterDetails();
         for(Object ele : rs) {
             Object [] fields = (Object[]) ele;
-
             Currency currency = new Currency();
+            
             CurrencyDiscountDto currencyDiscountDto=new CurrencyDiscountDto();
             currency.setId(((Integer) fields[0]).longValue());
+            Query queryForDiscount = em.createNativeQuery("SELECT percentage FROM discount where merchant_id =:merchantId and currency_id =:currencyId") ;
+            
+            queryForDiscount.setParameter("merchantId", counter.getMerchant_id());
+            queryForDiscount.setParameter("currencyId", currency.getId());
+            Double  discount = (Double)queryForDiscount.getSingleResult();
             currency.setCode(CoinType.valueOf((String) fields[1])); 
             currency.setName((String) fields[2]);
             currencyDiscountDto.setCurrency_id(currency.getId());
             currencyDiscountDto.setCurrency_code(currency.getCode().toString());
             currencyDiscountDto.setCurrency_name(currency.getName());
-            currencyDiscountDto.setDiscount(20d);
+            Double payableAmount=null;
+            if(discount !=null && discount>0) {
+            currencyDiscountDto.setDiscount(discount);
             currencyDiscountDto.setDiscount_amount(paymentAmount*currencyDiscountDto.getDiscount()/100);
-            currencyDiscountDto.setCurrency_amount(paymentAmount-currencyDiscountDto.getDiscount_amount());
-           
+            }
+            payableAmount=paymentAmount-currencyDiscountDto.getDiscount_amount();
+            currencyDiscountDto.setCurrency_amount(payableAmount);
             currencyDiscountDtos.add(currencyDiscountDto);
             currencies.add(currency);
         }
@@ -180,5 +195,40 @@ public class BranchCounterService extends AbstractService implements IAuthentica
             orders.add(order);
             }
            return orders;
+    }
+ // HTTP GET request
+    public String sendGet() throws Exception {
+        
+        System.out.println("sendGet");
+
+        String url = "https://www.unocoin.com/trade?avg";
+
+        URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+
+        // optional default is GET
+        con.setRequestMethod("GET");
+
+        
+
+        int responseCode = con.getResponseCode();
+        System.out.println("\nSending 'GET' request to URL : " + url);
+        System.out.println("Response Code : " + responseCode);
+
+        BufferedReader in = new BufferedReader(
+                new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+
+        //print result
+        System.out.println(response.toString());
+        
+        return response.toString();
+
     }
 }
