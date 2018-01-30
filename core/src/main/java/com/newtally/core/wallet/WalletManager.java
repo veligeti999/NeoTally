@@ -3,21 +3,28 @@ package com.newtally.core.wallet;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Transaction;
+import org.bitcoinj.core.TransactionInput;
+import org.bitcoinj.core.TransactionOutput;
 import org.bitcoinj.crypto.MnemonicCode;
 import org.bitcoinj.wallet.DeterministicKeyChain;
 import org.bitcoinj.wallet.DeterministicSeed;
 import org.bitcoinj.wallet.UnreadableWalletException;
 import org.bitcoinj.wallet.Wallet;
 import org.bitcoinj.wallet.WalletExtension;
+import org.bitcoinj.wallet.WalletTransaction;
 import org.bitcoinj.wallet.listeners.WalletChangeEventListener;
 import org.bitcoinj.wallet.listeners.WalletCoinsReceivedEventListener;
 import org.bitcoinj.wallet.listeners.WalletCoinsSentEventListener;
 
+import com.newtally.core.ServiceFactory;
+import com.newtally.core.model.OrderStatus;
 import com.newtally.core.resource.ThreadContext;
 
 public class WalletManager {
@@ -86,6 +93,10 @@ public class WalletManager {
 		return configuration;
 	}
 	
+	public String getBalance(Wallet wallet){
+		return wallet.getBalance().toString();
+	}
+
 	/**
 	 * Enable wallet to listen on to various events
 	 */
@@ -95,7 +106,15 @@ public class WalletManager {
 			@Override
 			public void onWalletChanged(Wallet wallet) {
 				// TODO Auto-generated method stub
-				
+				String transactionId;
+				Iterator<Transaction> itr = wallet.getTransactions(false).iterator();
+				while(itr.hasNext()){
+					Transaction transaction = (Transaction)itr.next();
+					transactionId = transaction.getHash().toString();
+					if(transaction.getConfidence().getDepthInBlocks() == 1){
+						ServiceFactory.getInstance().getOrderInvoiceService().updateOrderStatusByTransactionId(transactionId, OrderStatus.Success.toString());
+					}
+				}
 			}
 		});
 		
@@ -103,9 +122,19 @@ public class WalletManager {
 			
 			@Override
 			public void onCoinsReceived(Wallet wallet, Transaction tx, Coin prevBalance, Coin newBalance) {
-				// TODO Auto-generated method stub
-				System.out.println(wallet.getBalance());
-				
+				String address;
+				String transactionId;
+				try{
+				List<TransactionOutput> walletTxnOutputs = tx.getWalletOutputs(wallet);
+				for(TransactionOutput txnOutput : walletTxnOutputs){
+					address = txnOutput.getAddressFromP2PKHScript(configuration.getParams()).toString();
+					transactionId = txnOutput.getParentTransaction().getHash().toString();
+					//update the transactionId for the address to which the coins are sent
+					ServiceFactory.getInstance().getOrderInvoiceService().updateOrderStatus(transactionId, address, OrderStatus.Pending.toString());
+				}
+				}catch(Exception e){
+					e.printStackTrace();
+				}
 			}
 		});
 		

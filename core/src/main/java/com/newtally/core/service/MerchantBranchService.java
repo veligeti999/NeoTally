@@ -151,4 +151,14 @@ public class MerchantBranchService extends AbstractService implements IAuthentic
 		return (int) query.getResultList().get(0);
 	}
 
+	/**
+	 * This is for generating the key-chain's for each branch
+	 * @param branchId
+	 * @return
+	 */
+	public int getBranchNoByBranchId(long branchId){
+		Query query = em.createNativeQuery("select branch_no from merchant_branch where id=:branchId");
+		query.setParameter("branchId", branchId);
+		return (int) query.getResultList().get(0);
+	}
 }
