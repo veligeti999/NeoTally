@@ -199,7 +199,7 @@
         <footer class="footer">
           <div class="container-fluid clearfix">
             <span class="float-right">
-                <a href="#">john Doe foods</a> &copy; 2018
+                <a id="merchant-name-footer" href="#">john Doe foods</a> &copy; 2018
             </span>
           </div>
         </footer>
@@ -227,12 +227,13 @@
       $.ajax
           ({
             type: "GET",
-            url: "http://localhost:8080/new-tally/rest/merchants",
+            url: "/new-tally/rest/merchants",
             dataType: 'json',
             async: false,
             success: function(result){
               console.log(result);
               document.getElementById("merchant-name").innerHTML = result.response_data.name;
+              document.getElementById("merchant-name-footer").innerHTML = result.response_data.name;
               document.getElementById("owner-name").innerHTML = result.response_data.ownerName;
             }
           });
@@ -242,7 +243,7 @@
       $.ajax
           ({
             type: "GET",
-            url: "http://localhost:8080/new-tally/rest/merchants/logout",
+            url: "/new-tally/rest/merchants/logout",
             dataType: 'json',
             async: false,
             success: function(result){
@@ -255,15 +256,6 @@
     }
     window.onhashchange = function(e) {
       e.preventDefault();
-      /*var oldURL = e.oldURL.split('#')[1];
-      var newURL = e.newURL.split('#')[1];
-
-      if (oldURL == 'share') {
-        $('.share').fadeOut();
-        
-        return false;
-      }*/
-      //console.log('old:'+oldURL+' new:'+newURL);
     }
   </script>
 </body>

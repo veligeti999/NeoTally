@@ -40,7 +40,7 @@ public class OrderInvoiceService extends AbstractService{
             setCreateParams(order, query);
             query.executeUpdate();
             trn.commit();
-            order.setQrCode("http://kkalyan.com:8888/new-tally/images/dummy-QR.jpg");
+            order.setQrCode("https://chart.googleapis.com/chart?chs=250x250&cht=qr&chl="+order.getWalletAddress());
             return order;
         } catch (Exception e) {
             trn.rollback();

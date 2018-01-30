@@ -19,6 +19,7 @@
         <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css" />
 
         <link rel="stylesheet" href="css/style.css" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     </head>
 
     <body>
@@ -38,7 +39,7 @@
                     </form>
                     <ul class="navbar-nav ml-lg-auto d-flex align-items-center flex-row">
                         <li class="nav-item">
-                            <a class="nav-link profile-pic" href="#" onClick="logout();"><img class="rounded-circle" src="images/icons/logout.png" alt=""></a>
+                             <a class="nav-link profile-pic" href="#" onClick="logout();"><img class="rounded-circle" src="images/icons/logout.png" alt=""></a>
                         </li>
 
                     </ul>
@@ -55,8 +56,8 @@
                     <nav class="bg-white sidebar sidebar-offcanvas" id="sidebar">
                         <div class="user-info">
                             <img src="images/face.jpg" alt="">
-                            <p id="merchant-name"class="name">john Doe Foods</p>
-                             <p id="owner-name" class="designation">Manager</p>
+                        <p id="merchant-name"class="name">john Doe Foods</p>
+                        <p id="owner-name" class="designation">Manager</p>
                             <span class="online"></span>
                         </div>
                         <ul class="nav">
@@ -109,7 +110,7 @@
 
                                             <!-- partial -->
                                             <div class="content-wrapper">
-                                                <h3 class="page-heading mb-4">Transactions</h3>
+                                                <h3 class="page-heading mb-4">Counters</h3>
 
                                                 <div class="row">
                                                     <div class="col-sm-10">
@@ -117,26 +118,43 @@
                                                     </div>
 
 
-                                                   <!-- <div style="margin-bottom: 10px" class="col-sm-2">
-                                                        <button style="margin-top: 3px;" type="button" class="btn btn-success mr-2">Add Branch</button>
-                                                    </div>-->
+                                                    <div style="margin-bottom: 10px" class="col-sm-2">
+                                                        <a style="margin-top: 3px;" href="add_branch.html" class="btn btn-success mr-2">Add Counter</a>
+                                                    </div>
 
-                                            <div class="col-lg-12">
+                                                    <div class="col-lg-12">
 
                                                     <table id="branch_table" class="table table-striped table-bordered" cellspacing="0" width="100%">
 
                                                         <thead>
                                                             <tr>
-                                                                <th>ORDER ID</th>
-                                                                <th>CURRENCY</th>
-                                                                <th>AMOUNT</th>
-                                                                <th>DISCOUNT</th>
-                                                              
-                                                                 <th>STATUS</th>
-                                                                 <th>ACTIONS</th>
-                                                                   
+                                                                <th>Name</th>
+                                                                <th>Manager</th>
+                                                                <th>Phone</th>
+                                                                <th>Email</th>
+                                                                <th>Head quaters?</th>
+                                                                <th>Actions</th>
                                                             </tr>
                                                         </thead>
+
+                                                        <!-- <tbody>
+                                                            <tr>
+                                                                <td>Secendrabad Branch</td>
+                                                                <td>9876543210</td>
+                                                                <td>Hyderabad</td>
+                                                                <td><input style="background: green; color: #fff;" class="form-control" value="2" id="example-text-input" type="text"></td>
+                                                              <td><img src="images/icons/eye.png"> <img src="images/icons/edit.png"> <img src="images/icons/logoutismall.png"></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Hyderabad Branch</td>
+                                                                <td>9876543210</td>
+                                                                <td>Hyderabad</td>
+                                                                 <td><input style="background: green; color: #fff;" class="form-control" value="2" id="example-text-input" type="text"></td>
+                                                                <td><img src="images/icons/eye.png"> <img src="images/icons/edit.png"> <img src="images/icons/logoutismall.png"></td>
+                                                            </tr>
+                                                           
+                                                      
+                                                        </tbody> -->
                                                     </table>
 
   </div>
@@ -159,7 +177,7 @@
                                             <footer class="footer">
                                                 <div class="container-fluid clearfix">
                                                     <span class="float-right">
-                                                        <a href="#">john Doe foods</a> &copy; 2018
+                                                           <a href="#">john Doe foods</a> &copy; 2018
                                                     </span>
                                                 </div>
                                             </footer>
@@ -189,56 +207,44 @@
                                             <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
                                             <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
                                             <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
-
+                                            <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.7/angular.min.js"></script>
                                             <script>
                                                 $(document).ready(function () {
                                                     var response={};
+                                                    var branchId=localStorage.getItem("branchId");
                                                     $.ajax
-                                                          ({
-                                                            type: "GET",
-                                                            url: "/new-tally/rest/merchants/transactions",
-                                                            dataType: 'json',
-                                                            async: false,
-                                                            success: function(result){
-                                                              console.log(result.response_data);
-                                                              response.data=result.response_data;
-                                                              $('#branch_table').DataTable(
-                                                                {
-                                                                "data": response.data,
-                                                                "columns": [
-                                                                    { "data": "id" },
-                                                                    { "data": "currencyCode" },
-                                                                    { "data": "currencyAmount" },
-                                                                    { "data": "discountAmount" },
-                                                                    { "data": "status" },
-                                                                     { "data": function(data, type, full) {
-                                                                            return '<img src="images/icons/right.png"> <span style="margin-left: 10px;"><button type="button" class="btn btn-primary mr-2">Details</button></span>';
-                                                                          }
+                                                      ({
+                                                        type: "GET",
+                                                        url: "/new-tally/rest/branches/"+branchId,
+                                                        dataType: 'json',
+                                                        async: false,
+                                                        success: function(result){
+                                                          console.log(result.response_data);
+                                                          response.data=result.response_data;
+                                                          $('#branch_table').DataTable(
+                                                            {
+                                                            "data": response.data,
+                                                            "columns": [
+                                                                { "data": "id" },
+                                                                { "data": "phone" },
+                                                                { "data": "email" },
+                                                                 { "data": function(data, type, full) {
+                                                                        return '<img src="images/icons/eye.png" onClick="viewBranch('+data.id+')"><img src="images/icons/edit.png" onClick="editBranch('+data.id+')"> <img src="images/icons/logoutismall.png" onClick="getCounters('+data.id+')">';
                                                                       }
-                                                                ]
-                                                            });
-                                                            }
-                                                          });
-                                                    
-
+                                                                  }
+                                                            ]
+                                                        });
+                                                        }
+                                                      });
                                                 });
 
                                                 window.onhashchange = function(e) {
-      e.preventDefault();
-      /*var oldURL = e.oldURL.split('#')[1];
-      var newURL = e.newURL.split('#')[1];
-
-      if (oldURL == 'share') {
-        $('.share').fadeOut();
-        
-        return false;
-      }*/
-      //console.log('old:'+oldURL+' new:'+newURL);
-    }
+                                                  e.preventDefault();
+                                                }
 
 
                                             </script>
-                                             <script language="javascript" type="text/javascript">
+ <script language="javascript" type="text/javascript">
     function init() {
       $.ajax
           ({
@@ -250,6 +256,32 @@
               console.log(result);
               document.getElementById("merchant-name").innerHTML = result.response_data.name;
               document.getElementById("owner-name").innerHTML = result.response_data.ownerName;
+            }
+          });
+
+        var branchId=localStorage.getItem("branchId");
+        $.ajax
+          ({
+            type: "GET",
+            url: "/new-tally/rest/branches/"+branchId,
+            dataType: 'json',
+            async: false,
+            success: function(result){
+              console.log(result.response_data);
+              response.data=result.response_data;
+              $('#branch_table').DataTable(
+                {
+                "data": response.data,
+                "columns": [
+                    { "data": "id" },
+                    { "data": "phone" },
+                    { "data": "email" },
+                     { "data": function(data, type, full) {
+                            return '<img src="images/icons/eye.png" onClick="viewBranch('+data.id+')"><img src="images/icons/edit.png" onClick="editBranch('+data.id+')"> <img src="images/icons/logoutismall.png" onClick="getCounters('+data.id+')"></a>';
+                          }
+                      }
+                ]
+            });
             }
           });
     }
@@ -268,6 +300,10 @@
             }
           });
           localStorage.removeItem('myCat');
+    }
+    
+    function getCounters(branchId) {
+     
     }
     window.onhashchange = function(e) {
       e.preventDefault();

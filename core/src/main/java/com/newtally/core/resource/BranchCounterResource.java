@@ -2,6 +2,7 @@ package com.newtally.core.resource;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -99,6 +100,7 @@ public class BranchCounterResource extends BaseResource{
         dto.setResponse_message("Payment Discounts has been generated successfully");
         dto.setResponse_data(reponseJson);
         } catch(Exception e) {
+            e.printStackTrace();
             dto.setResponse_code(1);
             dto.setResponse_message("Failed to generate discount details");
             dto.setResponse_data(e.getLocalizedMessage());
@@ -123,9 +125,10 @@ public class BranchCounterResource extends BaseResource{
         dto.setResponse_message("QR code has been generated successfully");
         dto.setResponse_data(order);
         } catch(Exception e) {
+            e.printStackTrace();
             dto.setResponse_code(1);
             dto.setResponse_message("Failed to generate QR code details");
-            dto.setResponse_data(e.getLocalizedMessage());
+            dto.setResponse_data(e.getMessage());
         }
         return Response.ok(gson.toJson(dto)).build();
     }
@@ -194,6 +197,28 @@ public class BranchCounterResource extends BaseResource{
             dto.setResponse_message("Failed to get the transactions");
             dto.setResponse_data(e.getLocalizedMessage());
         }
+        return Response.ok(gson.toJson(dto)).build();
+    }
+    
+    @PermitAll
+    @GET
+    @Path("/bit")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response getBitAmount(@Context HttpServletRequest req){
+
+        ResponseDto dto=new ResponseDto();
+        try {
+            Double orders=counterServ.getBitCoinCostInINR();
+        
+            dto.setResponse_code(0);
+            dto.setResponse_message("Successfully get all transactions");
+            dto.setResponse_data(orders);
+            } catch(Exception e) {
+                dto.setResponse_code(1);
+                dto.setResponse_message("Failed to get the transactions");
+                dto.setResponse_data(e.getLocalizedMessage());
+            }
         return Response.ok(gson.toJson(dto)).build();
     }
 }
