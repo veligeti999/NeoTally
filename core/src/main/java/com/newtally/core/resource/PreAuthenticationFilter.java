@@ -89,17 +89,7 @@ public class PreAuthenticationFilter implements ContainerRequestFilter {
 			String userId = (String) session.getAttribute(USER_ID_SESSION_ATTR);
 
 			validateRoles(role, rolesSet);
-
-			if (!role.equals(Role.BRANCH_COUNTER) && !role.equals(Role.BRANCH_MANAGER)) {
-				setPrincipalOnThreadContext(role, userId, 0);
-			} else {
-				try {
-					initializeWallet(userId, role);
-				} catch (UnreadableWalletException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+			setPrincipalOnThreadContext(role, userId);
 			return;
 		}
 
@@ -149,7 +139,7 @@ public class PreAuthenticationFilter implements ContainerRequestFilter {
 
     private void _authorizeAndSetSession(Set<String> rolesSet, String userId, String role) throws AccessDeniedException {
         validateRoles(role, rolesSet);
-
+        setPrincipalOnThreadContext(role, userId);
         HttpSession session = req.getSession(true);
         session.setMaxInactiveInterval(60 * 30 ); // 30 minutes
         session.setAttribute(ROLE_SESSION_ATTR, role);
@@ -170,8 +160,6 @@ public class PreAuthenticationFilter implements ContainerRequestFilter {
 		if (role.equals(Role.BRANCH_COUNTER)) {
 			userId = branchCounterService.getBranchIdByCounterPwd(userId);
 		}
-		int branchNo = branchService.getBranchNoByBranchId(Long.valueOf(userId));
-		setPrincipalOnThreadContext(role, userId, branchNo);
 		Map<String, Wallet> wallets = walletManager.getBranchWallets();
 		if (!wallets.containsKey(userId)) {
 			String merchantId = branchService.getMerchantIdByBranchId(Long.valueOf(userId));
@@ -187,7 +175,9 @@ public class PreAuthenticationFilter implements ContainerRequestFilter {
             throw new RuntimeException("Access denied");;
     }
 
-    public void setPrincipalOnThreadContext(String role, String id, int branchNo) {
+    public void setPrincipalOnThreadContext(String role, String id) {
+		String branchId = null;
+		int branchNo = 0;
         // clear previous ones
         threadCtx.clearContext();
         if(role.equals(Role.USER)) {
@@ -195,9 +185,12 @@ public class PreAuthenticationFilter implements ContainerRequestFilter {
         } else if(role.equals(Role.MERCHANT)) {
             threadCtx.setCurrentMerchantId(Long.parseLong(id));
         } else if(role.equals(Role.BRANCH_COUNTER)) {
+			branchId = branchCounterService.getBranchIdByCounterPwd(id);
+			branchNo = branchService.getBranchNoByBranchId(Long.valueOf(branchId));
             threadCtx.setCurrentMerchantCounterId(id);
             threadCtx.setCurrentBranchAccNum(branchNo);
         } else if(role.equals(Role.BRANCH_MANAGER)) {
+			branchNo = branchService.getBranchNoByBranchId(Long.valueOf(id));
             threadCtx.setMerchantBranchId(Long.parseLong(id));
             threadCtx.setCurrentBranchAccNum(branchNo);
         } 
