@@ -112,7 +112,8 @@ public class BranchCounterService extends AbstractService implements IAuthentica
     }
 
     public List<CurrencyDiscountDto> getCurrencyDiscounts(Double paymentAmount) throws Exception {
-        Query query = em.createNativeQuery("SELECT  id, code, name FROM currency") ;
+		Double discount = null;
+		Query query = em.createNativeQuery("SELECT  id, code, name FROM currency");
 
         List rs = query.getResultList();
         List<Currency> currencies = new ArrayList<>();
@@ -128,7 +129,9 @@ public class BranchCounterService extends AbstractService implements IAuthentica
             
             queryForDiscount.setParameter("merchantId", counter.getMerchant_id());
             queryForDiscount.setParameter("currencyId", currency.getId());
-            Double  discount = (Double)queryForDiscount.getSingleResult();
+            if(!queryForDiscount.getResultList().isEmpty()){
+               discount = (Double)queryForDiscount.getSingleResult();
+            }
             currency.setCode(CoinType.valueOf((String) fields[1])); 
             currency.setName((String) fields[2]);
             currencyDiscountDto.setCurrency_id(currency.getId());
