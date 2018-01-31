@@ -111,6 +111,7 @@ public class WalletManager {
 				while(itr.hasNext()){
 					Transaction transaction = (Transaction)itr.next();
 					transactionId = transaction.getHash().toString();
+					System.out.println("transaction depth"+transaction.getConfidence().getDepthInBlocks() );
 					if(transaction.getConfidence().getDepthInBlocks() == 1){
 						ServiceFactory.getInstance().getOrderInvoiceService().updateOrderStatusByTransactionId(transactionId, OrderStatus.Success.toString());
 					}
