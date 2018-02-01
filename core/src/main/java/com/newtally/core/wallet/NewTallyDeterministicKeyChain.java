@@ -17,10 +17,9 @@ public class NewTallyDeterministicKeyChain extends DeterministicKeyChain{
 
   	@Override
 	protected ImmutableList<ChildNumber> getAccountPath() {
-  		//This needs to be worked on..it is hardcoded at the moment only for account number 0
-  		//WalletManager walletManager = ServiceFactory.getInstance().getWalletManager();
-  		//int accountNum = walletManager.getThreadContext().getCurrentBranchAccountNum();
-        return ImmutableList.of(new ChildNumber(44, true), new ChildNumber(1, true), new ChildNumber(0, true));
+		WalletManager walletManager = ServiceFactory.getInstance().getWalletManager();
+		int accountNum = walletManager.getThreadContext().getCurrentBranchAccountNum();
+		return ImmutableList.of(new ChildNumber(44, true), new ChildNumber(1, true), new ChildNumber(accountNum, true));
     }
 	
 }

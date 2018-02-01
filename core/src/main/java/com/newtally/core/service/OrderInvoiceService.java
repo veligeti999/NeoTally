@@ -54,6 +54,7 @@ public class OrderInvoiceService extends AbstractService{
 		Map<String, Wallet> wallets = walletManager.getBranchWallets();
 		Wallet wallet = wallets.get(branchId);
 		DeterministicKey counterKey = wallet.freshReceiveKey();
+		System.out.println("counterKey"+counterKey);
 		String address = counterKey.toAddress(walletManager.getBitcoinConfiguration().getParams()).toString();
 		System.out.println(address);
 		query.setParameter("id", order.getId());
@@ -82,4 +83,37 @@ public class OrderInvoiceService extends AbstractService{
             throw e;
         }
     }
+
+	public void updateOrderStatus(String transactionId, String address, String status) {
+		EntityTransaction txn = em.getTransaction();
+		txn.begin();
+		try {
+			Query query = em.createNativeQuery(
+					"update order_invoice set status=:status, transaction_id=:transactionId where wallet_address=:address");
+			query.setParameter("status", status);
+			query.setParameter("transactionId", transactionId);
+			query.setParameter("address", address);
+			query.executeUpdate();
+			txn.commit();
+		} catch (Exception e) {
+			txn.rollback();
+			throw e;
+		}
+	}
+
+	public void updateOrderStatusByTransactionId(String transactionId, String status) {
+		EntityTransaction txn = em.getTransaction();
+		txn.begin();
+		try {
+			Query query = em
+					.createNativeQuery("update order_invoice set status=:status where transaction_id=:transactionId");
+			query.setParameter("status", status);
+			query.setParameter("transactionId", transactionId);
+			query.executeUpdate();
+			txn.commit();
+		} catch (Exception e) {
+			txn.rollback();
+			throw e;
+		}
+	}
 }
