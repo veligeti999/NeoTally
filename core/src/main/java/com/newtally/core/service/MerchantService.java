@@ -296,16 +296,28 @@ public class MerchantService extends AbstractService implements IAuthenticator {
         return branches;
     }
 
-    public boolean authenticate(String merchantId, String password) {
+    public boolean authenticate(String username, String password) {
         Query query = em.createNativeQuery("SELECT  count(*) FROM merchant " +
-                "WHERE id = :id AND password = :password");
+                "WHERE email = :email AND password = :password");
 
-        query.setParameter("id", Long.parseLong(merchantId));
+        query.setParameter("email", username);
         query.setParameter("password", password);
 
         BigInteger count = (BigInteger) query.getSingleResult();
 
         return count.intValue() == 1;
+    }
+    
+    public String getUserId(String username, String password) {
+        Query query = em.createNativeQuery("SELECT  id FROM merchant " +
+                "WHERE email = :email AND password = :password");
+
+        query.setParameter("email", username);
+        query.setParameter("password", password);
+
+        BigInteger id = (BigInteger) query.getSingleResult();
+
+        return id.toString();
     }
 
     public List<Order> getAllOrders() {
