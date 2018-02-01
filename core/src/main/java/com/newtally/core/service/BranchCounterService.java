@@ -36,7 +36,6 @@ import java.util.Map;
 
 public class BranchCounterService extends AbstractService implements IAuthenticator {
     
-    protected final Gson gson = GsonFactory.getGson();
 
     public BranchCounterService(EntityManager em, ThreadContext ctx) {
         super(em, ctx);
@@ -52,7 +51,7 @@ public class BranchCounterService extends AbstractService implements IAuthentica
         return null;
     }
 
-    public boolean authenticate(String merchantId, String password) {
+    public boolean authenticate(String username, String password) {
         Query query = em.createNativeQuery("SELECT  count(*) FROM branch_counter " +
                 "WHERE password = :password AND active = true");
 
@@ -61,6 +60,11 @@ public class BranchCounterService extends AbstractService implements IAuthentica
         BigInteger count = (BigInteger) query.getSingleResult();
 
         return count.intValue() == 1;
+    }
+    
+    public String getUserId(String username, String password) {
+
+        return password;
     }
     
     public MerchantCounter getCurrentCounter() {

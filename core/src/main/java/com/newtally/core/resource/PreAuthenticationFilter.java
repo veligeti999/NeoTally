@@ -112,16 +112,17 @@ public class PreAuthenticationFilter implements ContainerRequestFilter {
         final StringTokenizer tokenizer = new StringTokenizer(usernameAndPassword, ":");
         final String userType = tokenizer.nextToken().toLowerCase();
         System.out.println(userType);
-        final String userId = tokenizer.nextToken();
+        final String username = tokenizer.nextToken();
         final String password = tokenizer.nextToken();
 
 
         IAuthenticator iAuthenticator = roleVsAuth.get(userType);
 
         if(iAuthenticator != null) {
-            boolean valid = iAuthenticator.authenticate(userId, password);
-
+            boolean valid = iAuthenticator.authenticate(username, password);
             if (valid) {
+
+                String userId=iAuthenticator.getUserId(username, password);
                 _authorizeAndSetSession(rolesSet, userId, userType);
                 //This is how it needs to be done even in case of merchant
                 if(userType.equals(Role.BRANCH_COUNTER) || userType.equals(Role.BRANCH_MANAGER)){
