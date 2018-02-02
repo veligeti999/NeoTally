@@ -49,7 +49,7 @@ public abstract class AbstractService {
     }
 
     public long nextId() {
-        return Math.abs(random.nextLong());
+        return Math.abs(random.nextInt());
     }
 
     protected String generateNewPassword() {

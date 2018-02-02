@@ -3,6 +3,8 @@ package com.newtally.core.service;
 import com.newtally.core.util.CollectionUtil;
 import com.newtally.core.util.RandomNumberGenerator;
 import com.newtally.core.ServiceFactory;
+import com.newtally.core.dto.DiscountDto;
+import com.newtally.core.dto.ResponseDto;
 import com.newtally.core.model.*;
 import com.newtally.core.resource.ThreadContext;
 
@@ -10,11 +12,20 @@ import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.bitcoinj.crypto.MnemonicCode;
 import org.bitcoinj.crypto.MnemonicException.MnemonicLengthException;
 import org.w3c.dom.css.Counter;
 
+import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -64,7 +75,8 @@ public class MerchantService extends AbstractService implements IAuthenticator {
             branch.setBranchNo(0);
 
             createBranch(branch);
-
+            
+            createDiscounts(merchant.getId());
             trn.commit();
 
             merchant.setPassword(null);
@@ -213,6 +225,17 @@ public class MerchantService extends AbstractService implements IAuthenticator {
         counter.setBranchId(branch.getId());
 
         ServiceFactory.getInstance().getMerchantBranchService()._registerCounter(counter);
+    }
+
+    private void createDiscounts(Long merchantId) {
+        Query query = em.createNativeQuery("select id from currency");
+        List<Integer> currencyIds = query.getResultList();
+        for(Integer currencyId:currencyIds) {
+            Query queryForCreateDiscout = em.createNativeQuery("INSERT INTO discount (currency_id, merchant_id) values(:currencyId, :merchantId)");
+            queryForCreateDiscout.setParameter("merchantId", merchantId);
+            queryForCreateDiscout.setParameter("currencyId", currencyId);
+            queryForCreateDiscout.executeUpdate();
+        }
     }
 
     @RolesAllowed({Role.MERCHANT})
@@ -382,5 +405,41 @@ public class MerchantService extends AbstractService implements IAuthenticator {
 	    query.setParameter("merchant_id", merchantId);
         return query.getResultList().get(0).toString();
 	}
+	
+	 public MerchantCounter registerCounterForBranch(MerchantCounter counter) {
 
+	        EntityTransaction trx = em.getTransaction();
+
+	        trx.begin();
+	        try {
+	            counter = ServiceFactory.getInstance().getMerchantBranchService()._registerCounter(counter);
+
+	            trx.commit();
+
+	            return counter;
+	        } catch (Exception e) {
+	            trx.rollback();
+
+	            throw e;
+	        }
+	    }
+	 
+	 public List<DiscountDto> getDisounts(){
+	     Query query = em.createNativeQuery("select d.id, c.code, c.name, d.percentage from discount d join currency c on d.currency_id = c.id where merchant_id=:merchant_id");
+	        query.setParameter("merchant_id", ctx.getCurrentMerchantId());
+	        List rs = query.getResultList();
+	        List<DiscountDto> discounts = new ArrayList<>();
+	        for(Object ele : rs) {
+	            Object [] fields = (Object[]) ele;
+
+	            DiscountDto discount = new DiscountDto();
+	            discount.setId(((Integer) fields[0]));
+	            discount.setCurrencyCode( fields[1].toString());	          
+	            discount.setCurrencyName(fields[2].toString());
+	            discount.setPercentage((Double)fields[3]);
+	            
+	            discounts.add(discount);
+	        }
+	        return discounts;
+	    }
 }

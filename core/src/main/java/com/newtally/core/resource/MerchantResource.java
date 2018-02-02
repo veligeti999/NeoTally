@@ -1,10 +1,13 @@
 package com.newtally.core.resource;
 
 import com.newtally.core.ServiceFactory;
+import com.newtally.core.dto.DiscountDto;
 import com.newtally.core.dto.ResponseDto;
 import com.newtally.core.model.MerchantBranch;
+import com.newtally.core.model.MerchantCounter;
 import com.newtally.core.model.Order;
 import com.newtally.core.model.Role;
+import com.newtally.core.model.Discount;
 import com.newtally.core.model.Merchant;
 import com.newtally.core.service.MerchantService;
 
@@ -42,9 +45,10 @@ public class MerchantResource extends BaseResource {
         dto.setResponse_message("Merchant has been registered successfully");
         dto.setResponse_data(merchant);
         } catch(Exception e) {
+            e.printStackTrace();
             dto.setResponse_code(1);
             dto.setResponse_message("Failed to registered  the merhant");
-            dto.setResponse_data(e.getLocalizedMessage());
+            dto.setResponse_data(e.getMessage());
         }
         return Response.ok(gson.toJson(dto)).build();
     }
@@ -258,6 +262,52 @@ public class MerchantResource extends BaseResource {
         }
 
         return Response.ok(dto).build();
+    }
+    
+    @RolesAllowed({Role.MERCHANT})
+    @POST
+    @Path("/counter/register")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response registerCounter(@Context HttpServletRequest req) {
+        
+        ResponseDto dto=new ResponseDto();
+        try {
+        MerchantCounter counter = gson.fromJson(new InputStreamReader(req.getInputStream()), MerchantCounter.class);
+
+        counter = mrctServ.registerCounterForBranch(counter);
+        
+        dto.setResponse_code(0);
+        dto.setResponse_message("Counter has been registered successfully");
+        dto.setResponse_data(counter);
+        } catch(Exception e) {
+            dto.setResponse_code(1);
+            dto.setResponse_message("Failed to register counter");
+            dto.setResponse_data(e.getLocalizedMessage());
+        }
+        return Response.ok(gson.toJson(dto)).build();
+    }
+    
+    @RolesAllowed({Role.MERCHANT})
+    @GET
+    @Path("/currency/discounts")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getDiscounts(@Context HttpServletRequest req ){
+
+        ResponseDto dto=new ResponseDto();
+        try {
+        List<DiscountDto> discounts=mrctServ.getDisounts();
+        
+        dto.setResponse_code(0);
+        dto.setResponse_message("Successfully get all currency discounts");
+        dto.setResponse_data(discounts);
+        } catch(Exception e) {
+            dto.setResponse_code(1);
+            dto.setResponse_message("Failed to get all currency discounts");
+            dto.setResponse_data(e.getLocalizedMessage());
+        }
+
+        return Response.ok(gson_pretty.toJson(dto)).build();
     }
 
 }

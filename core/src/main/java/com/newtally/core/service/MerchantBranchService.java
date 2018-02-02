@@ -43,7 +43,7 @@ public class MerchantBranchService extends AbstractService implements IAuthentic
             throw e;
         }
     }
-
+   
     MerchantCounter _registerCounter(MerchantCounter counter) {
 
         Query query = em.createNativeQuery("INSERT INTO branch_counter ( " +

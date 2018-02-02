@@ -114,8 +114,8 @@
                     </div>
                     <div class="float-left">
                       <h4 class="small-text ">BTC</h4>
-                     <h4 class="bold-text">0.11223344</h4>
-                      <h4 class="small-text">($65,650)</h4>
+                     <h4 class="bold-text">0.0000</h4>
+                      <h4 class="small-text">($0)</h4>
                      
                     </div>
                   </div>
@@ -142,8 +142,8 @@
                     </div>
                     <div class="float-left">
                         <h4 class="small-text ">LTC</h4>
-                       <h4 class="bold-text">0.11223344</h4>
-                      <h4 class="small-text">($65,650)</h4>
+                       <h4 class="bold-text">0.0000</h4>
+                      <h4 class="small-text">($0)</h4>
                      
                     </div>
                   </div>
@@ -170,8 +170,8 @@
                     </div>
                     <div class="float-left">
                       <h4 class="small-text ">ETH</h4>
-                      <h4 class="bold-text">0.11223344</h4>
-                      <h4 class="small-text">($65,650)</h4>
+                      <h4 class="bold-text">0.0000</h4>
+                      <h4 class="small-text">($0)</h4>
                      
                     </div>
                   </div>
@@ -222,42 +222,7 @@
   <script src="js/chart.js"></script>
   <script src="js/maps.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-   <script language="javascript" type="text/javascript">
-    function init() {
-      $.ajax
-          ({
-            type: "GET",
-            url: "/new-tally/rest/merchants",
-            dataType: 'json',
-            async: false,
-            success: function(result){
-              console.log(result);
-              document.getElementById("merchant-name").innerHTML = result.response_data.name;
-              document.getElementById("merchant-name-footer").innerHTML = result.response_data.name;
-              document.getElementById("owner-name").innerHTML = result.response_data.ownerName;
-            }
-          });
-    }
-    init();
-    function logout() {
-      $.ajax
-          ({
-            type: "GET",
-            url: "/new-tally/rest/merchants/logout",
-            dataType: 'json',
-            async: false,
-            success: function(result){
-              console.log(result);
-              window.history.go(-window.history.length);
-              window.location.href = "login.html";
-            }
-          });
-          localStorage.removeItem('myCat');
-    }
-    window.onhashchange = function(e) {
-      e.preventDefault();
-    }
-  </script>
+   <script src="js/index.js"></script>
 </body>
 
 </html>
