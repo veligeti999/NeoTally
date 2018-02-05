@@ -442,4 +442,25 @@ public class MerchantService extends AbstractService implements IAuthenticator {
 	        }
 	        return discounts;
 	    }
+
+    public DiscountDto saveDisounts(DiscountDto discount) {
+        EntityTransaction trn = em.getTransaction();
+        trn.begin();
+        try {
+            Query query = em.createNativeQuery("UPDATE discount SET percentage = :percentage " +
+                    "WHERE id = :id");
+
+            query.setParameter("percentage", discount.getPercentage());
+            query.setParameter("id", discount.getId());
+            query.executeUpdate();
+
+            trn.commit();
+            return discount;
+
+        } catch (Exception e) {
+            trn.rollback();
+            throw e;
+        }
+        
+    }
 }

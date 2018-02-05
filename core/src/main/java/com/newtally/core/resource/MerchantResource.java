@@ -309,5 +309,27 @@ public class MerchantResource extends BaseResource {
 
         return Response.ok(gson_pretty.toJson(dto)).build();
     }
+    @RolesAllowed({Role.MERCHANT})
+    @POST
+    @Path("/currency/discounts")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response saveDiscounts(@Context HttpServletRequest req ){
+
+        ResponseDto dto=new ResponseDto();
+        try {
+        DiscountDto discount = gson_pretty.fromJson(new InputStreamReader(req.getInputStream()), DiscountDto.class);
+        discount=mrctServ.saveDisounts(discount);
+        
+        dto.setResponse_code(0);
+        dto.setResponse_message("Successfully update currency discounts");
+        dto.setResponse_data(discount);
+        } catch(Exception e) {
+            dto.setResponse_code(1);
+            dto.setResponse_message("Failed to update currency discounts");
+            dto.setResponse_data(e.getLocalizedMessage());
+        }
+
+        return Response.ok(gson_pretty.toJson(dto)).build();
+    }
 
 }

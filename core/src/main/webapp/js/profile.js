@@ -7,28 +7,14 @@ function init() {
             async: false,
             success: function(result){
               console.log(result);
-              document.getElementById("merchant-name").innerHTML = "Business Name : "+result.response_data.name;
-              document.getElementById("owner-name").innerHTML =  "Business Name Contact : "+ result.response_data.ownerName;
+              document.getElementById("merchant-name").innerHTML = result.response_data.name;
+              document.getElementById("owner-name").innerHTML =  result.response_data.ownerName;
+              document.getElementById("merchant-name-profile").innerHTML = "Business Name : "+result.response_data.name;
+              document.getElementById("owner-name-profile").innerHTML =  "Business Name Contact : "+ result.response_data.ownerName;
               document.getElementById("merchant-pan").innerHTML = "Business PAN : "+result.response_data.pan;
               document.getElementById("phone").innerHTML = "Business Name Contact : "+result.response_data.phone;
               document.getElementById("email").innerHTML = "Business Email : "+result.response_data.email;
 
-            }
-          });
-    }
-    init();
-  
-    function init() {
-      $.ajax
-          ({
-            type: "GET",
-            url: "/new-tally/rest/merchants",
-            dataType: 'json',
-            async: false,
-            success: function(result){
-              console.log(result);
-              document.getElementById("merchant-name").innerHTML = result.response_data.name;
-              document.getElementById("owner-name").innerHTML = result.response_data.ownerName;
             }
           });
     }
