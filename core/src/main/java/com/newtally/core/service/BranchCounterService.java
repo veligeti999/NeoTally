@@ -8,6 +8,7 @@ import com.newtally.core.dto.CounterDto;
 import com.newtally.core.dto.CurrencyDiscountDto;
 import com.newtally.core.model.CoinType;
 import com.newtally.core.model.Currency;
+import com.newtally.core.model.Device;
 import com.newtally.core.model.Merchant;
 import com.newtally.core.model.MerchantBranch;
 import com.newtally.core.model.MerchantConfiguration;
@@ -30,6 +31,7 @@ import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -250,5 +252,30 @@ public class BranchCounterService extends AbstractService implements IAuthentica
         Query query = em.createNativeQuery("select branch_id from branch_counter where id=:id");
         query.setParameter("id", counterId);
         return query.getResultList().get(0).toString();
+    }
+
+    public Device saveDevice(Device device) {
+        
+        EntityTransaction trn = em.getTransaction();
+        trn.begin();
+        try {
+        Query query = em.createNativeQuery("INSERT INTO devices ( " +
+                "deviceid, device_type, registration_key, user_id, created_date) " +
+                "VALUES( :deviceid, :device_type, :registration_key, :user_id, :created_date)");
+
+        query.setParameter("deviceid", device.getDeviceId());
+        query.setParameter("device_type", device.getDeviceType());
+        query.setParameter("registration_key", device.getRegistrationKey());
+        query.setParameter("user_id", device.getUserId());
+        query.setParameter("created_date", new Date());
+        
+        query.executeUpdate();
+        trn.commit();
+        return device;
+
+    } catch (Exception e) {
+        trn.rollback();
+        throw e;
+    }
     }
 }

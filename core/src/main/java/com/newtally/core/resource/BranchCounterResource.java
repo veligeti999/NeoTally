@@ -25,6 +25,7 @@ import com.newtally.core.ServiceFactory;
 import com.newtally.core.dto.CounterDto;
 import com.newtally.core.dto.CurrencyDiscountDto;
 import com.newtally.core.dto.ResponseDto;
+import com.newtally.core.model.Device;
 import com.newtally.core.model.MerchantCounter;
 import com.newtally.core.model.Order;
 import com.newtally.core.model.Role;
@@ -220,5 +221,30 @@ public class BranchCounterResource extends BaseResource{
                 dto.setResponse_data(e.getLocalizedMessage());
             }
         return Response.ok(gson.toJson(dto)).build();
+    }
+    
+    @RolesAllowed({Role.BRANCH_COUNTER})
+    @POST
+    @Path("/device")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response submitDevice(@Context HttpServletRequest req) {
+        
+        ResponseDto dto=new ResponseDto();
+        try {
+            Device device = gson_pretty.fromJson(new InputStreamReader(req.getInputStream()), Device.class);
+        
+            device = counterServ.saveDevice(device);
+        
+        dto.setResponse_code(0);
+        dto.setResponse_message("Device has registered successfully");
+        dto.setResponse_data(device);
+        } catch(Exception e) {
+            e.printStackTrace();
+            dto.setResponse_code(1);
+            dto.setResponse_message("Failed to register the device");
+            dto.setResponse_data(e.getLocalizedMessage());
+        }
+        return Response.ok(gson_pretty.toJson(dto)).build();
     }
 }
