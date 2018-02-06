@@ -1,9 +1,6 @@
 package com.newtally.core.resource;
 
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -26,7 +23,6 @@ import com.newtally.core.dto.CounterDto;
 import com.newtally.core.dto.CurrencyDiscountDto;
 import com.newtally.core.dto.ResponseDto;
 import com.newtally.core.model.Device;
-import com.newtally.core.model.MerchantCounter;
 import com.newtally.core.model.Order;
 import com.newtally.core.model.Role;
 import com.newtally.core.service.BranchCounterService;

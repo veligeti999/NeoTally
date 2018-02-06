@@ -162,7 +162,7 @@ public class BranchCounterService extends AbstractService implements IAuthentica
 
     public List<Order> getOrders(HashMap<String, Object> input) {
         Query query = em.createNativeQuery("SELECT  id, currency_amount, discount_amount,currency_id, "+
-                                            "currency_code, status FROM order_invoice where counter_id=:counter_id");
+                                            "currency_code, status, created_date FROM order_invoice where counter_id=:counter_id");
         query.setParameter("counter_id", input.get("counter_id"));
         List rs = query.getResultList();
         List<Order> orders=new ArrayList<>();
@@ -175,6 +175,7 @@ public class BranchCounterService extends AbstractService implements IAuthentica
             order.setCurrencyId((Integer)fields[3]);
             order.setCurrencyCode((String)fields[4]);
             order.setStatus(OrderStatus.valueOf((String)fields[5]));
+            order.setCreatedDate((Date)fields[6]);
             orders.add(order);
         }
         return orders;

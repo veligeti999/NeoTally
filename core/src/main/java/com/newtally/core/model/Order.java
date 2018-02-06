@@ -1,5 +1,7 @@
 package com.newtally.core.model;
 
+import java.util.Date;
+
 public class Order {
     private Long id;
     private String walletAddress;
@@ -10,6 +12,8 @@ public class Order {
     private Integer counterId;
     private OrderStatus status;
     private String qrCode;
+    private Date createdDate;
+    private Date modifiedDate;
     public Long getId() {
         return id;
     }
@@ -63,6 +67,18 @@ public class Order {
     }
     public void setQrCode(String qrCode) {
         this.qrCode = qrCode;
+    }
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+    }
+    public Date getModifiedDate() {
+        return modifiedDate;
+    }
+    public void setModifiedDate(Date modifiedDate) {
+        this.modifiedDate = modifiedDate;
     }
     @Override
     public String toString() {

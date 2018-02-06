@@ -1,5 +1,6 @@
 package com.newtally.core.service;
 
+import java.util.Date;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
@@ -32,8 +33,8 @@ public class OrderInvoiceService extends AbstractService{
         trn.begin();
         try {
             String q="INSERT INTO order_invoice ( " +
-                    "id, wallet_address, currency_amount, discount_amount, currency_id, currency_code, counter_id, status) " +
-                    "VALUES( :id, :wallet_address, :currency_amount, :discount_amount, :currency_id, :currency_code, :counter_id, :status)";
+                    "id, wallet_address, currency_amount, discount_amount, currency_id, currency_code, counter_id, status, created_date) " +
+                    "VALUES( :id, :wallet_address, :currency_amount, :discount_amount, :currency_id, :currency_code, :counter_id, :status, :created_date)";
             Query query = em.createNativeQuery(q);
 
             order.setId(nextId());
@@ -66,15 +67,17 @@ public class OrderInvoiceService extends AbstractService{
 		query.setParameter("currency_code", order.getCurrencyCode());
 		query.setParameter("status", OrderStatus.Pending.toString());
 		query.setParameter("counter_id", order.getCounterId());
+		query.setParameter("created_date", new Date());
 	}
     
     public void cancelOrders(long id) {
         EntityTransaction trn = em.getTransaction();
         trn.begin();
         try {
-        Query query = em.createNativeQuery("Update  order_invoice set  status=:status where id=:id");
+        Query query = em.createNativeQuery("update  order_invoice set  status=:status, modified_date=:modified_date  where id=:id");
         query.setParameter("id", id);
         query.setParameter("status", OrderStatus.Cancel.toString());
+        query.setParameter("modified_date", new Date());
         query.executeUpdate();
         trn.commit();
 
@@ -89,10 +92,11 @@ public class OrderInvoiceService extends AbstractService{
 		txn.begin();
 		try {
 			Query query = em.createNativeQuery(
-					"update order_invoice set status=:status, transaction_id=:transactionId where wallet_address=:address");
+					"update order_invoice set status=:status, transaction_id=:transactionId, modified_date=:modified_date where wallet_address=:address");
 			query.setParameter("status", status);
 			query.setParameter("transactionId", transactionId);
 			query.setParameter("address", address);
+			query.setParameter("modified_date", new Date());
 			query.executeUpdate();
 			txn.commit();
 		} catch (Exception e) {
@@ -106,9 +110,10 @@ public class OrderInvoiceService extends AbstractService{
 		txn.begin();
 		try {
 			Query query = em
-					.createNativeQuery("update order_invoice set status=:status where transaction_id=:transactionId");
+					.createNativeQuery("update order_invoice set status=:status, modified_date=:modified_date where transaction_id=:transactionId");
 			query.setParameter("status", status);
 			query.setParameter("transactionId", transactionId);
+			query.setParameter("modified_date", new Date());
 			query.executeUpdate();
 			txn.commit();
 		} catch (Exception e) {

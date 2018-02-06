@@ -353,7 +353,7 @@ public class MerchantService extends AbstractService implements IAuthenticator {
                     .map(MerchantCounter::getId).collect(Collectors.toList()));
         }
         System.out.println("counterIds:::"+counterIds.size());
-        Query queryForOrders = em.createNativeQuery("SELECT  id, currency_amount, discount_amount,currency_id, currency_code, status FROM order_invoice " +
+        Query queryForOrders = em.createNativeQuery("SELECT  id, currency_amount, discount_amount,currency_id, currency_code, status, created_date FROM order_invoice " +
                 "WHERE counter_id IN :counterIds");
         queryForOrders.setParameter("counterIds", counterIds);
         List rs = queryForOrders.getResultList();
@@ -369,7 +369,7 @@ public class MerchantService extends AbstractService implements IAuthenticator {
             order.setCurrencyId((Integer)fields[3]);
             order.setCurrencyCode((String)fields[4]);
             order.setStatus(OrderStatus.valueOf((String)fields[5]));
-            
+            order.setCreatedDate((Date)fields[6]);
             orders.add(order);
         }
         return orders;
