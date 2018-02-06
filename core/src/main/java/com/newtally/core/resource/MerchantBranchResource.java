@@ -97,9 +97,12 @@ public class MerchantBranchResource extends BaseResource{
 	@PermitAll
 	@POST
 	@Path("/notification")
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response receiveNotifications(@Context HttpServletRequest req) {
 		try {
+			System.out.println("event type"+req.getHeader("X-Eventtype"));
+			System.out.println("event Id"+req.getHeader("X-Eventid"));
 			System.out.println("hit");
 			LinkedTreeMap event = gson.fromJson(new InputStreamReader(req.getInputStream()), LinkedTreeMap.class);
 			System.out.println("event" + event);
