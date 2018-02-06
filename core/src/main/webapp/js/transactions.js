@@ -19,10 +19,10 @@
                                                                     { "data": "discountAmount" },
                                                                     { "data":  function (data, type, full) { return new Date(data.createdDate);}},
                                                                     { "data": "status" },
-                                                                     { "data": function(data, type, full) {
+                                                                    { "data": function(data, type, full) {
                                                                             return '<img src="images/icons/right.png"> <span style="margin-left: 10px;"><button type="button" class="btn btn-primary mr-2">Details</button></span>';
                                                                           }
-                                                                      }
+                                                                    }
                                                                 ]
                                                             });
                                                             }

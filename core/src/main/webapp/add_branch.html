@@ -114,50 +114,50 @@
                                             <div class="card-body px-5 py-5">
                                               <h3 class="card-title text-left mb-3">Add Branch</h3>
 
-                                               <form onsubmit="return false" class="form-horizontal">
+                                               <form onsubmit="return false" name="registerBranch" class="form-horizontal">
                                                     <div class="form-group">
-                                                      <input type="text" id="name" class="form-control p_input " placeholder="Branch Name">
+                                                      <input type="text" id="name" name="name" class="form-control p_input " placeholder="Branch Name">
                                                     </div>
                                                      <div class="form-group">
-                                                      <input type="text" id="manager-name" class="form-control p_input" placeholder="Manager Name">
+                                                      <input type="text" id="manager-name" name="managerName" class="form-control p_input" placeholder="Manager Name">
                                                     </div>
                                                     <div class="form-group">
-                                                      <input type="text" id="email" class="form-control p_input" placeholder="Email">
+                                                      <input type="text" id="email" name="email" class="form-control p_input" placeholder="Email">
                                                     </div>
                                                     <div class="form-group">
-                                                      <input type="text" id="phone" class="form-control p_input" placeholder="Phone">
+                                                      <input type="text" id="phone" name="phone" class="form-control p_input" placeholder="Phone">
                                                     </div>
                                                     <div class="form-group">
-                                                      <input type="password" id="password" class="form-control p_input" placeholder="Password">
+                                                      <input type="password" id="password" name="password" class="form-control p_input" placeholder="Password">
                                                     </div>
                                                     <div class="form-group">
-                                                      <input type="password" id="confirmPassword" class="form-control p_input" placeholder="Confirm Password">
+                                                      <input type="password" id="confirmPassword" name="confirmPassword" class="form-control p_input" placeholder="Confirm Password">
                                                     </div>
                                                     <div class="form-group">
-                                                      <input type="text" id="address" class="form-control p_input" placeholder="Address">
+                                                      <input type="text" id="address" name="address" class="form-control p_input" placeholder="Address">
                                                     </div>
                                                      <div class="form-group">
-                                                      <input type="text" id="city" class="form-control p_input" placeholder="City">
+                                                      <input type="text" id="city" name="city" class="form-control p_input" placeholder="City">
                                                     </div>
                                                      <div class="form-group">
-                                                      <select type="dropdown" id="state" class="form-control p_input" placeholder="State">
+                                                      <select type="dropdown" id="state" name="state" class="form-control p_input" placeholder="State">
                                                         <option value="">-State-</option>
                                                         <option value="Andhra Pradesh">Andhra Pradesh</option>
                                                         <option value="Telangana">Telangana</option>
                                                       </select>
                                                     </div>
                                                      <div class="form-group">
-                                                      <select type="text" id="country" class="form-control p_input" placeholder="Country">
+                                                      <select type="text" id="country" name="country" class="form-control p_input" placeholder="Country">
                                                         <option value="">-Country-</option>
                                                         <option value="India">India</option>
                                                         <option value="USA">United States of America</option>
                                                       </select>
                                                     </div>
                                                     <div class="form-group">
-                                                      <input type="text" id="zip" class="form-control p_input" placeholder="Zip Code">
+                                                      <input type="text" id="zip" name="zip" class="form-control p_input" placeholder="Zip Code">
                                                     </div>
                                                     <div class="text-center">
-                                                      <button class="btn btn-primary btn-block enter-btn mb-4" onclick="registerBranch()">Submit</button>
+                                                      <button class="btn btn-primary btn-block enter-btn mb-4">Submit</button>
                                                     </div>
                                                   
                                                   </form>
@@ -202,6 +202,7 @@
 
                                             <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
                                             <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+                                            <script src="https://cdn.jsdelivr.net/jquery.validation/1.15.1/jquery.validate.min.js"></script>
                                             <script src="js/add_branch.js"></script>
                                             </body>
 
