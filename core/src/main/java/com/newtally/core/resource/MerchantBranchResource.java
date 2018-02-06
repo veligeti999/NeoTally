@@ -2,6 +2,8 @@ package com.newtally.core.resource;
 
 import java.io.InputStreamReader;
 import java.util.List;
+
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -14,6 +16,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.http.protocol.HTTP;
+
+import com.google.gson.internal.LinkedTreeMap;
 import com.newtally.core.ServiceFactory;
 import com.newtally.core.dto.ResponseDto;
 import com.newtally.core.model.MerchantBranch;
@@ -90,4 +95,19 @@ public class MerchantBranchResource extends BaseResource{
         }
         return Response.ok(gson.toJson(dto)).build();
     }
+
+	@PermitAll
+	@POST
+	@Path("/notification")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response receiveNotifications(@Context HttpServletRequest req) {
+		try {
+			System.out.println("hit");
+			LinkedTreeMap event = gson.fromJson(new InputStreamReader(req.getInputStream()), LinkedTreeMap.class);
+			System.out.println("event" + event);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Response.ok().build();
+	}
 }

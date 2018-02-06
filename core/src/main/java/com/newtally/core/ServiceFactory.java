@@ -14,6 +14,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.FlushModeType;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.params.RegTestParams;
+import org.bitcoinj.params.TestNet3Params;
 import org.bitcoinj.store.BlockStore;
 import org.bitcoinj.store.BlockStoreException;
 import org.bitcoinj.store.SPVBlockStore;
@@ -42,12 +43,8 @@ public class ServiceFactory {
         //We will change this to a different block-store based on our requirement
         //The environment is going to become MainNet eventually when moving to production
         //This is a one time operation and is going to take time(not sure how long)
-        params = RegTestParams.get();
-        //deleting this file is only for testing..the deletion process will be handled in a separate class later
-        File blockStoreFile=new File("block_store"); 
-        if(blockStoreFile.exists()) {
-            blockStoreFile.delete();
-        }
+        params = TestNet3Params.get();
+        File blockStoreFile=new File("block_store");
         blockStore = new SPVBlockStore(params, blockStoreFile);
         bitcoinConfiguration = new BitcoinConfiguration(params, blockStore);
         walletManager = new WalletManager(bitcoinConfiguration, sessionContext);
