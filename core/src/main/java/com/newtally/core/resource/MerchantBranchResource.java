@@ -16,8 +16,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.http.protocol.HTTP;
-
 import com.google.gson.internal.LinkedTreeMap;
 import com.newtally.core.ServiceFactory;
 import com.newtally.core.dto.ResponseDto;
