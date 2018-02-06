@@ -43,7 +43,7 @@ public class MerchantBranchService extends AbstractService implements IAuthentic
             throw e;
         }
     }
-
+   
     MerchantCounter _registerCounter(MerchantCounter counter) {
 
         Query query = em.createNativeQuery("INSERT INTO branch_counter ( " +
@@ -120,16 +120,28 @@ public class MerchantBranchService extends AbstractService implements IAuthentic
         }
     }
 
-    public boolean authenticate(String merchantId, String password) {
+    public boolean authenticate(String username, String password) {
         Query query = em.createNativeQuery("SELECT  count(*) FROM merchant_branch " +
-                "WHERE id = :id AND password = :password");
+                "WHERE email = :email AND password = :password");
 
-        query.setParameter("id", Long.parseLong(merchantId));
+        query.setParameter("email", username);
         query.setParameter("password", password);
 
         BigInteger count = (BigInteger) query.getSingleResult();
 
         return count.intValue() == 1;
+    }
+    
+    public String getUserId(String username, String password) {
+        Query query = em.createNativeQuery("SELECT  id FROM merchant_branch " +
+                "WHERE email = :email AND password = :password");
+
+        query.setParameter("email", username);
+        query.setParameter("password", password);
+
+        BigInteger id = (BigInteger) query.getSingleResult();
+
+        return id.toString();
     }
 
 	public String getMerchantIdByBranchId(long branchId) {

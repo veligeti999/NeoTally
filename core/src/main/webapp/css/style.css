@@ -14022,6 +14022,12 @@ input {
 .tab-content li{padding-bottom:10px;}
 
 
+#inlineRadio1, #inlineRadio2, #inlinecheck1{
+    margin-top : -0.70em !important;
+}
 
+#inlinecheck2{
+    padding-left: 18px;
 
+}
 /*# sourceMappingURL=maps/style.css.map */

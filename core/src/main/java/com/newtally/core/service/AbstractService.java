@@ -1,5 +1,7 @@
 package com.newtally.core.service;
 
+import com.blockcypher.utils.gson.GsonFactory;
+import com.google.gson.Gson;
 import com.newtally.core.model.PhysicalAddress;
 import com.newtally.core.resource.ThreadContext;
 
@@ -14,6 +16,7 @@ public abstract class AbstractService {
     protected final EntityManager em;
     protected final ThreadContext ctx;
     private final Random random = new Random();
+    protected final Gson gson = GsonFactory.getGson();
 
     public AbstractService(EntityManager em, ThreadContext ctx) {
         this.em = em;
@@ -46,7 +49,7 @@ public abstract class AbstractService {
     }
 
     public long nextId() {
-        return Math.abs(random.nextLong());
+        return Math.abs(random.nextInt());
     }
 
     protected String generateNewPassword() {

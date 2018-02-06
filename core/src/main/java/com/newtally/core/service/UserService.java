@@ -186,16 +186,28 @@ public class UserService extends  AbstractService implements IAuthenticator {
         return null;
     }
 
-    public boolean authenticate(String id, String password) {
+    public boolean authenticate(String username, String password) {
         Query query = em.createNativeQuery("SELECT  count(*) FROM user " +
-                "WHERE id = :id AND password = :password");
+                "WHERE email = :email AND password = :password");
 
-        query.setParameter("id", Long.parseLong(id));
+        query.setParameter("email", username);
         query.setParameter("password", password);
 
         BigInteger count = (BigInteger) query.getSingleResult();
 
         return count.intValue() == 1;
+    }
+    
+    public String getUserId(String username, String password) {
+        Query query = em.createNativeQuery("SELECT  id FROM user " +
+                "WHERE email = :email AND password = :password");
+
+        query.setParameter("email", username);
+        query.setParameter("password", password);
+
+        BigInteger id = (BigInteger) query.getSingleResult();
+
+        return id.toString();
     }
 
 }

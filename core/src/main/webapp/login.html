@@ -11,9 +11,6 @@
   <link rel="stylesheet" href="node_modules/tally-flag-icon-css/css/flag-icon.min.css" />
   <link rel="stylesheet" href="css/style.css" />
   <link rel="shortcut icon" href="images/favicon.png" />
-  
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  
 </head>
 <body>
   <div class="container-scroller">
@@ -24,6 +21,18 @@
             <div class="card-body px-5 py-5">
               <h3 class="card-title text-left mb-3">Login</h3>
               <form onsubmit="return false">
+                <form>
+                <div class="form-group d-flex align-items-center justify-content-between">
+                  <label class="form-check-label" for="userType">User Type:</label>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="mrct" checked>
+                    <label class="form-check-label" for="userType">Merchant</label>
+                  </div>
+                  <div class="form-check form-check-inline disabled">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="bmngr">
+                    <label class="form-check-label" for="userType">Branch Manager</label>
+                  </div>
+                </div>
                 <div class="form-group">
                   <input type="text" id="username" class="form-control p_input" placeholder="Username">
                 </div>
@@ -31,7 +40,7 @@
                   <input type="password" id="password" class="form-control p_input" placeholder="Password">
                 </div>
                 <div class="form-group d-flex align-items-center justify-content-between">
-                  <div class="form-check"><label><input type="checkbox" class="form-check-input">Remember me</label></div>
+                  <div class="form-check form-check-inline" id="inlinecheck2"><input type="checkbox" id="inlinecheck1" class="form-check-input"><lable>Remember me</lable></div>
                   <a href="signup.html" class="signup">Signup</a>
                   <a href="#" class="forgot-pass">Forgot password</a>
                 </div>
@@ -46,34 +55,8 @@
       </div>
     </div>
   </div>
-  <script language="javascript" type="text/javascript">
-    if(localStorage.getItem('myCat')){
-        window.location.href = "index.html";
-      }
-    function login() {
-      var username = document.getElementById('username').value;
-      var password = document.getElementById('password').value;
-      console.log(username+":::"+password)
-      $.ajax
-          ({
-            type: "GET",
-            url: "/new-tally/rest/merchants",
-            dataType: 'json',
-            async: false,
-            headers: {
-              "Authorization": "Basic " + btoa("mrct:"+username + ":" + password)
-            },
-            success: function(result){
-              console.log(result);
-              localStorage.setItem('myCat', 'Tom');
-              window.history.go(-window.history.length);
-              window.location.href = "index.html";
-            }
-          });
-    }
-  </script>
-
-  
+  <script src="node_modules/tally-jquery/dist/jquery.min.js"></script>
+  <script  src="js/login.js"> </script>
 </body>
 
 </html>

@@ -102,12 +102,14 @@
           </ul>
         </nav>
 
+
         <!-- partial -->
         <div class="content-wrapper">
           <h3 class="page-heading mb-4"> Discount Config</h3>
-        <div class="col-sm-6">
-          
-      <div class="form-group row">
+        <div id="config-discounts" class="col-sm-6" >
+         
+
+     <!-- <div class="form-group row">
           <label for="example-text-input" class="col-2 col-form-label">Ethirum <span style="color: red;"> 8%</span></label>
   
   
@@ -126,7 +128,9 @@
   </div>
 </div>         
 
-            
+    
+
+
              <div class="form-group row">
           <label for="example-text-input" class="col-2 col-form-label">Litecoin</label>
   
@@ -160,7 +164,7 @@
         
 </div>    
             
-            
+   -->          
 
 </div>
           
@@ -191,50 +195,9 @@
   <script src="js/misc.js"></script>
   <script src="js/chart.js"></script>
   <script src="js/maps.js"></script>
-   <script language="javascript" type="text/javascript">
-    function init() {
-      $.ajax
-          ({
-            type: "GET",
-            url: "/new-tally/rest/merchants",
-            dataType: 'json',
-            async: false,
-            success: function(result){
-              console.log(result);
-              document.getElementById("merchant-name").innerHTML = result.response_data.name;
-              document.getElementById("owner-name").innerHTML = result.response_data.ownerName;
-            }
-          });
-    }
-    init();
-    function logout() {
-      $.ajax
-          ({
-            type: "GET",
-            url: "/new-tally/rest/merchants/logout",
-            dataType: 'json',
-            async: false,
-            success: function(result){
-              console.log(result);
-              window.history.go(-window.history.length);
-              window.location.href = "login.html";
-            }
-          });
-          localStorage.removeItem('myCat');
-    }
-    window.onhashchange = function(e) {
-      e.preventDefault();
-      /*var oldURL = e.oldURL.split('#')[1];
-      var newURL = e.newURL.split('#')[1];
-
-      if (oldURL == 'share') {
-        $('.share').fadeOut();
-        
-        return false;
-      }*/
-      //console.log('old:'+oldURL+' new:'+newURL);
-    }
-  </script>
+  <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+  <script src="js/discountConfig.js"></script>
 </body>
 
 </html>

@@ -8,6 +8,7 @@ import com.newtally.core.dto.CounterDto;
 import com.newtally.core.dto.CurrencyDiscountDto;
 import com.newtally.core.model.CoinType;
 import com.newtally.core.model.Currency;
+import com.newtally.core.model.Device;
 import com.newtally.core.model.Merchant;
 import com.newtally.core.model.MerchantBranch;
 import com.newtally.core.model.MerchantConfiguration;
@@ -30,13 +31,13 @@ import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class BranchCounterService extends AbstractService implements IAuthenticator {
     
-    protected final Gson gson = GsonFactory.getGson();
 
     public BranchCounterService(EntityManager em, ThreadContext ctx) {
         super(em, ctx);
@@ -52,7 +53,7 @@ public class BranchCounterService extends AbstractService implements IAuthentica
         return null;
     }
 
-    public boolean authenticate(String merchantId, String password) {
+    public boolean authenticate(String username, String password) {
         Query query = em.createNativeQuery("SELECT  count(*) FROM branch_counter " +
                 "WHERE password = :password AND active = true");
 
@@ -61,6 +62,11 @@ public class BranchCounterService extends AbstractService implements IAuthentica
         BigInteger count = (BigInteger) query.getSingleResult();
 
         return count.intValue() == 1;
+    }
+    
+    public String getUserId(String username, String password) {
+
+        return password;
     }
     
     public MerchantCounter getCurrentCounter() {
@@ -156,7 +162,7 @@ public class BranchCounterService extends AbstractService implements IAuthentica
 
     public List<Order> getOrders(HashMap<String, Object> input) {
         Query query = em.createNativeQuery("SELECT  id, currency_amount, discount_amount,currency_id, "+
-                                            "currency_code, status FROM order_invoice where counter_id=:counter_id");
+                                            "currency_code, status, created_date FROM order_invoice where counter_id=:counter_id");
         query.setParameter("counter_id", input.get("counter_id"));
         List rs = query.getResultList();
         List<Order> orders=new ArrayList<>();
@@ -169,6 +175,7 @@ public class BranchCounterService extends AbstractService implements IAuthentica
             order.setCurrencyId((Integer)fields[3]);
             order.setCurrencyCode((String)fields[4]);
             order.setStatus(OrderStatus.valueOf((String)fields[5]));
+            order.setCreatedDate((Date)fields[6]);
             orders.add(order);
         }
         return orders;
@@ -246,5 +253,30 @@ public class BranchCounterService extends AbstractService implements IAuthentica
         Query query = em.createNativeQuery("select branch_id from branch_counter where id=:id");
         query.setParameter("id", counterId);
         return query.getResultList().get(0).toString();
+    }
+
+    public Device saveDevice(Device device) {
+        
+        EntityTransaction trn = em.getTransaction();
+        trn.begin();
+        try {
+        Query query = em.createNativeQuery("INSERT INTO devices ( " +
+                "deviceid, device_type, registration_key, user_id, created_date) " +
+                "VALUES( :deviceid, :device_type, :registration_key, :user_id, :created_date)");
+
+        query.setParameter("deviceid", device.getDeviceId());
+        query.setParameter("device_type", device.getDeviceType());
+        query.setParameter("registration_key", device.getRegistrationKey());
+        query.setParameter("user_id", device.getUserId());
+        query.setParameter("created_date", new Date());
+        
+        query.executeUpdate();
+        trn.commit();
+        return device;
+
+    } catch (Exception e) {
+        trn.rollback();
+        throw e;
+    }
     }
 }
