@@ -114,15 +114,15 @@
                                             <div class="card-body px-5 py-5">
                                               <h3 class="card-title text-left mb-3">Add Counter</h3>
 
-                                               <form onsubmit="return false" class="form-horizontal">
+                                               <form onsubmit="return false" name="registerCounter" class="form-horizontal">
                                                     <div class="form-group">
-                                                      <input type="text" id="email" class="form-control p_input" placeholder="Email">
+                                                      <input type="text" id="email" name="email" class="form-control p_input" placeholder="Email">
                                                     </div>
                                                     <div class="form-group">
-                                                      <input type="text" id="phone" class="form-control p_input" placeholder="Phone">
+                                                      <input type="text" id="phone" name="phone" class="form-control p_input" placeholder="Phone">
                                                     </div>
                                                     <div class="text-center">
-                                                      <button class="btn btn-primary btn-block enter-btn mb-4" onclick="registerCounter()">Submit</button>
+                                                      <button class="btn btn-primary btn-block enter-btn mb-4">Submit</button>
                                                     </div>
                                                   
                                                   </form>
@@ -167,7 +167,7 @@
 
                                             <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
                                             <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
-                                            <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.7/angular.min.js"></script>
+                                            <script src="https://cdn.jsdelivr.net/jquery.validation/1.15.1/jquery.validate.min.js"></script>
                                             <script src="js/add_counter.js"></script>
                                             </body>
 
