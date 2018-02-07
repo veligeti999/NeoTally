@@ -34,6 +34,7 @@ import java.util.Map;
 public class MerchantResource extends BaseResource {
 
     private final MerchantService mrctServ = ServiceFactory.getInstance().getMerchantService();
+    private final ThreadContext context = ServiceFactory.getInstance().getSessionContext();
 
     @PermitAll
     @POST
@@ -341,13 +342,12 @@ public class MerchantResource extends BaseResource {
 
 	@RolesAllowed({ Role.MERCHANT })
 	@GET
-	@Path("/{merchantId}/balance")
+	@Path("/balance")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getWalletBalance(@PathParam("merchantId") long merchantId) {
+	public Response getWalletBalance() {
 		ResponseDto response = new ResponseDto();
-		long balance = 0;
 		try {
-			CoinDto coin = mrctServ.getMerchantWalletBalance(merchantId);
+			CoinDto coin = mrctServ.getMerchantWalletBalance(context.getCurrentMerchantId());
 			response.setResponse_code(0);
 			response.setResponse_message("Successfully Retrieved Wallet Balance");
 			response.setResponse_data(coin);
