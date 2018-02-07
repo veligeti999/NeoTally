@@ -21,6 +21,7 @@ import com.newtally.core.ServiceFactory;
 import com.newtally.core.dto.ResponseDto;
 import com.newtally.core.model.MerchantBranch;
 import com.newtally.core.model.MerchantCounter;
+import com.newtally.core.model.Order;
 import com.newtally.core.model.Role;
 import com.newtally.core.service.MerchantBranchService;
 
@@ -93,6 +94,48 @@ public class MerchantBranchResource extends BaseResource{
         }
         return Response.ok(gson.toJson(dto)).build();
     }
+    
+    @RolesAllowed({Role.BRANCH_MANAGER})
+    @GET
+    @Path("/counters")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCurrentBranchCounters(@Context HttpServletRequest req) {
+        
+        ResponseDto dto=new ResponseDto();
+        try {
+        List<MerchantCounter> counters = branchServ.getCounters();
+        
+        dto.setResponse_code(0);
+        dto.setResponse_message("successfully get the branch counters");
+        dto.setResponse_data(counters);
+        } catch(Exception e) {
+            dto.setResponse_code(1);
+            dto.setResponse_message("Failed to get the branch counters");
+            dto.setResponse_data(e.getLocalizedMessage());
+        }
+        return Response.ok(gson.toJson(dto)).build();
+    }
+    
+    @RolesAllowed({Role.BRANCH_MANAGER})
+    @GET
+    @Path("/transactions")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCurrentBranchTransactions(@Context HttpServletRequest req) {
+        
+        ResponseDto dto=new ResponseDto();
+        try {
+        List<Order> counters = branchServ.getTransactions();
+        
+        dto.setResponse_code(0);
+        dto.setResponse_message("successfully get the branch counters");
+        dto.setResponse_data(counters);
+        } catch(Exception e) {
+            dto.setResponse_code(1);
+            dto.setResponse_message("Failed to get the branch counters");
+            dto.setResponse_data(e.getLocalizedMessage());
+        }
+        return Response.ok(gson.toJson(dto)).build();
+    }
 
 	@PermitAll
 	@POST
@@ -111,4 +154,6 @@ public class MerchantBranchResource extends BaseResource{
 		}
 		return Response.ok().build();
 	}
+	
+	
 }

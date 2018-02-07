@@ -49,7 +49,9 @@ $(function() {
       var username = document.getElementById('username').value;
       var password = document.getElementById('password').value;
       var usertype = $('input[name=inlineRadioOptions]:checked').val();
+      localStorage.setItem('usertype', usertype);
       console.log(username+":::"+password+"::::"+usertype)
+      if(usertype=="mrct"){
       $.ajax
           ({
             type: "GET",
@@ -66,6 +68,25 @@ $(function() {
               window.location.href = "index.html";
             }
           });
+        }
+        else{
+          $.ajax
+          ({
+            type: "GET",
+            url: "/new-tally/rest/branches",
+            dataType: 'json',
+            async: false,
+            headers: {
+              "Authorization": "Basic " + btoa(usertype+":"+username + ":" + password)
+            },
+            success: function(result){
+              console.log(result);
+              localStorage.setItem('myCat', 'Tom');
+              window.history.go(-window.history.length);
+              window.location.href = "branch_index.html";
+            }
+          });
+        }
     }
   });
 });

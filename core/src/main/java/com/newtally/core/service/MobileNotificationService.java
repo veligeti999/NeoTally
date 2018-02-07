@@ -10,13 +10,13 @@ import com.google.gson.Gson;
 import com.newtally.core.dto.MobileNotification;
 import com.newtally.core.dto.Notification;
 
-public class MobileNotificationService{
+public class MobileNotificationService {
 
    
  
 // Method to send Notifications from server to client end.
 
-    public final static String AUTH_KEY_FCM = "xyxyxyxxyxyxyxyxyxyxyxy";
+    public final static String AUTH_KEY_FCM = "AAAAqdFLnhA:APA91bHTADbLMqh3pxoG_caBNorzQ0bqbzIPWE1k_6cSStMniYzJ9QWoc3D1EGlONDZ9mlb6zBf2aHpQFJdnJiEeejog0zQ78sG9S5wZEcKs9rJvNBpDEDbg0004irM8mv3vtoy_9bVI";
     public final static String API_URL_FCM = "https://fcm.googleapis.com/fcm/send";
     public final static Gson gson = GsonFactory.getGson();
 
@@ -43,7 +43,7 @@ public class MobileNotificationService{
        mobileNotification.setNotification(notification);
 
        OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-       System.out.println(gson.toJson(mobileNotification).toString());
+       System.out.println(gson.toJson(mobileNotification));
        wr.write(gson.toJson(mobileNotification));
        wr.flush();
        conn.getInputStream();
