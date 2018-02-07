@@ -1,6 +1,7 @@
 package com.newtally.core.resource;
 
 import com.newtally.core.ServiceFactory;
+import com.newtally.core.dto.CoinDto;
 import com.newtally.core.dto.DiscountDto;
 import com.newtally.core.dto.ResponseDto;
 import com.newtally.core.model.MerchantBranch;
@@ -342,15 +343,20 @@ public class MerchantResource extends BaseResource {
 	@GET
 	@Path("/{merchantId}/balance")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Long getWalletBalance(@PathParam("merchantId") long merchantId) {
+	public Response getWalletBalance(@PathParam("merchantId") long merchantId) {
+		ResponseDto response = new ResponseDto();
 		long balance = 0;
 		try {
-			balance = mrctServ.getMerchantWalletBalance(merchantId);
-			System.out.println("balance" + balance);
+			CoinDto coin = mrctServ.getMerchantWalletBalance(merchantId);
+			response.setResponse_code(0);
+			response.setResponse_message("Successfully Retrieved Wallet Balance");
+			response.setResponse_data(coin);
 		} catch (Exception e) {
-
+			response.setResponse_code(1);
+			response.setResponse_message("Failed To Retrieve Wallet Balance");
+			response.setResponse_data(e.getLocalizedMessage());
 		}
-		return balance;
+		return Response.ok(gson_pretty.toJson(response)).build();
 	}
 
 }
