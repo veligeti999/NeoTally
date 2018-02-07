@@ -27,6 +27,7 @@ import org.bitcoinj.wallet.Wallet;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.math.BigInteger;
 import java.nio.file.AccessDeniedException;
 import java.util.*;
 
@@ -132,6 +133,21 @@ public class PreAuthenticationFilter implements ContainerRequestFilter {
 						e.printStackTrace();
 					}
                 }
+				if (userType.equals(Role.MERCHANT)) {
+					// fetch all the branches for a merchant and initialize
+					// wallets for them.
+					// This is for calculating the balances
+					List<BigInteger> branchIds = branchService.getBranchIdsByMerchantId(Long.valueOf(userId));
+					for (BigInteger branchId : branchIds) {
+						try {
+							setPrincipalOnThreadContext(Role.BRANCH_MANAGER, branchId.toString());
+							initializeWallet(branchId.toString(), "");
+						} catch (UnreadableWalletException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}
                 return;
             }
         }

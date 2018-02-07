@@ -9,7 +9,9 @@ import com.newtally.core.model.Order;
 import com.newtally.core.model.Role;
 import com.newtally.core.model.Discount;
 import com.newtally.core.model.Merchant;
+import com.newtally.core.service.MerchantBranchService;
 import com.newtally.core.service.MerchantService;
+import com.newtally.core.wallet.WalletManager;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
@@ -19,9 +21,13 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import org.bitcoinj.wallet.Wallet;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.Map;
 
 @Path("/merchants")
 public class MerchantResource extends BaseResource {
@@ -331,5 +337,20 @@ public class MerchantResource extends BaseResource {
 
         return Response.ok(gson_pretty.toJson(dto)).build();
     }
+
+	@RolesAllowed({ Role.MERCHANT })
+	@GET
+	@Path("/{merchantId}/balance")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Long getWalletBalance(@PathParam("merchantId") long merchantId) {
+		long balance = 0;
+		try {
+			balance = mrctServ.getMerchantWalletBalance(merchantId);
+			System.out.println("balance" + balance);
+		} catch (Exception e) {
+
+		}
+		return balance;
+	}
 
 }

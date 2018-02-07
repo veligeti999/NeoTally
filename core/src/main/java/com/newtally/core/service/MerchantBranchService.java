@@ -173,4 +173,10 @@ public class MerchantBranchService extends AbstractService implements IAuthentic
 		query.setParameter("branchId", branchId);
 		return (int) query.getResultList().get(0);
 	}
+
+	public List<BigInteger> getBranchIdsByMerchantId(long merchantId) {
+		Query query = em.createNativeQuery("select id from merchant_branch where merchant_id=:merchant_id");
+		query.setParameter("merchant_id", merchantId);
+		return query.getResultList();
+	}
 }

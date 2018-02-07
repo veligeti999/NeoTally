@@ -2,6 +2,7 @@ package com.newtally.core.service;
 
 import com.newtally.core.util.CollectionUtil;
 import com.newtally.core.util.RandomNumberGenerator;
+import com.newtally.core.wallet.WalletManager;
 import com.newtally.core.ServiceFactory;
 import com.newtally.core.dto.DiscountDto;
 import com.newtally.core.dto.ResponseDto;
@@ -12,20 +13,8 @@ import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
 import org.bitcoinj.crypto.MnemonicCode;
 import org.bitcoinj.crypto.MnemonicException.MnemonicLengthException;
-import org.w3c.dom.css.Counter;
-
-import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,7 +24,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MerchantService extends AbstractService implements IAuthenticator {
-
 
     public MerchantService(EntityManager em, ThreadContext ctx ) {
         super(em, ctx);
@@ -463,4 +451,18 @@ public class MerchantService extends AbstractService implements IAuthenticator {
         }
         
     }
+
+	/**
+	 * The merchant wallet balance is the summation of all the merchant related
+	 * branch wallets Right now it's only for Bitcoin. Litecoin and ethereum are
+	 * on the way
+	 *
+	 * @param merchantId
+	 * @return
+	 */
+	public Long getMerchantWalletBalance(long merchantId) {
+		List<BigInteger> branchIds = ServiceFactory.getInstance().getMerchantBranchService()
+				.getBranchIdsByMerchantId(merchantId);
+		return ServiceFactory.getInstance().getWalletManager().getBitcoinWalletBalance(branchIds);
+	}
 }
