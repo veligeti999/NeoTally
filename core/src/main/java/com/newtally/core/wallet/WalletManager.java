@@ -92,7 +92,7 @@ public class WalletManager {
 	}
 	
 	public long getBalance(Wallet wallet){
-		return wallet.getBalance().value;
+		return wallet.getBalance().getValue();
 	}
 
 	/**

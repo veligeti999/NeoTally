@@ -5,7 +5,7 @@ public class CoinDto {
 	private String coinName;
     private String coinCode;
     private Double coinValue;
-    private Long coinValueInINR;
+    private Long coinValueInCurrency;
 	
     public String getCoinName() {
 		return coinName;
@@ -30,13 +30,12 @@ public class CoinDto {
     public void setCoinValue(Double coinValue) {
 		this.coinValue = coinValue;
 	}
-	
-    public Long getCoinValueInINR() {
-		return coinValueInINR;
+
+	public Long getCoinValueInCurrency() {
+		return coinValueInCurrency;
 	}
-	
-    public void setCoinValueInINR(Long coinValueInINR) {
-		this.coinValueInINR = coinValueInINR;
+
+	public void setCoinValueInCurrency(Long coinValueInCurrency) {
+		this.coinValueInCurrency = coinValueInCurrency;
 	}
-    
 }

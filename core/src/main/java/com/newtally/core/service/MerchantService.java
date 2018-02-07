@@ -474,14 +474,14 @@ public class MerchantService extends AbstractService implements IAuthenticator {
 		CoinDto coin = new CoinDto();
 		long totalSatoshis = ServiceFactory.getInstance().getWalletManager().getBitcoinWalletBalance(branchIds);
 		if(totalSatoshis != 0){
-			totalCoins = totalSatoshis/Coin.COIN.value;
+			totalCoins = (double)totalSatoshis/Coin.COIN.getValue();
 		    //get the current INR value of a bitcoin to calculate the total bitcoins value in INR
 			coinINRValue = ServiceFactory.getInstance().getMerchantCounterService().getBitCoinCostInINR();
 		}
 		coin.setCoinName("Bitcoin");
 		coin.setCoinCode(MonetaryFormat.CODE_BTC);
 		coin.setCoinValue(totalCoins);
-		coin.setCoinValueInINR(Math.round(totalCoins * coinINRValue));
+		coin.setCoinValueInCurrency(Math.round(totalCoins * coinINRValue));
 		return coin;
 	}
 }
