@@ -56,8 +56,8 @@
                     <nav class="bg-white sidebar sidebar-offcanvas" id="sidebar">
                         <div class="user-info">
                             <img src="images/face.jpg" alt="">
-                        <p id="merchant-name" class="name"></p>
-                        <p id="owner-name" class="designation"></p>
+                        <p id="branch-name"class="name">john Doe Foods</p>
+                        <p id="manager-name" class="designation">Manager</p>
                             <span class="online"></span>
                         </div>
                         <ul class="nav">
@@ -65,7 +65,7 @@
               
               
                   <li class="nav-item">
-                      <a class="nav-link" href="index.html">
+                      <a class="nav-link" href="branch_index.html">
                 <img src="images/icons/5.png" alt="">
                 <span class="menu-title">Wallets</span>
               </a>
@@ -74,43 +74,33 @@
             
             
                 <li class="nav-item">
-                    <a class="nav-link" href="branches.html">
+                    <a class="nav-link" href="branch_counters.html">
                 <img src="images/icons/4.png" alt="">
-                <span class="menu-title">Branches</span>
+                <span class="menu-title">Counters</span>
               </a>
             </li>
             
             
          
             <li class="nav-item">
-                <a class="nav-link" href="transactions.html">
+                <a class="nav-link" href="branch_transactions.html">
                 <img src="images/icons/2.png" alt="">
                 <span class="menu-title">Transactions <span>
               </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="profile.html">
+                <a class="nav-link" href="branch_profile.html">
                 <img src="images/icons/profile.png" alt="">
                 <span class="menu-title">Profile</span>
               </a>
             </li>
-        
-        
-            
-            <li class="nav-item">
-                <a class="nav-link" href="discounticonfig.html">
-                <img src="images/icons/discount.png" alt="">
-                <span class="menu-title">Discount Config</span>
-              </a>
-            </li>
-        
           
           </ul>
                                             </nav>
 
                                             <!-- partial -->
                                             <div class="content-wrapper">
-                                                <h3 class="page-heading mb-4">Branches</h3>
+                                                <h3 class="page-heading mb-4">Counters</h3>
 
                                                 <div class="row">
                                                     <div class="col-sm-10">
@@ -119,7 +109,7 @@
 
 
                                                     <div style="margin-bottom: 10px" class="col-sm-2">
-                                                        <a style="margin-top: 3px;" href="add_branch.html" class="btn btn-success mr-2">Add Branch</a>
+                                                        <a style="margin-top: 3px;" href="add_counter.html" class="btn btn-success mr-2">Add Counter</a>
                                                     </div>
 
                                                     <div class="col-lg-12">
@@ -129,15 +119,13 @@
                                                         <thead>
                                                             <tr>
                                                                 <th>ID</th>
-                                                                <th>Name</th>
-                                                                <th>Manager</th>
                                                                 <th>Phone</th>
                                                                 <th>Email</th>
-                                                                <th>Head quaters?</th>
                                                                 <th>Actions</th>
                                                             </tr>
                                                         </thead>
 
+                                                  
                                                     </table>
 
   </div>
@@ -188,7 +176,8 @@
 
                                             <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
                                             <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
-                                            <script src="js/branches.js"></script>
+                                            <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.7/angular.min.js"></script>
+                                            <script src="js/branch_counters.js"></script>
                                             </body>
 
                                             </html>

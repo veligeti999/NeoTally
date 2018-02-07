@@ -4,6 +4,8 @@ import com.newtally.core.util.CollectionUtil;
 import com.newtally.core.ServiceFactory;
 import com.newtally.core.model.MerchantBranch;
 import com.newtally.core.model.MerchantCounter;
+import com.newtally.core.model.Order;
+import com.newtally.core.model.OrderStatus;
 import com.newtally.core.resource.ThreadContext;
 
 import javax.persistence.EntityManager;
@@ -11,7 +13,9 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MerchantBranchService extends AbstractService implements IAuthenticator {
 
@@ -173,7 +177,39 @@ public class MerchantBranchService extends AbstractService implements IAuthentic
 		query.setParameter("branchId", branchId);
 		return (int) query.getResultList().get(0);
 	}
+	
+    public List<MerchantCounter> getCounters() {
+        // TODO Auto-generated method stub
+        return getCounters(ctx.getCurrentBranchId());
+    }
 
+    public List<Order> getTransactions() {
+            List<MerchantCounter> counters= getCounters(ctx.getCurrentBranchId());
+            List<Long> counterIds=counters.stream()
+                    .map(MerchantCounter::getId).collect(Collectors.toList());
+        System.out.println("counterIds:::"+counterIds.size());
+        Query queryForOrders = em.createNativeQuery("SELECT  id, currency_amount, discount_amount,currency_id, currency_code, status, created_date FROM order_invoice " +
+                "WHERE counter_id IN :counterIds");
+        queryForOrders.setParameter("counterIds", counterIds);
+        List rs = queryForOrders.getResultList();
+        System.out.println(rs.size());
+        List<Order> orders = new ArrayList<>();
+        for(Object ele : rs) {
+            Object [] fields = (Object[]) ele;
+
+            Order order = new Order();
+            order.setId(((BigInteger) fields[0]).longValue());
+            order.setCurrencyAmount((Double)fields[1]);
+            order.setDiscountAmount((Double)fields[2]);
+            order.setCurrencyId((Integer)fields[3]);
+            order.setCurrencyCode((String)fields[4]);
+            order.setStatus(OrderStatus.valueOf((String)fields[5]));
+            order.setCreatedDate((Date)fields[6]);
+            orders.add(order);
+        }
+        return orders;
+    }
+    
 	public List<BigInteger> getBranchIdsByMerchantId(long merchantId) {
 		Query query = em.createNativeQuery("select id from merchant_branch where merchant_id=:merchant_id");
 		query.setParameter("merchant_id", merchantId);

@@ -260,18 +260,35 @@ public class BranchCounterService extends AbstractService implements IAuthentica
         EntityTransaction trn = em.getTransaction();
         trn.begin();
         try {
-        Query query = em.createNativeQuery("INSERT INTO devices ( " +
-                "deviceid, device_type, registration_key, user_id, created_date) " +
-                "VALUES( :deviceid, :device_type, :registration_key, :user_id, :created_date)");
+        Query queryToCheck = em.createNativeQuery("select id where registration_key=:registration_key"); 
+        queryToCheck.setParameter("registration_key", device.getRegistrationKey());
+        Integer id=(Integer) queryToCheck.getSingleResult();
+        if(id==null) {
+            Query query = em.createNativeQuery("INSERT INTO devices ( " +
+                    "deviceid, device_type, registration_key, user_id, created_date) " +
+                    "VALUES( :deviceid, :device_type, :registration_key, :user_id, :created_date)");
+    
+            query.setParameter("deviceid", device.getDeviceId());
+            query.setParameter("device_type", device.getDeviceType());
+            query.setParameter("registration_key", device.getRegistrationKey());
+            query.setParameter("user_id", device.getUserId());
+            query.setParameter("created_date", new Date());
+            
+            query.executeUpdate();
+            trn.commit();
+        } else {
+            Query query = em.createNativeQuery("upadate devices set deviceid=:deviceid, device_type=:device_type, user_id=:user_id, modified_date=:modified_date " +
+                    " where id=:id");
 
-        query.setParameter("deviceid", device.getDeviceId());
-        query.setParameter("device_type", device.getDeviceType());
-        query.setParameter("registration_key", device.getRegistrationKey());
-        query.setParameter("user_id", device.getUserId());
-        query.setParameter("created_date", new Date());
-        
-        query.executeUpdate();
-        trn.commit();
+            query.setParameter("deviceid", device.getDeviceId());
+            query.setParameter("device_type", device.getDeviceType());
+            query.setParameter("registration_key", device.getRegistrationKey());
+            query.setParameter("user_id", device.getUserId());
+            query.setParameter("modified_date", new Date());
+            query.setParameter("id", id);
+            query.executeUpdate();
+            trn.commit();
+        }
         return device;
 
     } catch (Exception e) {
