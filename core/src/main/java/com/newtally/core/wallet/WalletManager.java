@@ -2,15 +2,14 @@ package com.newtally.core.wallet;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Transaction;
-import org.bitcoinj.core.TransactionInput;
 import org.bitcoinj.core.TransactionOutput;
 import org.bitcoinj.crypto.MnemonicCode;
 import org.bitcoinj.wallet.DeterministicKeyChain;
@@ -18,7 +17,6 @@ import org.bitcoinj.wallet.DeterministicSeed;
 import org.bitcoinj.wallet.UnreadableWalletException;
 import org.bitcoinj.wallet.Wallet;
 import org.bitcoinj.wallet.WalletExtension;
-import org.bitcoinj.wallet.WalletTransaction;
 import org.bitcoinj.wallet.listeners.WalletChangeEventListener;
 import org.bitcoinj.wallet.listeners.WalletCoinsReceivedEventListener;
 import org.bitcoinj.wallet.listeners.WalletCoinsSentEventListener;
@@ -93,8 +91,8 @@ public class WalletManager {
 		return configuration;
 	}
 	
-	public String getBalance(Wallet wallet){
-		return wallet.getBalance().toString();
+	public long getBalance(Wallet wallet){
+		return wallet.getBalance().getValue();
 	}
 
 	/**
@@ -150,4 +148,19 @@ public class WalletManager {
 		
 	}
 	
+	/**
+	 * summation of all the merchant related wallet balances
+	 * @param walletIds
+	 * @return
+	 */
+	public Long getBitcoinWalletBalance(List<BigInteger> walletIds){
+		Wallet wallet;
+		long balance = 0L;
+		for(BigInteger walletId : walletIds){
+			wallet = wallets.get(walletId.toString());
+			balance += getBalance(wallet);
+		}
+		return balance;
+	}
+
 }

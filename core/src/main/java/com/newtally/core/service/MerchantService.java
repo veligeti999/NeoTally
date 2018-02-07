@@ -2,7 +2,9 @@ package com.newtally.core.service;
 
 import com.newtally.core.util.CollectionUtil;
 import com.newtally.core.util.RandomNumberGenerator;
+import com.newtally.core.wallet.WalletManager;
 import com.newtally.core.ServiceFactory;
+import com.newtally.core.dto.CoinDto;
 import com.newtally.core.dto.DiscountDto;
 import com.newtally.core.dto.ResponseDto;
 import com.newtally.core.model.*;
@@ -12,20 +14,12 @@ import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
+import org.bitcoinj.core.Coin;
 import org.bitcoinj.crypto.MnemonicCode;
 import org.bitcoinj.crypto.MnemonicException.MnemonicLengthException;
-import org.w3c.dom.css.Counter;
+import org.bitcoinj.utils.MonetaryFormat;
 
-import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,7 +29,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MerchantService extends AbstractService implements IAuthenticator {
-
 
     public MerchantService(EntityManager em, ThreadContext ctx ) {
         super(em, ctx);
@@ -463,4 +456,32 @@ public class MerchantService extends AbstractService implements IAuthenticator {
         }
         
     }
+
+	/**
+	 * The merchant wallet balance is the summation of all the merchant related
+	 * branch wallets Right now it's only for Bitcoin. Litecoin and ethereum are
+	 * on the way
+	 *
+	 * @param merchantId
+	 * @return
+	 * @throws Exception
+	 */
+	public CoinDto getMerchantWalletBalance(long merchantId) throws Exception {
+		double totalCoins = 0.0;
+		double coinINRValue = 0.0;
+		List<BigInteger> branchIds = ServiceFactory.getInstance().getMerchantBranchService()
+				.getBranchIdsByMerchantId(merchantId);
+		CoinDto coin = new CoinDto();
+		long totalSatoshis = ServiceFactory.getInstance().getWalletManager().getBitcoinWalletBalance(branchIds);
+		if(totalSatoshis != 0){
+			totalCoins = (double)totalSatoshis/Coin.COIN.getValue();
+		    //get the current INR value of a bitcoin to calculate the total bitcoins value in INR
+			coinINRValue = ServiceFactory.getInstance().getMerchantCounterService().getBitCoinCostInINR();
+		}
+		coin.setCoinName("Bitcoin");
+		coin.setCoinCode(MonetaryFormat.CODE_BTC);
+		coin.setCoinValue(totalCoins);
+		coin.setCoinValueInCurrency(Math.round(totalCoins * coinINRValue));
+		return coin;
+	}
 }
