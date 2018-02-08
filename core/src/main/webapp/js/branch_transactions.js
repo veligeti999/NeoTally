@@ -17,10 +17,16 @@
                                                                     { "data": "currencyCode" },
                                                                     { "data": "currencyAmount" },
                                                                     { "data": "discountAmount" },
-                                                                    { "data":  function (data, type, full) { return new Date(data.createdDate);}},
-                                                                    { "data": "status" },
+                                                                    { "data": function(data, type, full) { return moment(new Date(data.createdDate)).format("MMMM Do YYYY, h:mm:ss a"); } },
                                                                     { "data": function(data, type, full) {
-                                                                            return '<img src="images/icons/right.png"> <span style="margin-left: 10px;"><button type="button" class="btn btn-primary mr-2">Details</button></span>';
+                                                                              if(data.status=="Pending"){
+                                                                                return data.status + '<i class="fa fa-times text-danger" style="margin-left: 5px"></i>';//' <img src="images/icons/cancel.png">';
+                                                                              }else{
+                                                                                return data.status + '<i class="fa fa-check text-success" style="margin-left: 5px"></i>';;//' <img src="images/icons/right.png">';
+                                                                              }
+                                                                            } },
+                                                                    { "data": function(data, type, full) {
+                                                                            return '<span style="margin-left: 10px;"><button type="button" class="btn btn-primary mr-2" style="cursor: not-allowed">Details</button></span>';
                                                                           }
                                                                     }
                                                                 ]
