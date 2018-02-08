@@ -282,7 +282,6 @@ public class BranchCounterService extends AbstractService implements IAuthentica
 
             query.setParameter("deviceid", device.getDeviceId());
             query.setParameter("device_type", device.getDeviceType());
-            query.setParameter("registration_key", device.getRegistrationKey());
             query.setParameter("user_id", device.getUserId());
             query.setParameter("modified_date", new Date());
             query.setParameter("id", (Integer) rs.get(0));
