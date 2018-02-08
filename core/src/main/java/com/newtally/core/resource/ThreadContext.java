@@ -16,7 +16,7 @@ public class ThreadContext {
         userLocal.set(userId);
     }
 
-    public long getCurrentMerchantId() {
+    public Long getCurrentMerchantId() {
         return merchantLocal.get();
     }
 
@@ -24,7 +24,7 @@ public class ThreadContext {
         merchantLocal.set(merchantId);
     }
 
-    public long getCurrentBranchId() {
+    public Long getCurrentBranchId() {
         return mrctBranchId.get();
     }
     

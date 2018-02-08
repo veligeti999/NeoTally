@@ -468,11 +468,11 @@ public class MerchantService extends AbstractService implements IAuthenticator {
 	 * @return
 	 * @throws Exception
 	 */
-	public CoinDto getWalletBalance(long merchantId, long branchId) throws Exception {
+	public CoinDto getWalletBalance(Long merchantId, Long branchId) throws Exception {
 		double totalCoins = 0.0;
 		double coinINRValue = 0.0;
 		List<BigInteger> branchIds = null;;
-		if (merchantId != 0) {
+		if (merchantId != null) {
 			branchIds = ServiceFactory.getInstance().getMerchantBranchService().getBranchIdsByMerchantId(merchantId);
 		}else{
 			branchIds = new ArrayList<>();
