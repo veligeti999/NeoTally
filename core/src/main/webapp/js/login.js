@@ -119,9 +119,6 @@ $(function() {
                 url: "/new-tally/rest/branches",
                 dataType: 'json',
                 async: false,
-                headers: {
-                  "Authorization": "Basic " + btoa(usertype+":"+username + ":" + password)
-                },
                 success: function(result){
                   console.log(result);
                   if(result.response_code == 0){
