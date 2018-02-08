@@ -24,6 +24,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -210,7 +211,7 @@ public class MerchantService extends AbstractService implements IAuthenticator {
 
         query.setParameter("password", branch.getPassword());
         setBranchParams(branch, query);
-
+        System.out.println("branchId"+branchId);
         query.executeUpdate();
         MerchantCounter counter = new MerchantCounter();
         counter.setPhone(branch.getPhone());
@@ -243,12 +244,13 @@ public class MerchantService extends AbstractService implements IAuthenticator {
             int existingBranchNumber = ServiceFactory.getInstance().getMerchantBranchService().getMaxBranchNoForAMerchant(ctx.getCurrentMerchantId());
             branch.setBranchNo(existingBranchNumber+1);
             createBranch(branch);
-
+            System.out.println("branch"+branch.getEmail());
             trn.commit();
             branch.setPassword(null);
 
             return branch;
         } catch (Exception e) {
+            e.printStackTrace();
             trn.rollback();
             throw e;
         }
@@ -489,4 +491,23 @@ public class MerchantService extends AbstractService implements IAuthenticator {
 		coin.setCoinValueInCurrency(Math.round(totalCoins * coinINRValue));
 		return coin;
 	}
+
+    public void updatePassword(HashMap passwordMap) {
+        EntityTransaction trn = em.getTransaction();
+        trn.begin();
+        try {
+            Query query = em.createNativeQuery("UPDATE merchant SET password = :password " +
+                    "WHERE id = :id");
+
+            query.setParameter("password", passwordMap.get("newPassword"));
+            query.setParameter("id", ctx.getCurrentMerchantId());
+            query.executeUpdate();
+
+            trn.commit();
+
+        } catch (Exception e) {
+            trn.rollback();
+            throw e;
+        }
+    }
 }

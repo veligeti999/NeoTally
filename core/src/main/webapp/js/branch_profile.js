@@ -1,5 +1,6 @@
 function init() {
-      $.ajax({
+      $.ajax
+          ({
             type: "GET",
             url: "/new-tally/rest/branches",
             dataType: 'json',
@@ -7,22 +8,14 @@ function init() {
             success: function(result){
               console.log(result);
               document.getElementById("branch-name").innerHTML = result.response_data.name;
-              document.getElementById("merchant-name-footer").innerHTML = result.response_data.name;
-              document.getElementById("manager-name").innerHTML = result.response_data.managerName;
+              document.getElementById("manager-name").innerHTML =  result.response_data.managerName;
+              document.getElementById("branch-name-profile").innerHTML = "Branch Name : "+result.response_data.name;
+              document.getElementById("manager-name-profile").innerHTML =  "Branch Name Contact : "+ result.response_data.managerName;
+              document.getElementById("phone").innerHTML = "Branch Name Contact : "+result.response_data.phone;
+              document.getElementById("email").innerHTML = "Branch Email : "+result.response_data.email;
+
             }
           });
-      $.ajax({
-        type: "GET",
-        url: "/new-tally/rest/merchants/balance",
-        dataType: 'json',
-        async: false,
-        success: function(result){
-          console.log(result);
-          document.getElementById("coin_code").innerHTML = result.response_data.coin_code;
-          document.getElementById("coin_value").innerHTML = result.response_data.coin_value;
-          document.getElementById("coin_value_in_currency").innerHTML = result.response_data.coin_value_in_currency+' INR';
-        }
-      });
     }
     init();
     function logout() {
@@ -42,4 +35,13 @@ function init() {
     }
     window.onhashchange = function(e) {
       e.preventDefault();
+      /*var oldURL = e.oldURL.split('#')[1];
+      var newURL = e.newURL.split('#')[1];
+
+      if (oldURL == 'share') {
+        $('.share').fadeOut();
+        
+        return false;
+      }*/
+      //console.log('old:'+oldURL+' new:'+newURL);
     }

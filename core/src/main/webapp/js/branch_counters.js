@@ -2,7 +2,7 @@ $(document).ready(function () {
     $.ajax
       ({
         type: "GET",
-        url: "/new-tally/rest/branches/counters,
+        url: "/new-tally/rest/branches/counters",
         dataType: 'json',
         async: false,
         success: function(result){
@@ -40,7 +40,7 @@ e.preventDefault();
             success: function(result){
               console.log(result);
               document.getElementById("branch-name").innerHTML = result.response_data.name;
-              document.getElementById("merchant-name-footer").innerHTML = result.response_data.name;
+              //document.getElementById("merchant-name-footer").innerHTML = result.response_data.name;
               document.getElementById("manager-name").innerHTML = result.response_data.managerName;
             }
           });

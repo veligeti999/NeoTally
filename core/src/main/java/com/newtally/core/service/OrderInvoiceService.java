@@ -1,6 +1,7 @@
 package com.newtally.core.service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
@@ -11,6 +12,7 @@ import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.wallet.Wallet;
 
 import com.newtally.core.ServiceFactory;
+import com.newtally.core.dto.Notification;
 import com.newtally.core.model.Order;
 import com.newtally.core.model.OrderStatus;
 import com.newtally.core.resource.ThreadContext;
@@ -123,6 +125,26 @@ public class OrderInvoiceService extends AbstractService{
 		} catch (Exception e) {
 			txn.rollback();
 			throw e;
+		} finally {
+            sendOrderStatusToDevice(transactionId);
 		}
 	}
+	public void sendOrderStatusToDevice(String transactionId) {
+       
+        Query query = em
+                .createNativeQuery("select distinct(d.registration_key) from order_invoice o join devices d on o.counter_id=d.user_id where o.transaction_id=:transaction_id");
+        query.setParameter("transactionId", transactionId);
+        List rs=query.getResultList();
+        if(!rs.isEmpty()) {
+            String registration_key = (String) rs.get(0);
+            Notification notification=new Notification();
+            notification.setTitle("New Tally");
+            notification.setBody("Transaction ID:"+ transactionId+ " has been confirmed");
+            try {
+                MobileNotificationService.pushFCMNotification(registration_key, notification);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
