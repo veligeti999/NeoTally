@@ -26,13 +26,12 @@ function loginCtrl($scope, $cookieStore, $rootScope, serviceAdmin, toastr, $stat
             // response.code contains the corresponding HTTP Codes like 500, 401, 404 etc.
             // Success HTTP code i.e. default is 200
             if (angular.isDefined(response)) {
-                    $cookieStore.put('username', response.userName);
-                    $state.go('index');
-            }
-            else{
+                $cookieStore.put('username', response.userName);
+                $state.go('index');
+            } else {
                 toastr.error('Please enter valid credentials', 'Error');
-            } 
-        },function(error){
+            }
+        }, function(error) {
             toastr.error(error.statusMsg, 'Error');
         })
     };

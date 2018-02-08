@@ -1,193 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
 
-    <head>
-        <!-- Required meta tags -->
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>NewTally</title>
-        <link rel="stylesheet" href="node_modules/tally-font-awesome/css/font-awesome.min.css" />
-        <link rel="stylesheet" href="node_modules/tally-perfect-scrollbar/dist/css/perfect-scrollbar.min.css" />
-        <link rel="stylesheet" href="node_modules/tally-flag-icon-css/css/flag-icon.min.css" />
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>NewTally</title>
+    <link rel="stylesheet" href="node_modules/tally-font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="node_modules/tally-perfect-scrollbar/dist/css/perfect-scrollbar.min.css" />
+    <link rel="stylesheet" href="node_modules/tally-flag-icon-css/css/flag-icon.min.css" />
+    <link rel="shortcut icon" href="images/favicon.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+</head>
 
-
-
-
-        <link rel="shortcut icon" href="images/favicon.png" />
-
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.css" />
-        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css" />
-
-        <link rel="stylesheet" href="css/style.css" />
-    </head>
-
-    <body>
-        <div class=" container-scroller">
-            <!-- partial:partials/_navbar.html -->
-            <nav class="navbar navbar-default col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
-                <div class="bg-white text-center navbar-brand-wrapper">
-                    <a class="navbar-brand brand-logo" href="index.html"><img src="images/logo_star_black.png" /></a>
-                    <a class="navbar-brand brand-logo-mini" href="index.html"><img src="images/logo_star_mini.jpg" alt=""></a>
-                </div>
-                <div class="navbar-menu-wrapper d-flex align-items-center">
-                    <button class="navbar-toggler navbar-toggler d-none d-lg-block navbar-dark align-self-center mr-3" type="button" data-toggle="minimize">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <form class="form-inline mt-2 mt-md-0 d-none d-lg-block">
-                        <input class="form-control mr-sm-2 search" type="text" placeholder="Search">
-                    </form>
-                    <ul class="navbar-nav ml-lg-auto d-flex align-items-center flex-row">
+<body>
+    <div class=" container-scroller">
+        <!-- partial:partials/_navbar.html -->
+        <nav class="navbar navbar-default col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+            <div class="bg-white text-center navbar-brand-wrapper">
+                <a class="navbar-brand brand-logo" href="index.html"><img src="images/logo_star_black.png" /></a>
+                <a class="navbar-brand brand-logo-mini" href="index.html"><img src="images/logo_star_mini.jpg" alt=""></a>
+            </div>
+            <div class="navbar-menu-wrapper d-flex align-items-center">
+                <button class="navbar-toggler navbar-toggler d-none d-lg-block navbar-dark align-self-center mr-3" type="button" data-toggle="minimize">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <form class="form-inline mt-2 mt-md-0 d-none d-lg-block">
+                    <input class="form-control mr-sm-2 search" type="text" placeholder="Search">
+                </form>
+                <ul class="navbar-nav ml-lg-auto d-flex align-items-center flex-row">
+                    <li class="nav-item">
+                        <a class="nav-link profile-pic" href="#" onClick="logout();"><img class="rounded-circle" src="images/icons/logout.png" alt=""></a>
+                    </li>
+                </ul>
+                <button class="navbar-toggler navbar-dark navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+        </nav>
+        <!-- partial -->
+        <div class="container-fluid">
+            <div class="row row-offcanvas row-offcanvas-right">
+                <!-- partial:partials/_sidebar.html -->
+                <nav class="bg-white sidebar sidebar-offcanvas" id="sidebar">
+                    <div class="user-info">
+                        <img src="images/face.jpg" alt="">
+                        <p id="merchant-name" class="name">john Doe Foods</p>
+                        <p id="owner-name" class="designation">Manager</p>
+                        <span class="online"></span>
+                    </div>
+                    <ul class="nav">
                         <li class="nav-item">
-                            <a class="nav-link profile-pic" href="#" onClick="logout();"><img class="rounded-circle" src="images/icons/logout.png" alt=""></a>
+                            <a class="nav-link" href="index.html">
+                                <img src="images/icons/5.png" alt="">
+                                <span class="menu-title">Wallets</span>
+                            </a>
                         </li>
-
+                        <li class="nav-item">
+                            <a class="nav-link" href="branches.html">
+                                <img src="images/icons/4.png" alt="">
+                                <span class="menu-title">Branches</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="transactions.html">
+                                <img src="images/icons/2.png" alt="">
+                                <span class="menu-title">Transactions <span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="profile.html">
+                                <img src="images/icons/profile.png" alt="">
+                                <span class="menu-title">Profile</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="discounticonfig.html">
+                                <img src="images/icons/discount.png" alt="">
+                                <span class="menu-title">Discount Config</span>
+                            </a>
+                        </li>
                     </ul>
-                    <button class="navbar-toggler navbar-dark navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                </div>
-            </nav>
-
-            <!-- partial -->
-            <div class="container-fluid">
-                <div class="row row-offcanvas row-offcanvas-right">
-                    <!-- partial:partials/_sidebar.html -->
-                    <nav class="bg-white sidebar sidebar-offcanvas" id="sidebar">
-                        <div class="user-info">
-                            <img src="images/face.jpg" alt="">
-                            <p id="merchant-name" class="name"></p>
-                             <p id="owner-name" class="designation"></p>
-                            <span class="online"></span>
+                </nav>
+                <!-- partial -->
+                <div class="content-wrapper">
+                    <h3 class="page-heading mb-4">Transactions</h3>
+                    <div class="row">
+                        <div class="col-sm-10">
                         </div>
-                        <ul class="nav">
-              
-              
-              
-                  <li class="nav-item">
-                      <a class="nav-link" href="index.html">
-                <img src="images/icons/5.png" alt="">
-                <span class="menu-title">Wallets</span>
-              </a>
-            </li>
-            
-            
-            
-                <li class="nav-item">
-                    <a class="nav-link" href="branches.html">
-                <img src="images/icons/4.png" alt="">
-                <span class="menu-title">Branches</span>
-              </a>
-            </li>
-            
-            
-         
-            <li class="nav-item">
-                <a class="nav-link" href="transactions.html">
-                <img src="images/icons/2.png" alt="">
-                <span class="menu-title">Transactions <span>
-              </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="profile.html">
-                <img src="images/icons/profile.png" alt="">
-                <span class="menu-title">Profile</span>
-              </a>
-            </li>
-        
-        
-            
-            <li class="nav-item">
-                <a class="nav-link" href="discounticonfig.html">
-                <img src="images/icons/discount.png" alt="">
-                <span class="menu-title">Discount Config</span>
-              </a>
-            </li>
-        
-          
-          </ul>
-                                            </nav>
-
-                                            <!-- partial -->
-                                            <div class="content-wrapper">
-                                                <h3 class="page-heading mb-4">Transactions</h3>
-
-                                                <div class="row">
-                                                    <div class="col-sm-10">
-
-                                                    </div>
-
-
-                                                   <!-- <div style="margin-bottom: 10px" class="col-sm-2">
+                        <!-- <div style="margin-bottom: 10px" class="col-sm-2">
                                                         <button style="margin-top: 3px;" type="button" class="btn btn-success mr-2">Add Branch</button>
                                                     </div>-->
-
-                                            <div class="col-lg-12">
-
-                                                    <table id="branch_table" class="table table-striped table-bordered" cellspacing="0" width="100%">
-
-                                                        <thead>
-                                                            <tr>
-                                                                <th>ORDER ID</th>
-                                                                <th>CURRENCY</th>
-                                                                <th>AMOUNT</th>
-                                                                <th>DISCOUNT</th>
-                                                                <th>CREATED TIME</th>
-                                                                 <th>STATUS</th>
-                                                                 <th>ACTIONS</th>
-                                                                   
-                                                            </tr>
-                                                        </thead>
-                                                    </table>
-
-  </div>
-
-
-
-                                                </div>
-
-
-
-
-                                            </div>
-
-
-
-
-
-
-                                            <!-- partial:partials/_footer.html -->
-                                            <footer class="footer">
-                                                <div class="container-fluid clearfix">
-                                                    <span class="float-right">
-                                                        <a href="#"></a> &copy; 2018
+                        <div class="col-lg-12">
+                            <table id="branch_table" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>ORDER ID</th>
+                                        <th>CURRENCY</th>
+                                        <th>AMOUNT</th>
+                                        <th>DISCOUNT</th>
+                                        <th>CREATED TIME</th>
+                                        <th>STATUS</th>
+                                        <th>ACTIONS</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- partial:partials/_footer.html -->
+                <footer class="footer">
+                    <div class="container-fluid clearfix">
+                        <span class="float-right">
+                                                        <a href="#">john Doe foods</a> &copy; 2018
                                                     </span>
-                                                </div>
-                                            </footer>
+                    </div>
+                </footer>
+                <!-- partial -->
+            </div>
+        </div>
+    </div>
+    <script src="node_modules/tally-jquery/dist/jquery.min.js"></script>
+    <script src="node_modules/tally-popper.js/dist/umd/popper.min.js"></script>
+    <script src="node_modules/tally-bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="node_modules/tally-chart.js/dist/Chart.min.js"></script>
+    <script src="node_modules/tally-perfect-scrollbar/dist/js/perfect-scrollbar.jquery.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5NXz9eVnyJOA81wimI8WYE08kW_JMe8g&callback=initMap" async defer></script>
+    <script src="js/off-canvas.js"></script>
+    <script src="js/hoverable-collapse.js"></script>
+    <script src="js/misc.js"></script>
+    <script src="js/chart.js"></script>
+    <script src="js/maps.js"></script>
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+    <script src="js/transactions.js"></script>
+</body>
 
-                                            <!-- partial -->
-                                            </div>
-                                            </div>
-
-                                            </div>
-
-                                            <script src="node_modules/tally-jquery/dist/jquery.min.js"></script>
-                                            <script src="node_modules/tally-popper.js/dist/umd/popper.min.js"></script>
-                                            <script src="node_modules/tally-bootstrap/dist/js/bootstrap.min.js"></script>
-                                            <script src="node_modules/tally-chart.js/dist/Chart.min.js"></script>
-                                            <script src="node_modules/tally-perfect-scrollbar/dist/js/perfect-scrollbar.jquery.min.js"></script>
-                                            <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5NXz9eVnyJOA81wimI8WYE08kW_JMe8g&callback=initMap" async defer></script>
-
-
-
-                                            <script src="js/off-canvas.js"></script>
-                                            <script src="js/hoverable-collapse.js"></script>
-                                            <script src="js/misc.js"></script>
-                                            <script src="js/chart.js"></script>
-                                            <script src="js/maps.js"></script>
-                                            <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-                                            <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
-
-                                            <script src="js/transactions.js"></script>
-                                            </body>
-
-                                            </html>
+</html>

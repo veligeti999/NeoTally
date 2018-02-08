@@ -2,61 +2,67 @@
 <html lang="en">
 
 <head>
-  <!-- Required meta tags -->
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>NewTally</title>
-  <link rel="stylesheet" href="node_modules/tally-font-awesome/css/font-awesome.min.css" />
-  <link rel="stylesheet" href="node_modules/tally-perfect-scrollbar/dist/css/perfect-scrollbar.min.css" />
-  <link rel="stylesheet" href="node_modules/tally-flag-icon-css/css/flag-icon.min.css" />
-  <link rel="stylesheet" href="css/style.css" />
-  <link rel="shortcut icon" href="images/favicon.png" />
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>NewTally</title>
+    <link rel="stylesheet" href="node_modules/tally-font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="node_modules/tally-perfect-scrollbar/dist/css/perfect-scrollbar.min.css" />
+    <link rel="stylesheet" href="node_modules/tally-flag-icon-css/css/flag-icon.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/toastr.css" />
+    <link rel="shortcut icon" href="images/favicon.png" />
 </head>
+
 <body>
-  <div class="container-scroller">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="content-wrapper full-page-wrapper d-flex align-items-center auth-pages">
-          <div class="card col-lg-4 mx-auto">
-            <div class="card-body px-5 py-5">
-              <h3 class="card-title text-left mb-3">Login</h3>
-              <form onsubmit="return false" name="loginForm">
-                <div class="form-group d-flex align-items-center justify-content-between">
-                  <label class="form-check-label" for="userType">User Type:</label>
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="mrct" checked>
-                    <label class="form-check-label" for="userType">Merchant</label>
-                  </div>
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="bmngr">
-                    <label class="form-check-label" for="userType">Branch Manager</label>
-                  </div>
+    <div class="container-scroller">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="content-wrapper full-page-wrapper d-flex align-items-center auth-pages">
+                    <div class="card col-lg-4 mx-auto">
+                        <div class="card-body px-5 py-5">
+                            <div class="card-title mb-3 text-center"><img src="images/logo_star_black.png" /></div>
+                            <h3 class="card-title text-left mb-3">Login</h3>
+                            <form onsubmit="return false" name="loginForm">
+                                <div class="form-group">
+                                    <input type="text" id="username" name="username" class="form-control p_input" placeholder="Username">
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" id="password" name="password" class="form-control p_input" placeholder="Password">
+                                </div>
+                                <div class="form-group d-flex align-items-center justify-content-between">
+                                    <label class="form-check-label mt-2 p-0" for="userType">User Type:</label>
+                                    <div class="form-check form-check-inline ml-2">
+                                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="mrct" checked>
+                                        <label class="form-check-label p-0" for="userType">Merchant</label>
+                                    </div>
+                                    <div class="form-check form-check-inline disabled ml-2">
+                                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="bmngr" disabled>
+                                        <label class="form-check-label p-0" for="userType">Branch Manager</label>
+                                    </div>
+                                </div>
+                                <div class="form-group d-flex align-items-center justify-content-between">
+                                    <div class="form-check form-check-inline" id="inlinecheck2">
+                                        <input type="checkbox" id="inlinecheck1" class="form-check-input">
+                                        <lable>Remember me</lable>
+                                    </div>
+                                    <a href="#" class="forgot-pass mt-1"><u>Forgot password</u></a>
+                                </div>
+                                <div class="text-center">
+                                    <button id="loginDisable" class="btn btn-primary btn-block enter-btn">LOG IN <i id="showLoginLoader" class="fa fa-spinner fa-spin"></i></button>
+                                </div>
+                                <div class="card-title text-center mt-3"><a href="signup.html" class="signup">Register</a></div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                  <input type="text" id="username" name="username" class="form-control p_input" placeholder="Username">
-                </div>
-                <div class="form-group">
-                  <input type="password" id="password" name="password" class="form-control p_input" placeholder="Password">
-                </div>
-                <div class="form-group d-flex align-items-center justify-content-between">
-                  <div class="form-check form-check-inline" id="inlinecheck2"><input type="checkbox" id="inlinecheck1" class="form-check-input"><lable>Remember me</lable></div>
-                  <a href="signup.html" class="signup">Signup</a>
-                  <a href="#" class="forgot-pass">Forgot password</a>
-                </div>
-                <div class="text-center">
-                  <button class="btn btn-primary btn-block enter-btn">LOG IN</button>
-                </div>
-              
-              </form>
             </div>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
-  <script src="node_modules/tally-jquery/dist/jquery.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/jquery.validation/1.15.1/jquery.validate.min.js"></script>
-  <script  src="js/login.js"> </script>
+    <script src="node_modules/tally-jquery/dist/jquery.min.js"></script>
+    <script src="js/jquery.validate.min.js"></script>
+    <script src="js/toastr.js"></script>
+    <script src="js/login.js"></script>
 </body>
 
 </html>

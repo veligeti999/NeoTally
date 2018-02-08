@@ -2,83 +2,85 @@
 <html lang="en">
 
 <head>
-  <!-- Required meta tags -->
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>NewTally</title>
-  <link rel="stylesheet" href="node_modules/tally-font-awesome/css/font-awesome.min.css" />
-  <link rel="stylesheet" href="node_modules/tally-perfect-scrollbar/dist/css/perfect-scrollbar.min.css" />
-  <link rel="stylesheet" href="node_modules/tally-flag-icon-css/css/flag-icon.min.css" />
-  <link rel="stylesheet" href="css/style.css" />
-  <link rel="shortcut icon" href="images/favicon.png" />
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>NewTally</title>
+    <link rel="stylesheet" href="node_modules/tally-font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="node_modules/tally-perfect-scrollbar/dist/css/perfect-scrollbar.min.css" />
+    <link rel="stylesheet" href="node_modules/tally-flag-icon-css/css/flag-icon.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/toastr.css" />
+    <link rel="shortcut icon" href="images/favicon.png" />
 </head>
+
 <body>
-  <div class="container-scroller">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="content-wrapper full-page-wrapper d-flex align-items-center auth-pages">
-          <div class="card col-lg-4 mx-auto">
-            <div class="card-body px-5 py-5">
-              <h3 class="card-title text-left mb-3">Signup</h3>
-              <form  name="registration">
-                <div class="form-group">
-                  <input type="text" id="name" name="name" class="form-control p_input" placeholder="Merchant Name" required>
+    <div class="container-scroller">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="content-wrapper full-page-wrapper d-flex align-items-center auth-pages">
+                    <div class="card col-lg-4 mx-auto">
+                        <div class="card-body px-5 py-5">
+                            <h3 class="card-title text-left mb-3">Signup</h3>
+                            <form name="registration">
+                                <div class="form-group">
+                                    <input type="text" id="name" name="name" class="form-control p_input" placeholder="Merchant Name" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" id="owner-name" name="ownerName" class="form-control p_input" placeholder="Owner Name" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" id="pan" name="pan" class="form-control p_input" placeholder="PAN" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="email" id="email" name="email" class="form-control p_input" placeholder="Email" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="tel" id="phone" name="phone" class="form-control p_input" placeholder="Phone" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" id="password" name="password" class="form-control p_input" placeholder="Password" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" id="confirmPassword" name="confirmPassword" class="form-control p_input" placeholder="Confirm Password" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" id="address" name="address" class="form-control p_input" placeholder="Address" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" id="city" name="city" class="form-control p_input" placeholder="City" required>
+                                </div>
+                                <div class="form-group">
+                                    <select type="dropdown" id="state" name="state" class="form-control p_input" placeholder="State" required>
+                                        <option value="">-State-</option>
+                                        <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                        <option value="Telangana">Telangana</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <select type="text" id="country" name="country" class="form-control p_input" placeholder="Country" required>
+                                        <option value="">-Country-</option>
+                                        <option value="India">India</option>
+                                        <option value="USA">United States of America</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" id="zip" name="zip" class="form-control p_input" placeholder="Zip Code" required>
+                                </div>
+                                <div class="text-center">
+                                    <button id="submitDisable" class="btn btn-primary btn-block enter-btn">Submit <i id="showSubmitLoader" class="fa fa-spinner fa-spin"></i></button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-                 <div class="form-group">
-                  <input type="text" id="owner-name" name="ownerName" class="form-control p_input" placeholder="Owner Name" required>
-                </div>
-                <div class="form-group">
-                  <input type="text" id="pan" name="pan" class="form-control p_input" placeholder="PAN" required>
-                </div>
-                <div class="form-group">
-                  <input type="email" id="email" name="email" class="form-control p_input" placeholder="Email" required>
-                </div>
-                <div class="form-group">
-                  <input type="tel" id="phone" name="phone" class="form-control p_input" placeholder="Phone" required>
-                </div>
-                <div class="form-group">
-                  <input type="password" id="password" name="password" class="form-control p_input" placeholder="Password" required>
-                </div>
-                <div class="form-group">
-                  <input type="password" id="confirmPassword" name="confirmPassword" class="form-control p_input" placeholder="Confirm Password" required>
-                </div>
-                <div class="form-group">
-                  <input type="text" id="address" name="address" class="form-control p_input" placeholder="Address" required>
-                </div>
-                 <div class="form-group">
-                  <input type="text" id="city" name="city" class="form-control p_input" placeholder="City" required>
-                </div>
-                 <div class="form-group">
-                  <select type="dropdown" id="state" name="state" class="form-control p_input" placeholder="State" required>
-                    <option value="">-State-</option>
-                    <option value="Andhra Pradesh">Andhra Pradesh</option>
-                    <option value="Telangana">Telangana</option>
-                  </select>
-                </div>
-                 <div class="form-group">
-                  <select type="text" id="country" name="country" class="form-control p_input" placeholder="Country" required>
-                    <option value="">-Country-</option>
-                    <option value="India">India</option>
-                    <option value="USA">United States of America</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <input type="text" id="zip" name="zip" class="form-control p_input" placeholder="Zip Code" required>
-                </div>
-                <div class="text-center">
-                  <button class="btn btn-primary btn-block enter-btn">Submit</button>
-                </div>
-              
-              </form>
             </div>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
-  <script src="node_modules/tally-jquery/dist/jquery.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/jquery.validation/1.15.1/jquery.validate.min.js"></script>
-  <script  src="js/signup.js"> </script>
+    <script src="node_modules/tally-jquery/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.15.1/jquery.validate.min.js"></script>
+    <script src="js/toastr.js"></script>
+    <script src="js/signup.js"></script>
 </body>
 
 </html>
