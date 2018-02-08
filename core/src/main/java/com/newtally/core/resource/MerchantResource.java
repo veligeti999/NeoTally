@@ -353,6 +353,7 @@ public class MerchantResource extends BaseResource {
 			response.setResponse_message("Successfully Retrieved Wallet Balance");
 			response.setResponse_data(coin);
 		} catch (Exception e) {
+			e.printStackTrace();
 			response.setResponse_code(1);
 			response.setResponse_message("Failed To Retrieve Wallet Balance");
 			response.setResponse_data(e.getLocalizedMessage());
