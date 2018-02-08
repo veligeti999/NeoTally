@@ -14,6 +14,7 @@ import javax.persistence.Query;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -215,4 +216,24 @@ public class MerchantBranchService extends AbstractService implements IAuthentic
 		query.setParameter("merchant_id", merchantId);
 		return query.getResultList();
 	}
+
+    public void updatePassword(HashMap passwordMap) {
+        EntityTransaction trn = em.getTransaction();
+        trn.begin();
+        try {
+            Query query = em.createNativeQuery("UPDATE merchant_branch SET password = :password " +
+                    "WHERE id = :id");
+
+            query.setParameter("password", passwordMap.get("newPassword"));
+            query.setParameter("id", ctx.getCurrentBranchId());
+            query.executeUpdate();
+
+            trn.commit();
+
+        } catch (Exception e) {
+            trn.rollback();
+            throw e;
+        }
+        
+    }
 }

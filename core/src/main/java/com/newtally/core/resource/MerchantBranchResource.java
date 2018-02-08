@@ -1,6 +1,7 @@
 package com.newtally.core.resource;
 
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.security.PermitAll;
@@ -154,6 +155,28 @@ public class MerchantBranchResource extends BaseResource{
 		}
 		return Response.ok().build();
 	}
+	
+	@RolesAllowed({Role.MERCHANT})
+    @POST
+    @Path("/change/password")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updatePassword(@Context HttpServletRequest req ){
+
+        ResponseDto dto=new ResponseDto();
+        try {
+        HashMap passwordMap = gson_pretty.fromJson(new InputStreamReader(req.getInputStream()), HashMap.class);
+        branchServ.updatePassword(passwordMap);
+        
+        dto.setResponse_code(0);
+        dto.setResponse_message("Successfully update password");
+        } catch(Exception e) {
+            dto.setResponse_code(1);
+            dto.setResponse_message("Failed to update password");
+            dto.setResponse_data(e.getLocalizedMessage());
+        }
+
+        return Response.ok(gson_pretty.toJson(dto)).build();
+    }
 	
 	
 }

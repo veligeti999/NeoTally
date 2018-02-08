@@ -56,77 +56,106 @@ $(function() {
             var username = document.getElementById('username').value;
             var password = document.getElementById('password').value;
             var usertype = $('input[name=inlineRadioOptions]:checked').val();
-           localStorage.setItem('usertype', usertype);
-      console.log(username+":::"+password+"::::"+usertype)
-      if(usertype=="mrct"){
-      $.ajax({
-            type: "GET",
-            url: "/new-tally/rest/merchants",
-            dataType: 'json',
-            async: false,
-            headers: {
-              "Authorization": "Basic " + btoa(usertype+":"+username + ":" + password)
-            },
-            success: function(result){
-              console.log(result);
-              if(result.response_code == 0){
-                localStorage.setItem('myCat', 'Tom');
+            localStorage.setItem('usertype', usertype);
+          console.log(username+":::"+password+"::::"+usertype)
+          if(usertype=="mrct"){
+          $.ajax({
+                type: "GET",
+                url: "/new-tally/rest/merchants",
+                dataType: 'json',
+                async: false,
+                headers: {
+                  "Authorization": "Basic " + btoa(usertype+":"+username + ":" + password)
+                },
+                success: function(result){
+                  $.ajax({
+                        type: "GET",
+                        url: "/new-tally/rest/merchants",
+                        dataType: 'json',
+                        async: false,
+                        success: function(result){
+                          console.log(result);
+                          if(result.response_code == 0){
+                            localStorage.setItem('myCat', 'Tom');
 
-                toastr.success('Login Successful', "SUCCESS");
-                setTimeout(function() {
-                  // window.history.go(-window.history.length);
-                  window.location.href = "index.html";
-                }, 1000);
-              } else {
-                    $('#loginDisable').removeAttr('disabled');
+                            toastr.success('Login Successful', "SUCCESS");
+                            setTimeout(function() {
+                              // window.history.go(-window.history.length);
+                              window.location.href = "index.html";
+                            }, 1000);
+                          } else {
+                                $('#loginDisable').removeAttr('disabled');
+                                    logL.style.display = 'none';
+
+                            toastr.error('Login Un-Successful! Please Try Again...', 'ERROR');
+                          }
+                        }, error: function(error) {
+                                $('#loginDisable').removeAttr('disabled');
+                                // logD.disabled = false;
+                                logL.style.display = 'none';
+                                toastr.error('Something Went Wrong!', "ERROR");
+                            }
+                      });
+                }, error: function(error) {
+                        $('#loginDisable').removeAttr('disabled');
+                        // logD.disabled = false;
+                        logL.style.display = 'none';
+                        toastr.error('Something Went Wrong!', "ERROR");
+                    }
+              });
+            }
+            else{
+              $.ajax({
+                type: "GET",
+                url: "/new-tally/rest/branches",
+                dataType: 'json',
+                async: false,
+                headers: {
+                  "Authorization": "Basic " + btoa(usertype+":"+username + ":" + password)
+                },
+                success: function(result){
+                  $.ajax({
+                type: "GET",
+                url: "/new-tally/rest/branches",
+                dataType: 'json',
+                async: false,
+                headers: {
+                  "Authorization": "Basic " + btoa(usertype+":"+username + ":" + password)
+                },
+                success: function(result){
+                  console.log(result);
+                  if(result.response_code == 0){
+                    localStorage.setItem('myCat', 'Tom');
+
+                    toastr.success('Login Successful', "SUCCESS");
+                    setTimeout(function() {
+                      // window.history.go(-window.history.length);
+                      window.location.href = "branch_index.html";
+                    }, 1000);
+                  } else {
+                        $('#loginDisable').removeAttr('disabled');
+
                         logL.style.display = 'none';
 
-                toastr.error('Login Un-Successful! Please Try Again...', 'ERROR');
-              }
-            }, error: function(error) {
-                    $('#loginDisable').removeAttr('disabled');
-                    // logD.disabled = false;
-                    logL.style.display = 'none';
-                    toastr.error('Something Went Wrong!', "ERROR");
-                }
-          });
+                    toastr.error('Login Un-Successful! Please Try Again...', 'ERROR');
+                  }
+                  
+                }, error: function(error) {
+                        $('#loginDisable').removeAttr('disabled');
+
+                        logL.style.display = 'none';
+                        toastr.error('Something Went Wrong!', "ERROR");
+                    }
+              });
+                  
+                }, error: function(error) {
+                        $('#loginDisable').removeAttr('disabled');
+
+                        logL.style.display = 'none';
+                        toastr.error('Something Went Wrong!', "ERROR");
+                    }
+              });
+            }
         }
-        else{
-
-          $.ajax({
-            type: "GET",
-            url: "/new-tally/rest/branches",
-            dataType: 'json',
-            async: false,
-            headers: {
-              "Authorization": "Basic " + btoa(usertype+":"+username + ":" + password)
-            },
-            success: function(result){
-              console.log(result);
-              if(result.response_code == 0){
-                localStorage.setItem('myCat', 'Tom');
-
-                toastr.success('Login Successful', "SUCCESS");
-                setTimeout(function() {
-                  // window.history.go(-window.history.length);
-                  window.location.href = "branch_index.html";
-                }, 1000);
-              } else {
-                    $('#loginDisable').removeAttr('disabled');
-
-                    logL.style.display = 'none';
-
-                toastr.error('Login Un-Successful! Please Try Again...', 'ERROR');
-              }
-              
-            }, error: function(error) {
-                    $('#loginDisable').removeAttr('disabled');
-
-                    logL.style.display = 'none';
-                    toastr.error('Something Went Wrong!', "ERROR");
-                }
-          });
-        }
-    }
 });
 });
