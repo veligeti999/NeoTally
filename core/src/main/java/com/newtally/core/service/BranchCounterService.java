@@ -262,8 +262,8 @@ public class BranchCounterService extends AbstractService implements IAuthentica
         try {
         Query queryToCheck = em.createNativeQuery("select id from devices where registration_key=:registration_key"); 
         queryToCheck.setParameter("registration_key", device.getRegistrationKey());
-        Integer id=(Integer) queryToCheck.getSingleResult();
-        if(id==null) {
+        List rs= queryToCheck.getResultList();
+        if(rs.isEmpty()) {
             Query query = em.createNativeQuery("INSERT INTO devices ( " +
                     "deviceid, device_type, registration_key, user_id, created_date) " +
                     "VALUES( :deviceid, :device_type, :registration_key, :user_id, :created_date)");
@@ -285,7 +285,7 @@ public class BranchCounterService extends AbstractService implements IAuthentica
             query.setParameter("registration_key", device.getRegistrationKey());
             query.setParameter("user_id", device.getUserId());
             query.setParameter("modified_date", new Date());
-            query.setParameter("id", id);
+            query.setParameter("id", (Integer) rs.get(0));
             query.executeUpdate();
             trn.commit();
         }
