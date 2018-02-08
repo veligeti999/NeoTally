@@ -13,9 +13,9 @@
 
         <properties>
 
-            <property name="hibernate.connection.url" value="jdbc:mysql://kkalyan.com:3306/kkalyanc_wor1?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC"></property>
-            <property name="hibernate.connection.username" value="kkalyanc_wor1"></property>
-            <property name="hibernate.connection.password" value="C*EQFDEW8xW9"></property>
+            <property name="hibernate.connection.url" value="jdbc:mysql://18.219.39.174:3306/new_tally?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC&amp;autoReconnect=true"></property>
+            <property name="hibernate.connection.username" value="newtally"></property>
+            <property name="hibernate.connection.password" value="newtally@123"></property>
             <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"></property>
             <property name="hibernate.connection.serverTimeZone" value="UTC"></property>
 
