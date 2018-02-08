@@ -156,7 +156,7 @@ public class MerchantBranchResource extends BaseResource{
 		return Response.ok().build();
 	}
 	
-	@RolesAllowed({Role.MERCHANT})
+	@RolesAllowed({Role.BRANCH_MANAGER})
     @POST
     @Path("/change/password")
     @Produces(MediaType.APPLICATION_JSON)
@@ -177,6 +177,7 @@ public class MerchantBranchResource extends BaseResource{
 
         return Response.ok(gson_pretty.toJson(dto)).build();
     }
+	
 	
 	
 }
