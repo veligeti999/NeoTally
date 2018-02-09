@@ -263,8 +263,8 @@ public class MerchantService extends AbstractService implements IAuthenticator {
             Query query = em.createNativeQuery("UPDATE merchant_branch " +
                     "SET name = :name, manager_name = :manager_name, head_quarter = :head_quarter," +
                     " phone = :phone, email = :email, address = :address, city = :city, " +
-                    "state = :state, zip = :zip, country = :country, branch_no =:branch_no" +
-                    "WHERE id = :id and mercant_id = :merchant_id");
+                    "state = :state, zip = :zip, country = :country, branch_no =:branch_no " +
+                    "WHERE id = :id and merchant_id = :merchant_id");
 
             branch.setMerchantId(ctx.getCurrentMerchantId());
 
@@ -522,6 +522,7 @@ public class MerchantService extends AbstractService implements IAuthenticator {
 
                 return counter;
             } catch (Exception e) {
+                e.printStackTrace();
                 trx.rollback();
 
                 throw e;

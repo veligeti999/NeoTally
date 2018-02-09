@@ -17835,6 +17835,14 @@ input {
     padding-bottom: 10px;
 }
 
+.cursor {
+    cursor: pointer;
+}
+
+.fa-1-5x {
+    font-size: 1.5em;
+}
+
 
 #inlineRadio1,
 #inlineRadio2,
@@ -17847,12 +17855,18 @@ input {
 }
 
 .blureffect div{
-  -webkit-filter: blur(1px);
-  -moz-filter: blur(1px);
-  -o-filter: blur(1px);
-  -ms-filter: blur(1px);
-  filter: blur(1px);
-  background-color: #eef3f2;
+  pointer-events: none;
+  cursor: not-allowed;
+  opacity: 0.6;
+  /*background-color: #eef3f2;*/
+}
+
+td.details-control {
+    background: url('../images/details_open.png') no-repeat center center;
+    cursor: pointer;
+}
+tr.shown td.details-control {
+    background: url('../images/details_close.png') no-repeat center center;
 }
 .mt-4{
     margin-top: 4ex;

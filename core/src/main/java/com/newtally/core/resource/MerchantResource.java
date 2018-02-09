@@ -202,6 +202,7 @@ public class MerchantResource extends BaseResource {
         dto.setResponse_message("Branch has registered successfully");
         dto.setResponse_data(branch);
         } catch(Exception e) {
+            e.printStackTrace();
             dto.setResponse_code(1);
             dto.setResponse_message("Failed to register Branch");
             dto.setResponse_data(e.getLocalizedMessage());
@@ -217,13 +218,14 @@ public class MerchantResource extends BaseResource {
 
         ResponseDto dto=new ResponseDto();
         try {
-        MerchantBranch branch = gson.fromJson(new InputStreamReader(req.getInputStream()), MerchantBranch.class);
+        MerchantBranch branch = gson_pretty.fromJson(new InputStreamReader(req.getInputStream()), MerchantBranch.class);
 
         mrctServ.updateBranch(branch);
         dto.setResponse_code(0);
         dto.setResponse_message("Branch has updated successfully");
         dto.setResponse_data(branch);
         }catch(Exception e) {
+            e.printStackTrace();
             dto.setResponse_code(1);
             dto.setResponse_message("Branch has updated Failed");
             dto.setResponse_data(e.getLocalizedMessage());
@@ -314,6 +316,7 @@ public class MerchantResource extends BaseResource {
         dto.setResponse_message("Counter has been registered successfully");
         dto.setResponse_data(counter);
         } catch(Exception e) {
+            e.printStackTrace();
             dto.setResponse_code(1);
             dto.setResponse_message("Failed to register counter");
             dto.setResponse_data(e.getLocalizedMessage());

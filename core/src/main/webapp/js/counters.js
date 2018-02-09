@@ -1,3 +1,5 @@
+var dataReceieved;
+localStorage.removeItem('editCounter');
 $(document).ready(function() {
     var branchId = localStorage.getItem("branchId");
     $.ajax({
@@ -6,16 +8,25 @@ $(document).ready(function() {
         dataType: 'json',
         async: false,
         success: function(result) {
-            console.log(result.response_data);
+            dataReceieved = result.response_data;
             $('#branch_table').DataTable({
                 "data": result.response_data,
                 "columns": [
                     { "data": "id" },
+                    { "data": "name" },
                     { "data": "phone" },
                     { "data": "email" },
+                    { "data": function(data, type, full) {
+                            if(data.active) {
+                               return '<i class="fa fa-check fa-1-5x cursor text-success ml-3" data-toggle="tooltip" title="Active"></i>';
+                            } else {
+                               return '<i class="fa fa-times fa-1-5x cursor text-danger ml-3" data-toggle="tooltip" title="In Active"></i>';
+                            }
+                        } 
+                    },
                     {
                         "data": function(data, type, full) {
-                            return '<img src="images/icons/eye.png" onClick="viewBranch(' + data.id + ')"> <img src="images/icons/edit.png" onClick="editBranch(' + data.id + ')">';
+                            return '<i class="fa fa-eye fa-1-5x cursor text-success ml-3" data-toggle="tooltip" title="View Counter" onClick="viewCounter(' + data.id + ')"></i> <i class="fa fa-edit fa-1-5x cursor text-info ml-3" data-toggle="tooltip" title="Edit Counter" onClick="editCounter(' + data.id + ')"></i>';
                         }
                     }
                 ]
@@ -28,6 +39,15 @@ window.onhashchange = function(e) {
     e.preventDefault();
 }
 
+function editCounter(id){
+    _.forEach(dataReceieved, function(item){
+        if(item.id == id){
+            localStorage.setItem('editCounter', JSON.stringify(item));
+            window.location.href = "add_counter.html";
+        }
+    })
+}
+
 
 
 function init() {
@@ -37,7 +57,6 @@ function init() {
         dataType: 'json',
         async: false,
         success: function(result) {
-            console.log(result);
             document.getElementById("merchant-name").innerHTML = result.response_data.name;
             document.getElementById("owner-name").innerHTML = result.response_data.ownerName;
         }
@@ -53,7 +72,6 @@ function logout() {
         dataType: 'json',
         async: false,
         success: function(result) {
-            console.log(result);
             window.history.go(-window.history.length);
             window.location.href = "login.html";
         }
