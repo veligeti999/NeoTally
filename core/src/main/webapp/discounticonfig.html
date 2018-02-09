@@ -87,61 +87,32 @@
                     <h3 class="page-heading mb-4"> Discount Config</h3>
                     <div id="config-discounts" class="col-sm-6">
                         <!-- <div class="form-group row">
-          <label for="example-text-input" class="col-2 col-form-label">Ethirum <span style="color: red;"> 8%</span></label>
-  
-  
-  <div class="col-10">
- <input style="background: green; color: #fff;" class="form-control" type="text" value="Edit" id="example-text-input">
-  </div>
-</div>
-
-            
-     <div class="form-group row">
-          <label for="example-text-input" class="col-2 col-form-label">Bitcoin <span style="color: red;"> 12%</span></label>
-  
-  
-  <div class="col-10">
-      <input style="background: green; color: #fff;" class="form-control" type="text" value="Edit" id="example-text-input">
-  </div>
-</div>         
-
-    
-
-
-             <div class="form-group row">
-          <label for="example-text-input" class="col-2 col-form-label">Litecoin</label>
-  
-  
-  <div class="col-10">
- <input class="form-control" type="text" value="Enter Discount" id="example-text-input">
-  </div>
-          
-       
-          
-          
-        
-        
-</div>    
-            
-            
-                <div class="form-group row">
-          <label for="example-text-input" class="col-2 col-form-label"></label>
-  
-  
-  <div class="col-10">
- <div style="margin-top: 10px;" class="form-group">
-                      <button type="submit" class="btn btn-primary">Save</button>
-                    </div>
-  </div>
-          
-       
-          
-          
-        
-        
-</div>    
-            
-   -->
+                            <label for="example-text-input" class="col-2 col-form-label">Ethirum <span style="color: red;"> 8%</span></label>
+                            <div class="col-10">
+                                <input style="background: green; color: #fff;" class="form-control" type="text" value="Edit" id="example-text-input">
+                            </div>
+                        </div> -->
+                        <div class="form-group row">
+                            <label for="example-text-input" class="col-2 col-form-label">Bitcoin</label>
+                            <div class="col-2">
+                                <input id="bitcoinDiscount" class="form-control" type="text" pattern="/d*" maxlength="3" max="100">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="example-text-input" class="col-2 col-form-label">Litecoin</label>
+                            <div class="col-2">
+                                <input id="litecoinDiscount" class="form-control" type="text" pattern="/d*" maxlength="3" max="100">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="example-text-input" class="col-2 col-form-label"></label>
+                            <div class="col-10">
+                                <div style="margin-top: 10px;" class="form-group">
+                                    <button id="discountSubmit" class="btn btn-primary" onclick="save()">Save</button>
+                                    <button id="discountEdit" class="btn btn-primary" onclick="editData()">Edit</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!-- partial:partials/_footer.html -->
