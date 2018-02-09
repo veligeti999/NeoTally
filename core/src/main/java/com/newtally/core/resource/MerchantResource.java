@@ -341,18 +341,19 @@ public class MerchantResource extends BaseResource {
         return Response.ok(gson_pretty.toJson(dto)).build();
     }
 
-	@RolesAllowed({ Role.MERCHANT })
+	@RolesAllowed({Role.MERCHANT, Role.BRANCH_MANAGER})
 	@GET
 	@Path("/balance")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getWalletBalance() {
 		ResponseDto response = new ResponseDto();
 		try {
-			CoinDto coin = mrctServ.getMerchantWalletBalance(context.getCurrentMerchantId());
+			CoinDto coin = mrctServ.getWalletBalance(context.getCurrentMerchantId(),context.getCurrentBranchId());
 			response.setResponse_code(0);
 			response.setResponse_message("Successfully Retrieved Wallet Balance");
 			response.setResponse_data(coin);
 		} catch (Exception e) {
+			e.printStackTrace();
 			response.setResponse_code(1);
 			response.setResponse_message("Failed To Retrieve Wallet Balance");
 			response.setResponse_data(e.getLocalizedMessage());

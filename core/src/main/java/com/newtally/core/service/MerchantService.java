@@ -468,18 +468,23 @@ public class MerchantService extends AbstractService implements IAuthenticator {
 	 * @return
 	 * @throws Exception
 	 */
-	public CoinDto getMerchantWalletBalance(long merchantId) throws Exception {
+	public CoinDto getWalletBalance(Long merchantId, Long branchId) throws Exception {
 		double totalCoins = 0.0;
 		double coinINRValue = 0.0;
-		List<BigInteger> branchIds = ServiceFactory.getInstance().getMerchantBranchService()
-				.getBranchIdsByMerchantId(merchantId);
-		CoinDto coin = new CoinDto();
+		List<BigInteger> branchIds = null;;
+		if (merchantId != null) {
+			branchIds = ServiceFactory.getInstance().getMerchantBranchService().getBranchIdsByMerchantId(merchantId);
+		}else{
+			branchIds = new ArrayList<>();
+			branchIds.add(new BigInteger(String.valueOf(branchId)));
+		}
 		long totalSatoshis = ServiceFactory.getInstance().getWalletManager().getBitcoinWalletBalance(branchIds);
 		if(totalSatoshis != 0){
 			totalCoins = (double)totalSatoshis/Coin.COIN.getValue();
 		    //get the current INR value of a bitcoin to calculate the total bitcoins value in INR
 			coinINRValue = ServiceFactory.getInstance().getMerchantCounterService().getBitCoinCostInINR();
 		}
+		CoinDto coin = new CoinDto();
 		coin.setCoinName("Bitcoin");
 		coin.setCoinCode(MonetaryFormat.CODE_BTC);
 		coin.setCoinValue(totalCoins);
