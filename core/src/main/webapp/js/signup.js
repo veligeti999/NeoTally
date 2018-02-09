@@ -96,7 +96,7 @@ $(function() {
                     console.log(result);
                     if (result.response_code == 0) {
                         toastr.success(result.response_message, "SUCCESS");
-                        $setTimeout(function() {
+                        setTimeout(function() {
                             window.location.href = "login.html";
                         }, 1000);
                     } else {
@@ -108,8 +108,7 @@ $(function() {
                 error: function(error) {
                     $('#submitDisable').removeAttr('disabled');
                     signupL.style.display = 'none';
-                    toastr.error('Something Went Wrong!'
-                        'ERROR');
+                    toastr.error('Something Went Wrong!', 'ERROR');
                 }
             });
         }
