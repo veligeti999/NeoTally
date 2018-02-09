@@ -52,8 +52,8 @@ public class MerchantBranchService extends AbstractService implements IAuthentic
     MerchantCounter _registerCounter(MerchantCounter counter) {
 
         Query query = em.createNativeQuery("INSERT INTO branch_counter ( " +
-                "branch_id, password, phone, email, active) " +
-                "VALUES( :branch_id, :password, :phone, :email, true )");
+                "branch_id, password, phone, email, active, name) " +
+                "VALUES( :branch_id, :password, :phone, :email, true, :name )");
 
         counter.setPassword(generateNewPassword());
 
@@ -61,6 +61,26 @@ public class MerchantBranchService extends AbstractService implements IAuthentic
         query.setParameter("phone", counter.getPhone());
         query.setParameter("password", counter.getPassword());
         query.setParameter("email", counter.getEmail());
+        query.setParameter("name", counter.getName());
+
+        query.executeUpdate();
+
+        return counter;
+    }
+    
+    MerchantCounter updateCounter(MerchantCounter counter) {
+
+        Query query = em.createNativeQuery("UPDATE branch_counter SET" +
+                "branch_id=:branch_id, phone=:phone, email=:email, active=:active, name=:name where id=:id");
+
+        counter.setPassword(generateNewPassword());
+
+        query.setParameter("branch_id", counter.getBranchId());
+        query.setParameter("phone", counter.getPhone());
+        query.setParameter("email", counter.getEmail());
+        query.setParameter("active", counter.getActive());
+        query.setParameter("id", counter.getId());
+        query.setParameter("name", counter.getName());
 
         query.executeUpdate();
 
@@ -69,7 +89,7 @@ public class MerchantBranchService extends AbstractService implements IAuthentic
 
 
     public List<MerchantCounter> getCounters(Long branchId) {
-        Query query = em.createNativeQuery("SELECT  branch_id, phone, email, password, id" +
+        Query query = em.createNativeQuery("SELECT  branch_id, phone, email, password, id, active, name" +
                 " FROM branch_counter WHERE branch_id = :branch_id");
         
         query.setParameter("branch_id", branchId);
@@ -85,6 +105,8 @@ public class MerchantBranchService extends AbstractService implements IAuthentic
             counter.setEmail((String) fields[2]);
             counter.setPassword((String) fields[3]);
             counter.setId(((BigInteger) fields[4]).longValue());
+            counter.setActive((Boolean) fields[5]);
+            counter.setName((String) fields[6]);
             counters.add(counter);
             
         }

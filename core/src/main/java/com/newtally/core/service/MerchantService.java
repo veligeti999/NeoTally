@@ -263,7 +263,7 @@ public class MerchantService extends AbstractService implements IAuthenticator {
             Query query = em.createNativeQuery("UPDATE merchant_branch " +
                     "SET name = :name, manager_name = :manager_name, head_quarter = :head_quarter," +
                     " phone = :phone, email = :email, address = :address, city = :city, " +
-                    "state = :state, zip = :zip, country = :country " +
+                    "state = :state, zip = :zip, country = :country, branch_no =: branch_no" +
                     "WHERE id = :id and mercant_id = :merchant_id");
 
             branch.setMerchantId(ctx.getCurrentMerchantId());
@@ -307,7 +307,6 @@ public class MerchantService extends AbstractService implements IAuthenticator {
             branch.setPhone((String) fields[5]);
             branch.setEmail((String) fields[6]);
             branch.setAddress(readAddress(7, fields));
-
             branches.add(branch);
         }
 
@@ -510,5 +509,22 @@ public class MerchantService extends AbstractService implements IAuthenticator {
             trn.rollback();
             throw e;
         }
+    }
+
+    public MerchantCounter updateCounter(MerchantCounter counter) {
+            EntityTransaction trx = em.getTransaction();
+
+            trx.begin();
+            try {
+                counter = ServiceFactory.getInstance().getMerchantBranchService().updateCounter(counter);
+
+                trx.commit();
+
+                return counter;
+            } catch (Exception e) {
+                trx.rollback();
+
+                throw e;
+            }
     }
 }

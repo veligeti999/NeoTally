@@ -76,7 +76,7 @@ public class BranchCounterService extends AbstractService implements IAuthentica
     
     List<MerchantCounter> getCountersOfWhereClause(
             String whereClause, Map<String, Object> params) {
-        Query query = em.createNativeQuery("SELECT  id, branch_id, password, phone, email, active " +
+        Query query = em.createNativeQuery("SELECT  id, branch_id, password, phone, email, active, name " +
                 "FROM branch_counter " + whereClause);
 
         setParams(params, query);
@@ -93,7 +93,8 @@ public class BranchCounterService extends AbstractService implements IAuthentica
             counter.setPassword((String) fields[2]); 
             counter.setPhone((String) fields[3]);
             counter.setEmail((String) fields[4]);
-           
+            counter.setActive((Boolean) fields[5]);
+            counter.setName((String) fields[6]);
             
             counters.add(counter);
         }
@@ -110,7 +111,7 @@ public class BranchCounterService extends AbstractService implements IAuthentica
         counterDto.setAddress(branch.getAddress());
         counterDto.setBranch_name(branch.getName());
         counterDto.setCounter_id(counter.getId());
-        counterDto.setCounter_name("Counter #"+counter.getId());
+        counterDto.setCounter_name(counter.getName());
         counterDto.setMerchant_name(merchant.getName());
         counterDto.setMerchant_id(merchant.getId());
         counterDto.setEmail(counter.getEmail());

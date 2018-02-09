@@ -298,6 +298,29 @@ public class MerchantResource extends BaseResource {
     }
     
     @RolesAllowed({Role.MERCHANT})
+    @PUT
+    @Path("/counter/update")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateCounter(@Context HttpServletRequest req) {
+        
+        ResponseDto dto=new ResponseDto();
+        try {
+        MerchantCounter counter = gson.fromJson(new InputStreamReader(req.getInputStream()), MerchantCounter.class);
+
+        counter = mrctServ.updateCounter(counter);
+        
+        dto.setResponse_code(0);
+        dto.setResponse_message("Counter has been registered successfully");
+        dto.setResponse_data(counter);
+        } catch(Exception e) {
+            dto.setResponse_code(1);
+            dto.setResponse_message("Failed to register counter");
+            dto.setResponse_data(e.getLocalizedMessage());
+        }
+        return Response.ok(gson.toJson(dto)).build();
+    }
+    @RolesAllowed({Role.MERCHANT})
     @GET
     @Path("/currency/discounts")
     @Produces(MediaType.APPLICATION_JSON)
