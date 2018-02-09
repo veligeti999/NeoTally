@@ -17846,5 +17846,14 @@ input {
     padding-left: 18px;
 }
 
+.blureffect div{
+  -webkit-filter: blur(1px);
+  -moz-filter: blur(1px);
+  -o-filter: blur(1px);
+  -ms-filter: blur(1px);
+  filter: blur(1px);
+  background-color: #eef3f2;
+}
+
 
 /*# sourceMappingURL=maps/style.css.map */
