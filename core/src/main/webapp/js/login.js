@@ -85,7 +85,7 @@ $(function() {
                             }, 1000);
                           } else {
                                 $('#loginDisable').removeAttr('disabled');
-                                    logL.style.display = 'none';
+                                logL.style.display = 'none';
 
                             toastr.error('Login Un-Successful! Please Try Again...', 'ERROR');
                           }
@@ -93,7 +93,7 @@ $(function() {
                                 $('#loginDisable').removeAttr('disabled');
                                 // logD.disabled = false;
                                 logL.style.display = 'none';
-                                toastr.error('Something Went Wrong!', "ERROR");
+                                toastr.error('Login Un-Successful! Please Try Again...', "ERROR");
                             }
                       });
                 }, error: function(error) {
