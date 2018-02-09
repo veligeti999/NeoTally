@@ -35,8 +35,8 @@ public class OrderInvoiceService extends AbstractService{
         trn.begin();
         try {
             String q="INSERT INTO order_invoice ( " +
-                    "id, wallet_address, currency_amount, discount_amount, currency_id, currency_code, counter_id, status, created_date) " +
-                    "VALUES( :id, :wallet_address, :currency_amount, :discount_amount, :currency_id, :currency_code, :counter_id, :status, :created_date)";
+                    "id, wallet_address, currency_amount, discount_amount, currency_id, currency_code, counter_id, status, created_date, payment_amount) " +
+                    "VALUES( :id, :wallet_address, :currency_amount, :discount_amount, :currency_id, :currency_code, :counter_id, :status, :created_date, :payment_amount)";
             Query query = em.createNativeQuery(q);
 
             order.setId(nextId());
@@ -74,6 +74,7 @@ public class OrderInvoiceService extends AbstractService{
 		query.setParameter("status", OrderStatus.Pending.toString());
 		query.setParameter("counter_id", order.getCounterId());
 		query.setParameter("created_date", new Date());
+		query.setParameter("payment_amount", order.getPaymentAmount());
 	}
     
     public void cancelOrders(long id) {

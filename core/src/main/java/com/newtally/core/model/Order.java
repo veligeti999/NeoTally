@@ -7,6 +7,7 @@ public class Order {
     private String walletAddress;
     private Double currencyAmount;
     private Double discountAmount;
+    private Double paymentAmount;
     private Integer currencyId;
     private String currencyCode;
     private Integer counterId;
@@ -79,6 +80,12 @@ public class Order {
     }
     public void setModifiedDate(Date modifiedDate) {
         this.modifiedDate = modifiedDate;
+    }
+    public Double getPaymentAmount() {
+        return paymentAmount;
+    }
+    public void setPaymentAmount(Double paymentAmount) {
+        this.paymentAmount = paymentAmount;
     }
     @Override
     public String toString() {

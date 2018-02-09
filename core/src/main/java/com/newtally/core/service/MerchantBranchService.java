@@ -189,8 +189,8 @@ public class MerchantBranchService extends AbstractService implements IAuthentic
             List<Long> counterIds=counters.stream()
                     .map(MerchantCounter::getId).collect(Collectors.toList());
         System.out.println("counterIds:::"+counterIds.size());
-        Query queryForOrders = em.createNativeQuery("SELECT  id, currency_amount, discount_amount,currency_id, currency_code, status, created_date FROM order_invoice " +
-                "WHERE counter_id IN :counterIds");
+        Query queryForOrders = em.createNativeQuery("SELECT  id, currency_amount, discount_amount,currency_id, currency_code, status, created_date, payment_amount FROM order_invoice " +
+                "WHERE counter_id IN :counterIds order by created_date desc");
         queryForOrders.setParameter("counterIds", counterIds);
         List rs = queryForOrders.getResultList();
         System.out.println(rs.size());
@@ -206,6 +206,7 @@ public class MerchantBranchService extends AbstractService implements IAuthentic
             order.setCurrencyCode((String)fields[4]);
             order.setStatus(OrderStatus.valueOf((String)fields[5]));
             order.setCreatedDate((Date)fields[6]);
+            order.setPaymentAmount((Double)fields[7]);
             orders.add(order);
         }
         return orders;
