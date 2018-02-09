@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css" />
     <link rel="stylesheet" href="css/style.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="js/toastr.js"></script>
+    <link rel="stylesheet" href="css/toastr.css" />
 </head>
 
 <body>
@@ -89,16 +91,26 @@
                 <div class="content-wrapper">
                     <div class="card col-lg-4 mx-auto">
                         <div class="card-body px-5 py-5">
-                            <h3 class="card-title text-left mb-3">Add Counter</h3>
+                            <h3 class="card-title text-left mb-3" id="titleView"></h3>
                             <form onsubmit="return false" name="registerCounter" class="form-horizontal">
+                                <div class="form-group">
+                                    <input type="text" id="counterName" name="counterName" class="form-control p_input" placeholder="Name">
+                                </div>
                                 <div class="form-group">
                                     <input type="text" id="email" name="email" class="form-control p_input" placeholder="Email">
                                 </div>
                                 <div class="form-group">
                                     <input type="text" id="phone" name="phone" class="form-control p_input" placeholder="Phone">
                                 </div>
+                                <div class="form-group">
+                                    <select type="text" id="status" name="status" class="form-control p_input" placeholder="status">
+                                        <option value="true">Active</option>
+                                        <option value="false">In Active</option>
+                                    </select>
+                                </div>
                                 <div class="text-center">
-                                    <button class="btn btn-primary btn-block enter-btn mb-4">Submit</button>
+                                    <button class="btn btn-primary btn-block enter-btn mb-4" id="addCounterSubmit">Submit <i class="fa fa-spinner fa-spin" id="addCounterLoader"></i></button>
+                                    <button class="btn btn-primary btn-block enter-btn mb-4" onclick="cancel()">Cancel </i></button>
                                 </div>
                             </form>
                         </div>

@@ -522,6 +522,7 @@ public class MerchantService extends AbstractService implements IAuthenticator {
 
                 return counter;
             } catch (Exception e) {
+                e.printStackTrace();
                 trx.rollback();
 
                 throw e;

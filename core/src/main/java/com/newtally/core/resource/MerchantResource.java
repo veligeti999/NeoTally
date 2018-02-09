@@ -316,6 +316,7 @@ public class MerchantResource extends BaseResource {
         dto.setResponse_message("Counter has been registered successfully");
         dto.setResponse_data(counter);
         } catch(Exception e) {
+            e.printStackTrace();
             dto.setResponse_code(1);
             dto.setResponse_message("Failed to register counter");
             dto.setResponse_data(e.getLocalizedMessage());

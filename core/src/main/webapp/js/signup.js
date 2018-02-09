@@ -1,9 +1,22 @@
+if (localStorage.getItem('myCat')) {
+    localStorage.removeItem('myCat');
+    $.ajax({
+        type: "GET",
+        url: "/new-tally/rest/merchants/logout",
+        dataType: 'json',
+        async: false,
+        success: function(result) {
+            window.location.href = "login.html";
+        }
+    });
+
+}
+
 $(function() {
     // Initialize form validation on the registration form.
     // It has the name attribute "registration"
     var signupD = document.getElementById('submitDisable');
     var signupL = document.getElementById('showSubmitLoader');
-    signupD.setAttribute("disabled", false);
     signupL.style.display = 'none';
     $("form[name='registration']").validate({
         // Specify validation rules
@@ -53,7 +66,7 @@ $(function() {
         // Make sure the form is submitted to the destination defined
         // in the "action" attribute of the form when valid
         submitHandler: function(form) {
-            signupD.disabled = true;
+            signupD.setAttribute("disabled", true);
             signupL.style.display = 'block';
             var postJson = {};
             postJson.name = document.getElementById('name').value;
@@ -81,14 +94,22 @@ $(function() {
                 },
                 success: function(result) {
                     console.log(result);
-                    toastr.success('Successfully Registered!', "SUCCESS");
-                    $setTimeout(function() {
-                        window.location.href = "login.html";
-                    }, 1000);
-                }, error: function(error) {
-                    signupD.disabled = false;
+                    if (result.response_code == 0) {
+                        toastr.success(result.response_message, "SUCCESS");
+                        $setTimeout(function() {
+                            window.location.href = "login.html";
+                        }, 1000);
+                    } else {
+                        $('#submitDisable').removeAttr('disabled');
+                        signupL.style.display = 'none';
+                        toastr.error(result.response_message, "ERROR");
+                    }
+                },
+                error: function(error) {
+                    $('#submitDisable').removeAttr('disabled');
                     signupL.style.display = 'none';
-                    toastr.error('Something Went Wrong!' 'ERROR');
+                    toastr.error('Something Went Wrong!'
+                        'ERROR');
                 }
             });
         }

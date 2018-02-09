@@ -70,7 +70,7 @@ public class MerchantBranchService extends AbstractService implements IAuthentic
     
     MerchantCounter updateCounter(MerchantCounter counter) {
 
-        Query query = em.createNativeQuery("UPDATE branch_counter SET" +
+        Query query = em.createNativeQuery("UPDATE branch_counter SET " +
                 "branch_id=:branch_id, phone=:phone, email=:email, active=:active, name=:name where id=:id");
 
         counter.setPassword(generateNewPassword());
