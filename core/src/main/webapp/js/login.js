@@ -84,7 +84,6 @@ $(function() {
                             success: function(result) {
                                 if (result.response_code == 0) {
                                     localStorage.setItem('myCat', 'Tom');
-
                                     toastr.success('Login Successful', "SUCCESS");
                                     setTimeout(function() {
                                         // window.history.go(-window.history.length);
@@ -93,7 +92,6 @@ $(function() {
                                 } else {
                                     $('#loginDisable').removeAttr('disabled');
                                     logL.style.display = 'none';
-
                                     toastr.error('Login Un-Successful! Please Try Again...', 'ERROR');
                                 }
                             },
@@ -101,7 +99,7 @@ $(function() {
                                 $('#loginDisable').removeAttr('disabled');
                                 // logD.disabled = false;
                                 logL.style.display = 'none';
-                                toastr.error('Something Went Wrong!', "ERROR");
+                                toastr.error('Login Un-Successful! Please Try Again...', "ERROR");
                             }
                         });
                     },

@@ -101,39 +101,37 @@
                             <div id="home" class="container tab-pane active">
                                 <br>
                                 <p>
-                                    <li id="merchant-name-profile"> Business Name : Jon Doe Foods </li>
-                                    <li id="merchant-pan"> Business PAN : ABCD123GG7</li>
-                                    <li id="owner-name-profile"> Business Name Contact : Doe Foods </li>
-                                    <li id="phone"> Business Mobile : 98112345670 </li>
-                                    <li id="email"> Business Email : JonDoeFoods@jondeo.com </li>
+                                    <li id="merchant-name-profile"></li>
+                                    <li id="merchant-pan"> </li>
+                                    <li id="owner-name-profile"></li>
+                                    <li id="phone"></li>
+                                    <li id="email"></li>
                                 </p>
                             </div>
                             <div id="menu1" class="container tab-pane fade">
-                                <br>
-                                <h3>Menu 1</h3>
-                                <p>
+                                  <form name="changePasswordForm" class="mt-4">
                                     <div class="form-group row">
                                         <label for="example-text-input" class="col-2 col-form-label">Current Password</label>
                                         <div class="col-10">
-                                            <input class="form-control p-input" id="exampleInputPassword1" placeholder="Current Password" type="password">
+                                            <input class="form-control p-input" id="currentPassword" name="currentPassword" placeholder="Current Password" type="password">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label for="example-search-input" class="col-2 col-form-label">New Password</label>
                                         <div class="col-10">
-                                            <input class="form-control p-input" id="exampleInputPassword1" placeholder="New Password" type="password">
+                                            <input class="form-control p-input" id="newPassword" name="newPassword" placeholder="New Password" type="password">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="example-search-input" class="col-2 col-form-label">Re-Enter New Password</label>
+                                        <label for="example-search-input"  class="col-2 col-form-label">Re-Enter New Password</label>
                                         <div class="col-10">
-                                            <input class="form-control p-input" id="exampleInputPassword1" placeholder="Re-Enter New Password" type="password">
+                                            <input class="form-control p-input" id="confirmPassword" name="confirmPassword" placeholder="Re-Enter New Password" type="password">
                                         </div>
                                     </div>
-                                </p>
                                 <div class="form-group">
-                                    <button type="submit" class="btn btn-primary">Change Password</button>
+                                    <button type="submit" id="submitDisable" class="btn btn-primary">Change Password<i id="showSubmitLoader" class="fa fa-spinner fa-spin"></i></button>
                                 </div>
+                              </form>
                             </div>
                         </div>
                     </div>
@@ -161,6 +159,8 @@
     <script src="js/misc.js"></script>
     <script src="js/chart.js"></script>
     <script src="js/maps.js"></script>
+    <script src="js/jquery.validate.min.js"></script>
+    <script src="js/toastr.js"></script>
     <script src="js/profile.js"></script>
 </body>
 

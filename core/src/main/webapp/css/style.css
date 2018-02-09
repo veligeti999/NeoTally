@@ -17868,6 +17868,9 @@ td.details-control {
 tr.shown td.details-control {
     background: url('../images/details_close.png') no-repeat center center;
 }
+.mt-4{
+    margin-top: 4ex;
+}
 
 
 /*# sourceMappingURL=maps/style.css.map */
