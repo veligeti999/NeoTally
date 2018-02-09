@@ -103,9 +103,9 @@ $(function() {
             postJson.phone = document.getElementById('phone').value;
             postJson.email = document.getElementById('email').value;
             postJson.name = document.getElementById('counterName').value;
-            postJson.branchId = dataSaved.branchId;
-            postJson.id = dataSaved.id;
             if (localStorage.getItem('editCounter')) {
+                postJson.branchId = dataSaved.branchId;
+                postJson.id = dataSaved.id;
                 postJson.active = document.getElementById('status').value;
                 $.ajax({
                     type: "PUT",

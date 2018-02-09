@@ -19,7 +19,7 @@ $(document).ready(function() {
                     { "data": function(data, type, full) { return moment(new Date(data.createdDate)).format("MMMM Do YYYY, h:mm:ss a"); } },
                     { "data": function(data, type, full) {
                       if(data.status=="Pending"){
-                        return data.status + '<i class="fa fa-times text-danger" style="margin-left: 5px"></i>';//' <img src="images/icons/cancel.png">';
+                        return data.status + '<i class="fa fa-clock-o" style="margin-left: 5px"></i>';//' <img src="images/icons/cancel.png">';
                       }else{
                         return data.status + '<i class="fa fa-check text-success" style="margin-left: 5px"></i>';;//' <img src="images/icons/right.png">';
                       }
