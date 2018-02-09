@@ -137,41 +137,29 @@
     </p>
     </div>
     <div id="menu1" class="container tab-pane fade"><br>
-      <h3>Menu 1</h3>
-      <p>    <div class="form-group row">
-  <label for="example-text-input" class="col-2 col-form-label">Current Password</label>
-  <div class="col-10">
-    
-    
-    <input class="form-control p-input" id="exampleInputPassword1" placeholder="Current Password" type="password">
-    
-  </div>
-</div>
-      
-      
-<div class="form-group row">
-  <label for="example-search-input" class="col-2 col-form-label">New Password</label>
-  <div class="col-10">
-
-    
-    <input class="form-control p-input" id="exampleInputPassword1" placeholder="New Password" type="password">
-    
-  </div>
-</div>
-      
-      <div class="form-group row">
-  <label for="example-search-input" class="col-2 col-form-label">Re-Enter New Password</label>
-  <div class="col-10">
-
-    
-    <input class="form-control p-input" id="exampleInputPassword1" placeholder="Re-Enter New Password" type="password">
-  </div>
-</div></p>
-
-
-<div class="form-group">
-                      <button type="submit" class="btn btn-primary">Change Password</button>
-                    </div>
+      <form name="changePasswordForm" class="mt-4">
+                                    <div class="form-group row">
+                                        <label for="example-text-input" class="col-2 col-form-label">Current Password</label>
+                                        <div class="col-10">
+                                            <input class="form-control p-input" id="currentPassword" name="currentPassword" placeholder="Current Password" type="password">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="example-search-input" class="col-2 col-form-label">New Password</label>
+                                        <div class="col-10">
+                                            <input class="form-control p-input" id="newPassword" name="newPassword" placeholder="New Password" type="password">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="example-search-input"  class="col-2 col-form-label">Re-Enter New Password</label>
+                                        <div class="col-10">
+                                            <input class="form-control p-input" id="confirmPassword" name="confirmPassword" placeholder="Re-Enter New Password" type="password">
+                                        </div>
+                                    </div>
+                                <div class="form-group">
+                                    <button type="submit" id="submitDisable" class="btn btn-primary">Change Password<i id="showSubmitLoader" class="fa fa-spinner fa-spin"></i></button>
+                                </div>
+                              </form>
     </div>
       
       

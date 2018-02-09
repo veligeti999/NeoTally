@@ -48,6 +48,7 @@ public class BranchCounterResource extends BaseResource{
         dto.setResponse_message("Successfully get the counter details");
         dto.setResponse_data(counter);
         } catch(Exception e) {
+            e.printStackTrace();
             dto.setResponse_code(1);
             dto.setResponse_message("Failed to get the counter details");
             dto.setResponse_data(e.getLocalizedMessage());
@@ -69,6 +70,7 @@ public class BranchCounterResource extends BaseResource{
         dto.setResponse_message("Get Counter details in successfully");
         dto.setResponse_data(counter);
         } catch(Exception e) {
+            e.printStackTrace();
             dto.setResponse_code(1);
             dto.setResponse_message("Failed to get the counter details");
             dto.setResponse_data(e.getLocalizedMessage());
@@ -147,6 +149,7 @@ public class BranchCounterResource extends BaseResource{
         dto.setResponse_message("order submitted successfully");
         dto.setResponse_data(orders);
         } catch(Exception e) {
+            e.printStackTrace();
             dto.setResponse_code(1);
             dto.setResponse_message("Failed to submit the order");
             dto.setResponse_data(e.getLocalizedMessage());
@@ -168,6 +171,7 @@ public class BranchCounterResource extends BaseResource{
         dto.setResponse_code(0);
         dto.setResponse_message("Cancelled the Order");
         } catch(Exception e) {
+            e.printStackTrace();
             dto.setResponse_code(1);
             dto.setResponse_message("Failed to cancel the order");
             dto.setResponse_data(e.getLocalizedMessage());
@@ -190,6 +194,7 @@ public class BranchCounterResource extends BaseResource{
         dto.setResponse_message("Successfully get all transactions");
         dto.setResponse_data(orders);
         } catch(Exception e) {
+            e.printStackTrace();
             dto.setResponse_code(1);
             dto.setResponse_message("Failed to get the transactions");
             dto.setResponse_data(e.getLocalizedMessage());
@@ -212,6 +217,7 @@ public class BranchCounterResource extends BaseResource{
             dto.setResponse_message("Successfully get all transactions");
             dto.setResponse_data(orders);
             } catch(Exception e) {
+                e.printStackTrace();
                 dto.setResponse_code(1);
                 dto.setResponse_message("Failed to get the transactions");
                 dto.setResponse_data(e.getLocalizedMessage());

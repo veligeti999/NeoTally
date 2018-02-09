@@ -77,6 +77,7 @@ public class MerchantResource extends BaseResource {
         dto.setResponse_message("Successfully updated the current merchant details");
         dto.setResponse_data(merchant);
         } catch(Exception e) {
+            e.printStackTrace();
             dto.setResponse_code(1);
             dto.setResponse_message("Failed to update the merhant");
             dto.setResponse_data(e.getLocalizedMessage());
@@ -97,6 +98,7 @@ public class MerchantResource extends BaseResource {
         dto.setResponse_message("Successfully get the current merchant details");
         dto.setResponse_data(merchant);
         } catch(Exception e) {
+            e.printStackTrace();
             dto.setResponse_code(1);
             dto.setResponse_message("Failed to get the merhant");
             dto.setResponse_data(e.getLocalizedMessage());
@@ -117,6 +119,7 @@ public class MerchantResource extends BaseResource {
         dto.setResponse_message("Successfully getthe merchant");
         dto.setResponse_data(merchant);
         } catch(Exception e) {
+            e.printStackTrace();
             dto.setResponse_code(1);
             dto.setResponse_message("Failed to get the merhant");
             dto.setResponse_data(e.getLocalizedMessage());
@@ -137,6 +140,7 @@ public class MerchantResource extends BaseResource {
         dto.setResponse_message("Successfully inactive the merchant");
         dto.setResponse_data(merchant);
         } catch(Exception e) {
+            e.printStackTrace();
             dto.setResponse_code(1);
             dto.setResponse_message("Failed to inactive the merhant");
             dto.setResponse_data(e.getLocalizedMessage());
@@ -157,6 +161,7 @@ public class MerchantResource extends BaseResource {
         dto.setResponse_code(0);
         dto.setResponse_message("Successfully change the status of merchant");
         } catch(Exception e) {
+            e.printStackTrace();
             dto.setResponse_code(1);
             dto.setResponse_message("Failed to change the status of merhant");
             dto.setResponse_data(e.getLocalizedMessage());
@@ -178,6 +183,7 @@ public class MerchantResource extends BaseResource {
         dto.setResponse_message("Successfully get the branches");
         dto.setResponse_data(branches);
         } catch(Exception e) {
+            e.printStackTrace();
             dto.setResponse_code(1);
             dto.setResponse_message("Failed to register Branch");
             dto.setResponse_data(e.getLocalizedMessage());
@@ -247,6 +253,7 @@ public class MerchantResource extends BaseResource {
         dto.setResponse_message("Successfully get all transactions");
         dto.setResponse_data(orders);
         } catch(Exception e) {
+            e.printStackTrace();
             dto.setResponse_code(1);
             dto.setResponse_message("Failed to get all transactions");
             dto.setResponse_data(e.getLocalizedMessage());
@@ -267,6 +274,7 @@ public class MerchantResource extends BaseResource {
         dto.setResponse_code(0);
         dto.setResponse_message("Successfully logout");
         } catch(Exception e) {
+            e.printStackTrace();
             dto.setResponse_code(1);
             dto.setResponse_message("Failed to logout");
             dto.setResponse_data(e.getLocalizedMessage());
@@ -292,6 +300,7 @@ public class MerchantResource extends BaseResource {
         dto.setResponse_message("Counter has been registered successfully");
         dto.setResponse_data(counter);
         } catch(Exception e) {
+            e.printStackTrace();
             dto.setResponse_code(1);
             dto.setResponse_message("Failed to register counter");
             dto.setResponse_data(e.getLocalizedMessage());
@@ -337,6 +346,7 @@ public class MerchantResource extends BaseResource {
         dto.setResponse_message("Successfully get all currency discounts");
         dto.setResponse_data(discounts);
         } catch(Exception e) {
+            e.printStackTrace();
             dto.setResponse_code(1);
             dto.setResponse_message("Failed to get all currency discounts");
             dto.setResponse_data(e.getLocalizedMessage());
@@ -359,6 +369,7 @@ public class MerchantResource extends BaseResource {
         dto.setResponse_message("Successfully update currency discounts");
         dto.setResponse_data(discount);
         } catch(Exception e) {
+            e.printStackTrace();
             dto.setResponse_code(1);
             dto.setResponse_message("Failed to update currency discounts");
             dto.setResponse_data(e.getLocalizedMessage());
@@ -401,6 +412,7 @@ public class MerchantResource extends BaseResource {
         dto.setResponse_code(0);
         dto.setResponse_message("Successfully update password");
         } catch(Exception e) {
+            e.printStackTrace();
             dto.setResponse_code(1);
             dto.setResponse_message("Failed to update password");
             dto.setResponse_data(e.getLocalizedMessage());
