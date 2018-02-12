@@ -1,5 +1,6 @@
 package com.newtally.core.resource;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
@@ -200,8 +201,12 @@ public class MerchantBranchResource extends BaseResource{
         
         dto.setResponse_code(0);
         dto.setResponse_message("Successfully update password");
-        } catch(Exception e) {
+        } catch(RuntimeException e) {
             e.printStackTrace();
+            dto.setResponse_code(1);
+            dto.setResponse_message(e.getLocalizedMessage());
+            dto.setResponse_data(e.getLocalizedMessage());
+        } catch (IOException e) {
             dto.setResponse_code(1);
             dto.setResponse_message("Failed to update password");
             dto.setResponse_data(e.getLocalizedMessage());

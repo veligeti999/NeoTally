@@ -257,6 +257,10 @@ public class MerchantBranchService extends AbstractService implements IAuthentic
 	}
 
     public void updatePassword(HashMap passwordMap) {
+        Query queryForPassword = em.createNativeQuery("SELECT  password FROM merchant_branch WHERE id = :id");
+        queryForPassword.setParameter("id", ctx.getCurrentBranchId());
+        String password = (String) queryForPassword.getSingleResult();
+        if(password.equals(passwordMap.get("currentPassword"))) {
         EntityTransaction trn = em.getTransaction();
         trn.begin();
         try {
@@ -273,6 +277,10 @@ public class MerchantBranchService extends AbstractService implements IAuthentic
             trn.rollback();
             throw e;
         }
+    }
+    else {
+        throw new RuntimeException("Password doesn't match");
+    }
         
     }
 }

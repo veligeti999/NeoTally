@@ -140,7 +140,8 @@ public class MerchantService extends AbstractService implements IAuthenticator {
         Query query = em.createNativeQuery("SELECT  id, name, owner_name, " +
                 "pan, phone, email, address, " +
                 "city, state, zip, country FROM merchant WHERE id = :id");
-
+        
+        System.out.println("params;;;;"+params);
         setParams(params, query);
 
         Object [] fields = (Object[]) query.getResultList().get(0);
@@ -493,6 +494,10 @@ public class MerchantService extends AbstractService implements IAuthenticator {
 	}
 
     public void updatePassword(HashMap passwordMap) {
+        Query queryForPassword = em.createNativeQuery("SELECT  password FROM merchant WHERE id = :id");
+        queryForPassword.setParameter("id", ctx.getCurrentMerchantId());
+        String password = (String) queryForPassword.getSingleResult();
+        if(password.equals(passwordMap.get("currentPassword"))) {
         EntityTransaction trn = em.getTransaction();
         trn.begin();
         try {
@@ -508,6 +513,10 @@ public class MerchantService extends AbstractService implements IAuthenticator {
         } catch (Exception e) {
             trn.rollback();
             throw e;
+        }
+        }
+        else {
+            throw new RuntimeException("Password doesn't match");
         }
     }
 

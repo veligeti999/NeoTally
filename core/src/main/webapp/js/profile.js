@@ -102,9 +102,8 @@ $(function() {
                       }, 1000);
                     } else {
                           $('#loginDisable').removeAttr('disabled');
-                          logL.style.display = 'none';
-
-                      toastr.error('Login Un-Successful! Please Try Again...', 'ERROR');
+                          signupL.style.display = 'none';
+                          toastr.error(result.response_message, 'ERROR');
                     }
                     
                 }, error: function(error) {

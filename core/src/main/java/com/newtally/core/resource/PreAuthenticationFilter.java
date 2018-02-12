@@ -20,6 +20,9 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.Provider;
 
 import org.bitcoinj.wallet.UnreadableWalletException;
@@ -68,12 +71,17 @@ public class PreAuthenticationFilter implements ContainerRequestFilter {
     public void filter(ContainerRequestContext ctx) throws IOException {
 
         Method method = resInfo.getResourceMethod();
+        ResponseBuilder responseBuilder = null;
+        Response response = null;
 
         if (method.isAnnotationPresent(PermitAll.class)) {
             return;
         }
         if (method.isAnnotationPresent(DenyAll.class)) {
-            throw new RuntimeException("Access denied");
+            responseBuilder = Response.status(Status.FORBIDDEN);
+            response = responseBuilder.status(Status.FORBIDDEN).build();
+            ctx.abortWith(response);
+            return;
         }
         if (!method.isAnnotationPresent(RolesAllowed.class)) {
             return;
@@ -89,8 +97,8 @@ public class PreAuthenticationFilter implements ContainerRequestFilter {
 			String role = (String) session.getAttribute(ROLE_SESSION_ATTR);
 			String userId = (String) session.getAttribute(USER_ID_SESSION_ATTR);
 
-			validateRoles(role, rolesSet);
-			setPrincipalOnThreadContext(role, userId);
+			validateRoles(role, rolesSet, ctx);
+			setPrincipalOnThreadContext(role, userId, ctx);
 			return;
 		}
 
@@ -99,7 +107,10 @@ public class PreAuthenticationFilter implements ContainerRequestFilter {
 
         //If no authorization information present; block access
         if (authorization == null || authorization.isEmpty()) {
-            throw new RuntimeException("Access denied");
+            responseBuilder = Response.status(Status.UNAUTHORIZED);
+            response = responseBuilder.status(Status.UNAUTHORIZED).build();
+            ctx.abortWith(response);
+            return;
         }
 
         //Get encoded userId and password
@@ -123,7 +134,7 @@ public class PreAuthenticationFilter implements ContainerRequestFilter {
             if (valid) {
 
                 String userId=iAuthenticator.getUserId(username, password);
-                _authorizeAndSetSession(rolesSet, userId, userType);
+                _authorizeAndSetSession(rolesSet, userId, userType, ctx);
                 //This is how it needs to be done even in case of merchant
                 if(userType.equals(Role.BRANCH_COUNTER) || userType.equals(Role.BRANCH_MANAGER)){
                 try {
@@ -140,23 +151,27 @@ public class PreAuthenticationFilter implements ContainerRequestFilter {
 					List<BigInteger> branchIds = branchService.getBranchIdsByMerchantId(Long.valueOf(userId));
 					for (BigInteger branchId : branchIds) {
 						try {
-							setPrincipalOnThreadContext(Role.BRANCH_MANAGER, branchId.toString());
+							setPrincipalOnThreadContext(Role.BRANCH_MANAGER, branchId.toString(), ctx);
 							initializeWallet(branchId.toString(), "");
 						} catch (UnreadableWalletException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
+                    threadCtx.setCurrentMerchantId(Long.parseLong(userId));
 				}
                 return;
             }
         }
-        throw new RuntimeException("Access denied");
+        responseBuilder = Response.status(Status.UNAUTHORIZED);
+        response = responseBuilder.status(Status.UNAUTHORIZED).build();
+        ctx.abortWith(response);
+        return;
     }
 
-    private void _authorizeAndSetSession(Set<String> rolesSet, String userId, String role) throws AccessDeniedException {
-        validateRoles(role, rolesSet);
-        setPrincipalOnThreadContext(role, userId);
+    private void _authorizeAndSetSession(Set<String> rolesSet, String userId, String role, ContainerRequestContext ctx) throws AccessDeniedException {
+        validateRoles(role, rolesSet, ctx);
+        setPrincipalOnThreadContext(role, userId, ctx);
         HttpSession session = req.getSession(true);
         session.setMaxInactiveInterval(60 * 30 ); // 30 minutes
         session.setAttribute(ROLE_SESSION_ATTR, role);
@@ -187,12 +202,16 @@ public class PreAuthenticationFilter implements ContainerRequestFilter {
 		}
 	}
 
-    private void validateRoles(String role, Set<String> rolesSet) throws AccessDeniedException {
-        if(!rolesSet.contains(role))
-            throw new RuntimeException("Access denied");;
+    private void validateRoles(String role, Set<String> rolesSet, ContainerRequestContext ctx) throws AccessDeniedException {
+        if(!rolesSet.contains(role)) {
+            ResponseBuilder responseBuilder = Response.status(Status.UNAUTHORIZED);
+            Response response = responseBuilder.status(Status.UNAUTHORIZED).build();
+            ctx.abortWith(response);
+            return;
+        }
     }
 
-    public void setPrincipalOnThreadContext(String role, String id) {
+    public void setPrincipalOnThreadContext(String role, String id, ContainerRequestContext ctx) {
 		String branchId = null;
 		int branchNo = 0;
         // clear previous ones
@@ -210,9 +229,13 @@ public class PreAuthenticationFilter implements ContainerRequestFilter {
 			branchNo = branchService.getBranchNoByBranchId(Long.valueOf(id));
             threadCtx.setMerchantBranchId(Long.parseLong(id));
             threadCtx.setCurrentBranchAccNum(branchNo);
+            
         } 
-        else {
-            throw new IllegalArgumentException("Unknown role: " + role + " specified");
+        else { 
+            ResponseBuilder responseBuilder = Response.status(Status.FORBIDDEN);
+            Response response = responseBuilder.status(Status.FORBIDDEN).build();
+            ctx.abortWith(response);
+            return;
         }
     }
 }
