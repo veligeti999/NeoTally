@@ -154,7 +154,6 @@ $(function() {
                     }
                 });
             } else {
-               postJson.branchId = localStorage.getItem("branchId");
                 $.ajax({
                     type: "POST",
                     url: "/new-tally/rest/branches/counter/register",
