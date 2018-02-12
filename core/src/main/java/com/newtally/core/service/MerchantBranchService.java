@@ -88,10 +88,19 @@ public class MerchantBranchService extends AbstractService implements IAuthentic
     }
     
     public MerchantCounter updateCurrentBranchCounter(MerchantCounter counter) {
-        
+        EntityTransaction trx = em.getTransaction();
+
+        trx.begin();
+        try {
         counter.setBranchId(ctx.getCurrentBranchId());
         updateCounter(counter);
         return counter;
+        } catch (Exception e) {
+            e.printStackTrace();
+            trx.rollback();
+
+            throw e;
+        }
     }
 
 
