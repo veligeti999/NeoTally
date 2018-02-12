@@ -86,6 +86,13 @@ public class MerchantBranchService extends AbstractService implements IAuthentic
 
         return counter;
     }
+    
+    public MerchantCounter updateCurrentBranchCounter(MerchantCounter counter) {
+        
+        counter.setBranchId(ctx.getCurrentBranchId());
+        updateCounter(counter);
+        return counter;
+    }
 
 
     public List<MerchantCounter> getCounters(Long branchId) {

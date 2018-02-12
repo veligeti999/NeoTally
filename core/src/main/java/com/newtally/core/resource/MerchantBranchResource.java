@@ -68,7 +68,7 @@ public class MerchantBranchResource extends BaseResource{
         try {
         MerchantCounter counter = gson.fromJson(new InputStreamReader(req.getInputStream()), MerchantCounter.class);
 
-        counter = branchServ.updateCounter(counter);
+        counter = branchServ.updateCurrentBranchCounter(counter);
         
         dto.setResponse_code(0);
         dto.setResponse_message("Counter has been updated successfully");
