@@ -68,7 +68,7 @@ public class MerchantBranchService extends AbstractService implements IAuthentic
         return counter;
     }
     
-    MerchantCounter updateCounter(MerchantCounter counter) {
+    public MerchantCounter updateCounter(MerchantCounter counter) {
 
         Query query = em.createNativeQuery("UPDATE branch_counter SET " +
                 "branch_id=:branch_id, phone=:phone, email=:email, active=:active, name=:name where id=:id");
