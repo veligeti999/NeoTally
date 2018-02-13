@@ -52,6 +52,7 @@ public class BitcoinConfiguration {
 		});
 
 		peerGroup.downloadBlockChain();
+		System.out.println("block chain download successful");
 	}
 	
 }
