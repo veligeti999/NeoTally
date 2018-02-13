@@ -152,13 +152,13 @@ public class PreAuthenticationFilter implements ContainerRequestFilter {
 					for (BigInteger branchId : branchIds) {
 						try {
 							setPrincipalOnThreadContext(Role.BRANCH_MANAGER, branchId.toString(), ctx);
+							threadCtx.setCurrentMerchantId(Long.parseLong(userId));
 							initializeWallet(branchId.toString(), "");
 						} catch (UnreadableWalletException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
-                    threadCtx.setCurrentMerchantId(Long.parseLong(userId));
 				}
                 return;
             }

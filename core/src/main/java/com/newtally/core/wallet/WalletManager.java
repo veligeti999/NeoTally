@@ -1,6 +1,8 @@
 package com.newtally.core.wallet;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.HashMap;
@@ -17,10 +19,10 @@ import org.bitcoinj.wallet.DeterministicSeed;
 import org.bitcoinj.wallet.UnreadableWalletException;
 import org.bitcoinj.wallet.Wallet;
 import org.bitcoinj.wallet.WalletExtension;
+import org.bitcoinj.wallet.WalletProtobufSerializer;
 import org.bitcoinj.wallet.listeners.WalletChangeEventListener;
 import org.bitcoinj.wallet.listeners.WalletCoinsReceivedEventListener;
 import org.bitcoinj.wallet.listeners.WalletCoinsSentEventListener;
-
 import com.newtally.core.ServiceFactory;
 import com.newtally.core.model.OrderStatus;
 import com.newtally.core.resource.ThreadContext;
@@ -40,6 +42,7 @@ public class WalletManager {
 	/**
 	 * Creating a key chain from the mnemonic code by setting the seed time to the default seed time.
 	 * This can be changed to the current time if required
+	 * We are not using this at the moment.Right now the key chain is getting created while initializing the key chain group 
 	 * @return
 	 */
 	private DeterministicKeyChain createDeterministicKeyChain(List<String> mnemonic){
@@ -51,17 +54,16 @@ public class WalletManager {
 	 * Load the wallet from the file or create a new one if the file doesn't exist
 	 * @return
 	 * @throws UnreadableWalletException 
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public Wallet createOrLoadWallet(List<String> mnemonic, String branchId) throws UnreadableWalletException, IOException{
 		File walletFile = new File(branchId);
 		if(walletFile.exists()){
 			wallet = loadWallet(walletFile);
-			wallet.addAndActivateHDChain(createDeterministicKeyChain(mnemonic));
 		}else{
-			wallet = new Wallet(configuration.getParams());
-			wallet.addAndActivateHDChain(createDeterministicKeyChain(mnemonic));
+			wallet = new Wallet(configuration.getParams(), new NewTallyKeyChainGroup(configuration.getParams()));
 			wallet.saveToFile(walletFile);
+			wallet = loadWallet(walletFile);
 		}
 		autoSave(walletFile);
 		registerWalletToListen();
@@ -79,8 +81,20 @@ public class WalletManager {
 		return wallets;
 	}
 	
-	public Wallet loadWallet(File walletFile) throws UnreadableWalletException{
-		return Wallet.loadFromFile(walletFile, new WalletExtension[0]);
+	/**
+	 * Loading wallet files by adding our custom key chain factory to the protocol buffer(used for de-serialization that supports BIP44)
+	 * instead of relying on Wallet.loadFromFile(walletFile, walletExtension) that uses a default key chain factory
+	 * @param walletFile
+	 * @return
+	 * @throws UnreadableWalletException
+	 * @throws FileNotFoundException
+	 */
+	public Wallet loadWallet(File walletFile) throws UnreadableWalletException, FileNotFoundException{
+		FileInputStream stream = new FileInputStream(walletFile);
+		WalletProtobufSerializer protoBuf = new WalletProtobufSerializer();
+		protoBuf.setKeyChainFactory(new NewTallyKeyChainFactory());
+		wallet = protoBuf.readWallet(stream, new WalletExtension[0]);
+		return wallet;
 	}
 	
 	public void autoSave(File walletFile){

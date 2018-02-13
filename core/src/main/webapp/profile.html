@@ -25,12 +25,12 @@
                 <button class="navbar-toggler navbar-toggler d-none d-lg-block navbar-dark align-self-center mr-3" type="button" data-toggle="minimize">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <form class="form-inline mt-2 mt-md-0 d-none d-lg-block">
+                <!-- <form class="form-inline mt-2 mt-md-0 d-none d-lg-block">
                     <input class="form-control mr-sm-2 search" type="text" placeholder="Search">
-                </form>
+                </form> -->
                 <ul class="navbar-nav ml-lg-auto d-flex align-items-center flex-row">
                     <li class="nav-item">
-                        <a class="nav-link profile-pic" href="#" onClick="logout();"><img class="rounded-circle" src="images/icons/logout.png" alt=""></a>
+                        <a class="nav-link profile-pic" href="#" onClick="logout();"><img class="rounded-circle" data-toggle="tooltip" title="Logout" src="images/icons/logout.png" alt=""></a>
                     </li>
                 </ul>
                 <button class="navbar-toggler navbar-dark navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
@@ -129,7 +129,7 @@
                                         </div>
                                     </div>
                                 <div class="form-group">
-                                    <button type="submit" id="submitDisable" class="btn btn-primary">Change Password<i id="showSubmitLoader" class="fa fa-spinner fa-spin"></i></button>
+                                    <button type="submit" id="submitDisable" data-toggle="tooltip" title="Change Password" class="btn btn-primary">Change Password<i id="showSubmitLoader" class="fa fa-spinner fa-spin"></i></button>
                                 </div>
                               </form>
                             </div>
