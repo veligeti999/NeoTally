@@ -41,7 +41,7 @@ public class BitcoinConfiguration {
 	public void startAndDownloadBlockChain(PeerGroup peerGroup){
 		System.out.println("starting blocks download");
 		peerGroup.start();
-		peerGroup.addPeerDiscovery(new DnsDiscovery(params));
+		//peerGroup.addPeerDiscovery(new DnsDiscovery(params));
 		peerGroup.addBlocksDownloadedEventListener(new BlocksDownloadedEventListener() {
 
 			@Override
