@@ -11,7 +11,12 @@ if (localStorage.getItem('myCat')) {
     });
 
 }
-
+$(document).ready(function() {
+  $.validator.addMethod("pan", function(value, element) 
+  { 
+  return this.optional(element) || /^([A-Z]{5})([0-9]){4}([A-Z]{1})$/i.test(value); 
+  }, "Please enter a valid PAN.");
+});
 $(function() {
     // Initialize form validation on the registration form.
     // It has the name attribute "registration"
@@ -26,6 +31,7 @@ $(function() {
             // on the right side
             name: "required",
             ownerName: "required",
+            pan: "required pan",
             email: {
                 required: true,
                 // Specify that email should be validated
@@ -51,7 +57,12 @@ $(function() {
             city: "required",
             state: "required",
             country: "required",
-            zip: "required"
+            zip:  {
+                required: true,
+                digits: true,
+                minlength: 6,
+                maxlength: 6
+              }
         },
         // Specify validation error messages
         /*messages: {
