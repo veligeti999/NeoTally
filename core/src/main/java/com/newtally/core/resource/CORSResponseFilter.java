@@ -14,12 +14,11 @@ public class CORSResponseFilter implements ContainerResponseFilter {
 public void filter(ContainerRequestContext creq, ContainerResponseContext cres) {
     cres.getHeaders().add("Access-Control-Allow-Origin", "*");
     cres.getHeaders().add("Access-Control-Allow-Headers", "origin, content-type, accept, authorization");
-    cres.getHeaders().add("Access-Control-Allow-Credentials", "true");
     cres.getHeaders().add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
     cres.getHeaders().add("Access-Control-Max-Age", "");
     
     if ("OPTIONS".equalsIgnoreCase(creq.getMethod())) {
-        cres.setStatusInfo(Status.ACCEPTED);
+        cres.setStatusInfo(Status.OK);
     } 
 }
 
