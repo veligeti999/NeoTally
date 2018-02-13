@@ -19,14 +19,14 @@ $(document).ready(function() {
                     { "data": function(data, type, full) { return moment(new Date(data.createdDate)).format("MMMM Do YYYY, h:mm:ss a"); } },
                     { "data": function(data, type, full) {
                       if(data.status=="Pending"){
-                        return data.status + '<i class="fa fa-clock-o" style="margin-left: 5px"></i>';//' <img src="images/icons/cancel.png">';
+                        return data.status + '<i class="fa fa-clock-o" data-toggle="tooltip" title="Pending" style="margin-left: 5px"></i>';//' <img src="images/icons/cancel.png">';
                       }else{
-                        return data.status + '<i class="fa fa-check text-success" style="margin-left: 5px"></i>';;//' <img src="images/icons/right.png">';
+                        return data.status + '<i class="fa fa-check text-success" data-toggle="tooltip" title="Success" style="margin-left: 5px"></i>';;//' <img src="images/icons/right.png">';
                       }
                     } },
                     {
                         "data": function(data, type, full) {
-                            return '<span style="margin-left: 10px;"><button type="button" class="btn btn-primary disabled mr-2" style="cursor: not-allowed">Details</button></span>';
+                            return '<span style="margin-left: 10px;"><button type="button" class="btn btn-primary disabled mr-2" data-toggle="tooltip" title="View Details" style="cursor: not-allowed">Details</button></span>';
                         }
                     }
                 ]

@@ -27,24 +27,24 @@ var inputs={btc:'', ltc:''};
 var submitButton = document.getElementById('discountSubmit');
 var editButton = document.getElementById('discountEdit');
 var editBtcInput = document.getElementById('bitcoinDiscount');
-var editLtcInput = document.getElementById('litecoinDiscount');
+// var editLtcInput = document.getElementById('litecoinDiscount');
 
 function disableImputs() {
     submitButton.style.display = 'none';
     editButton.style.display = 'block';
     editBtcInput.setAttribute('disabled', true);
-    editLtcInput.setAttribute('disabled', true);
+    // editLtcInput.setAttribute('disabled', true);
 }
 disableImputs();
 
 
 function editData() {
     editBtcInput.value = inputs.btc;
-    editLtcInput.value = inputs.ltc;
+    // editLtcInput.value = inputs.ltc;
     submitButton.style.display = 'block';
     editButton.style.display = 'none';
     $('#bitcoinDiscount').removeAttr('disabled');
-    $('#litecoinDiscount').removeAttr('disabled');
+    // $('#litecoinDiscount').removeAttr('disabled');
 }
 
 function logout() {
@@ -78,15 +78,14 @@ function getConfigs() {
                 console.log("value.currency_name:::" + value.currency_name + " value.percentage:::" + value.percentage);
                 if (value.currency_code == 'BTC') {
                     inputs.btc = value.percentage;
-                    console.log(editBtcInput);
                     editBtcInput.value = value.percentage + ' %';
                 }
-                if (value.currency_code == 'LTC') {
-                    inputs.ltc = value.percentage;
-                    console.log(editLtcInput);
+                // if (value.currency_code == 'LTC') {
+                //     inputs.ltc = value.percentage;
+                //     console.log(editLtcInput);
 
-                    editLtcInput.value = value.percentage + ' %';
-                }
+                //     editLtcInput.value = value.percentage + ' %';
+                // }
                 // APPEND OR INSERT DATA TO SELECT ELEMENT.
                 // $('#config-discounts').append('<div class="form-group row"><label for="example-text-input" class="col-2 col-form-label">' + value.currency_name + '  <span style="color: red;">' + value.percentage + '%</span></label><div class="col-4"><input  id="' + value.id + '" style="background: green; color: #fff;" class="form-control" type="text" value="Edit" id="example-text-input"></div></div>');
             });
@@ -103,12 +102,12 @@ function save() {
             if (typeof btcDiscount != 'undefined' && btcDiscount != '') {
                 item.percentage = btcDiscount;
             }
-        } else if (item.currency_code == 'LTC') {
-            var ltcDiscount = document.getElementById('litecoinDiscount').value;
-            if (typeof ltcDiscount != 'undefined' && ltcDiscount != '') {
-                item.percentage = ltcDiscount;
-            }
-        }
+        } //else if (item.currency_code == 'LTC') {
+        //     var ltcDiscount = document.getElementById('litecoinDiscount').value;
+        //     if (typeof ltcDiscount != 'undefined' && ltcDiscount != '') {
+        //         item.percentage = ltcDiscount;
+        //     }
+        // }
         $.ajax({
             type: "POST",
             url: "/new-tally/rest/merchants/currency/discounts",
