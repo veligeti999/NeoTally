@@ -19,10 +19,7 @@ public void filter(ContainerRequestContext creq, ContainerResponseContext cres) 
     cres.getHeaders().add("Access-Control-Max-Age", "");
     
     if ("OPTIONS".equalsIgnoreCase(creq.getMethod())) {
-        ResponseBuilder responseBuilder = Response.status(Status.ACCEPTED);
-        Response response = responseBuilder.status(Status.ACCEPTED).build();
-        creq.abortWith(response);
-        return;
+        cres.setStatusInfo(Status.ACCEPTED);
     } 
 }
 
