@@ -16,11 +16,9 @@ function logout() {
         dataType: 'json',
         async: false,
         success: function(result) {
-            localStorage.clear();
             window.location.href = "login.html";
         }
     });
-    localStorage.removeItem('myCat');
 }
 
 window.onhashchange = function(e) {

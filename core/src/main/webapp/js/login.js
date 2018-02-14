@@ -1,15 +1,12 @@
 if (localStorage.getItem('myCat')) {
-    localStorage.removeItem('myCat');
     $.ajax({
         type: "GET",
         url: "/new-tally/rest/merchants/logout",
         dataType: 'json',
-        async: false,
-        success: function(result) {
-            window.location.href = "login.html";
-        }
+        async: false
     });
 }
+localStorage.clear();
 
 $(document).ajaxSuccess(function(event, request, settings) {
     $("#msg").append("<li>Successful Authorization!</li>");
