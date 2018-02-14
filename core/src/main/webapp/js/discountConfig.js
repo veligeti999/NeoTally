@@ -39,6 +39,7 @@ disableImputs();
 
 
 function editData() {
+    checkSession();
     editBtcInput.value = inputs.btc;
     // editLtcInput.value = inputs.ltc;
     submitButton.style.display = 'block';
@@ -47,25 +48,9 @@ function editData() {
     // $('#litecoinDiscount').removeAttr('disabled');
 }
 
-function logout() {
-    $.ajax({
-        type: "GET",
-        url: "/new-tally/rest/merchants/logout",
-        dataType: 'json',
-        async: false,
-        success: function(result) {
-            console.log(result);
-            window.location.href = "login.html";
-        }
-    });
-    localStorage.removeItem('myCat');
-}
-window.onhashchange = function(e) {
-    e.preventDefault();
-}
-
 // EXTRACT JSON DATA.
 function getConfigs() {
+    checkSession();
     $.ajax({
         type: "GET",
         url: "/new-tally/rest/merchants/currency/discounts",
@@ -96,6 +81,7 @@ function getConfigs() {
 getConfigs();
 
 function save() {
+    checkSession();
     $.each(data, function(index, item) {
         if (item.currency_code == 'BTC') {
             var btcDiscount = document.getElementById('bitcoinDiscount').value;

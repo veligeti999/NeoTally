@@ -42,24 +42,6 @@ function cancel() {
     window.location.href = "branch_counters.html";
 }
 
-function logout() {
-    $.ajax({
-        type: "GET",
-        url: "/new-tally/rest/merchants/logout",
-        dataType: 'json',
-        async: false,
-        success: function(result) {
-            console.log(result);
-            window.history.go(-window.history.length);
-            window.location.href = "login.html";
-        }
-    });
-    localStorage.removeItem('myCat');
-}
-window.onhashchange = function(e) {
-    e.preventDefault();
-}
-
 $(function() {
     // Initialize form validation on the registration form.
     // It has the name attribute "registration"
@@ -98,23 +80,6 @@ $(function() {
         // Make sure the form is submitted to the destination defined
         // in the "action" attribute of the form when valid
         submitHandler: function(form) {
-            /*var postJson = {};
-            postJson.phone = document.getElementById('phone').value;
-            postJson.email = document.getElementById('email').value;
-            $.ajax({
-                type: "POST",
-                url: "/new-tally/rest/branches/counter/register",
-                dataType: 'json',
-                async: false,
-                data: JSON.stringify(postJson),
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                success: function(result) {
-                    console.log(result);
-                    window.location.href = "counters.html";
-                }
-            });*/
             addCounterSubmit.setAttribute('disabled', true);
             addCounterLoader.style.display = 'block';
             var postJson = {};
@@ -142,12 +107,14 @@ $(function() {
                                 window.location.href = "branch_counters.html";
                             }, 1000);
                         } else {
+                            checkSession();
                             $('#addCounterSubmit').removeAttr('disabled');
                             addCounterLoader.style.display = 'none';
                             toastr.error(result.response_message, "ERROR");
                         }
                     },
                     error: function(error) {
+                        checkSession();
                         $('#addCounterSubmit').removeAttr('disabled');
                         addCounterLoader.style.display = 'none';
                         toastr.error('Something went wrong!', "ERROR");
@@ -170,12 +137,14 @@ $(function() {
                                 window.location.href = "branch_counters.html";
                             }, 1000);
                         } else {
+                            checkSession();
                             $('#addCounterSubmit').removeAttr('disabled');
                             addCounterLoader.style.display = 'none';
                             toastr.error(result.response_message, "ERROR");
                         }
                     },
                     error: function(error) {
+                        checkSession();
                         $('#addCounterSubmit').removeAttr('disabled');
                         addCounterLoader.style.display = 'none';
                         toastr.error('Something went wrong!', "ERROR");

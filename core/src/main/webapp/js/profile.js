@@ -19,27 +19,10 @@ function init() {
 }
 init();
 
- var signupD = document.getElementById('submitDisable');
-  var signupL = document.getElementById('showSubmitLoader');
-  signupL.style.display='none';
+var signupD = document.getElementById('submitDisable');
+var signupL = document.getElementById('showSubmitLoader');
+signupL.style.display = 'none';
 
-function logout() {
-    $.ajax({
-        type: "GET",
-        url: "/new-tally/rest/merchants/logout",
-        dataType: 'json',
-        async: false,
-        success: function(result) {
-            console.log(result);
-            window.history.go(-window.history.length);
-            window.location.href = "login.html";
-        }
-    });
-    localStorage.removeItem('myCat');
-}
-window.onhashchange = function(e) {
-    e.preventDefault();
-}
 $(function() {
     // Initialize form validation on the registration form.
     // It has the name attribute "registration"
@@ -74,9 +57,9 @@ $(function() {
         // Make sure the form is submitted to the destination defined
         // in the "action" attribute of the form when valid
         submitHandler: function(form) {
-         
-          signupD.setAttribute("disabled", false);
-          signupL.style.display = 'block';
+
+            signupD.setAttribute("disabled", false);
+            signupL.style.display = 'block';
             var postJson = {};
             postJson.currentPassword = document.getElementById('currentPassword').value;
             postJson.newPassword = document.getElementById('newPassword').value;
@@ -91,22 +74,25 @@ $(function() {
                     "Content-Type": "application/json"
                 },
                 success: function(result) {
-                  console.log(result);
-                    if(result.response_code == 0){
-                      localStorage.setItem('myCat', 'Tom');
+                    console.log(result);
+                    if (result.response_code == 0) {
+                        localStorage.setItem('myCat', 'Tom');
 
-                      toastr.success(result.response_message, "SUCCESS");
-                      setTimeout(function() {
-                        // window.history.go(-window.history.length);
-                        window.location.href = "profile.html";
-                      }, 1000);
+                        toastr.success(result.response_message, "SUCCESS");
+                        setTimeout(function() {
+                            // window.history.go(-window.history.length);
+                            window.location.href = "profile.html";
+                        }, 1000);
                     } else {
-                          $('#loginDisable').removeAttr('disabled');
-                          signupL.style.display = 'none';
-                          toastr.error(result.response_message, 'ERROR');
+                        checkSession();
+                        $('#loginDisable').removeAttr('disabled');
+                        signupL.style.display = 'none';
+                        toastr.error(result.response_message, 'ERROR');
                     }
-                    
-                }, error: function(error) {
+
+                },
+                error: function(error) {
+                    checkSession();
                     $('#submitDisable').removeAttr("disabled");
                     signupL.style.display = 'none';
                     toastr.error("Failed to update password", 'ERROR');
@@ -115,4 +101,3 @@ $(function() {
         }
     });
 });
-  

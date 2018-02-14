@@ -14,7 +14,6 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css" />
     <link rel="stylesheet" href="css/style.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="js/toastr.js"></script>
     <link rel="stylesheet" href="css/toastr.css" />
 </head>
 
@@ -103,8 +102,8 @@
                                     </select>
                                 </div>
                                 <div class="text-center">
-                                    <button class="btn btn-primary btn-block enter-btn mb-4" data-toggle="tooltip" title="Submit" id="addCounterSubmit"> Submit <i class="fa fa-spinner fa-spin" id="addCounterLoader"></i></button>
-                                    <button class="btn btn-danger btn-block enter-btn mb-4" data-toggle="tooltip" title="Cancel" onclick="cancel()">Cancel </i></button>
+                                    <button class="btn btn-primary btn-block enter-btn mb-4" id="addCounterSubmit"> Submit <i class="fa fa-spinner fa-spin" id="addCounterLoader"></i></button>
+                                    <button class="btn btn-danger btn-block enter-btn mb-4" onclick="cancel()">Cancel </i></button>
                                 </div>
                             </form>
                         </div>
@@ -129,6 +128,8 @@
     <script src="node_modules/tally-perfect-scrollbar/dist/js/perfect-scrollbar.jquery.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5NXz9eVnyJOA81wimI8WYE08kW_JMe8g&callback=initMap" async defer></script>
     <script src="js/off-canvas.js"></script>
+    <script src="js/toastr.js"></script>
+    <script src="js/common-functions.js"></script>
     <script src="js/hoverable-collapse.js"></script>
     <script src="js/misc.js"></script>
     <script src="js/chart.js"></script>

@@ -39,17 +39,13 @@ function viewBranch(id){
 }
 
 function editBranch(id){
+    checkSession();
     _.forEach(dataSaved, function(item){
         if(item.id == id){
             localStorage.setItem('branchId', JSON.stringify(item));
             window.location.href = "edit_branch.html";
         }
     })
-}
-
-window.onhashchange = function(e) {
-    e.preventDefault();
-
 }
 
 function init() {
@@ -66,19 +62,6 @@ function init() {
 }
 init();
 
-function logout() {
-    $.ajax({
-        type: "GET",
-        url: "/new-tally/rest/merchants/logout",
-        dataType: 'json',
-        async: false,
-        success: function(result) {
-            window.history.go(-window.history.length);
-            window.location.href = "login.html";
-        }
-    });
-    localStorage.removeItem('myCat');
-}
 /*function viewBranch(branchId) {
   $.ajax
       ({

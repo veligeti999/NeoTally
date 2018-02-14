@@ -40,25 +40,6 @@ function cancel() {
     window.location.href = "counters.html";
 }
 
-function logout() {
-    $.ajax({
-        type: "GET",
-        url: "/new-tally/rest/merchants/logout",
-        dataType: 'json',
-        async: false,
-        success: function(result) {
-            window.history.go(-window.history.length);
-            window.location.href = "login.html";
-        }
-    });
-    localStorage.removeItem('myCat');
-    localStorage.removeItem('editCounter');
-}
-
-window.onhashchange = function(e) {
-    e.preventDefault();
-}
-
 $(function() {
     // Initialize form validation on the registration form.
     // It has the name attribute "registration"
@@ -124,12 +105,14 @@ $(function() {
                                 window.location.href = "counters.html";
                             }, 1000);
                         } else {
+                            checkSession();
                             $('#addCounterSubmit').removeAttr('disabled');
                             addCounterLoader.style.display = 'none';
                             toastr.error(result.response_message, "ERROR");
                         }
                     },
                     error: function(error) {
+                        checkSession();
                         $('#addCounterSubmit').removeAttr('disabled');
                         addCounterLoader.style.display = 'none';
                         toastr.error('Something went wrong!', "ERROR");
@@ -153,12 +136,14 @@ $(function() {
                                 window.location.href = "counters.html";
                             }, 1000);
                         } else {
+                            checkSession();
                             $('#addCounterSubmit').removeAttr('disabled');
                             addCounterLoader.style.display = 'none';
                             toastr.error(result.response_message, "ERROR");
                         }
                     },
                     error: function(error) {
+                        checkSession();
                         $('#addCounterSubmit').removeAttr('disabled');
                         addCounterLoader.style.display = 'none';
                         toastr.error('Something went wrong!', "ERROR");

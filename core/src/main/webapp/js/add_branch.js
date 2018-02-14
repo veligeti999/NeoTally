@@ -16,23 +16,6 @@ var addBranchLoader = document.getElementById('addBranchLoader');
 var addBranchSubmit = document.getElementById('addBranchSubmit');
 addBranchLoader.style.display = 'none';
 
-function logout() {
-    $.ajax({
-        type: "GET",
-        url: "/new-tally/rest/merchants/logout",
-        dataType: 'json',
-        async: false,
-        success: function(result) {
-            window.history.go(-window.history.length);
-            window.location.href = "login.html";
-        }
-    });
-    localStorage.removeItem('myCat');
-}
-window.onhashchange = function(e) {
-    e.preventDefault();
-}
-
 function cancelAdd(){
     window.location.href = "branches.html";
 }
@@ -119,12 +102,14 @@ $(function() {
                             window.location.href = "branches.html";
                         }, 1000);
                     } else {
+                        checkSession();
                         $('#addBranchSubmit').removeAttr('disabled');
                         addBranchLoader.style.display = 'none';
                         toastr.error(result.response_message, "ERROR");
                     }
                 },
                 error: function(error) {
+                    checkSession();
                     $('#addBranchSubmit').removeAttr('disabled');
                     addBranchLoader.style.display = 'none';
                     toastr.error('Something went wrong!', "ERROR");

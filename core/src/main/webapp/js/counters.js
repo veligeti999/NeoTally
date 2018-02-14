@@ -35,11 +35,8 @@ $(document).ready(function() {
     });
 });
 
-window.onhashchange = function(e) {
-    e.preventDefault();
-}
-
 function editCounter(id){
+    checkSession();
     _.forEach(dataReceieved, function(item){
         if(item.id == id){
             localStorage.setItem('editCounter', JSON.stringify(item));
@@ -62,19 +59,4 @@ function init() {
         }
     });
 }
-
 init();
-
-function logout() {
-    $.ajax({
-        type: "GET",
-        url: "/new-tally/rest/merchants/logout",
-        dataType: 'json',
-        async: false,
-        success: function(result) {
-            window.history.go(-window.history.length);
-            window.location.href = "login.html";
-        }
-    });
-    localStorage.removeItem('myCat');
-}
