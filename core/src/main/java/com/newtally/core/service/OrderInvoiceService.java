@@ -133,8 +133,9 @@ public class OrderInvoiceService extends AbstractService{
 	public void sendOrderStatusToDevice(String transactionId) {
        
         Query query = em
-                .createNativeQuery("select distinct(d.registration_key), o.id rom order_invoice o join devices d on o.counter_id=d.user_id where o.transaction_id=:transactionId");
+                .createNativeQuery("select distinct(d.registration_key), o.id from order_invoice o join devices d on o.counter_id=d.user_id where o.transaction_id=:transactionId");
         query.setParameter("transactionId", transactionId);
+        try {
         List rs=query.getResultList();
         System.out.println("result set"+rs.size());
         if(!rs.isEmpty()) {
@@ -144,8 +145,9 @@ public class OrderInvoiceService extends AbstractService{
             System.out.println("registration_key"+registrationKey);
             notification.setTitle("New Tally");
             notification.setBody("Order:"+ orderId+ " has been confirmed");
-            try {
+           
                 MobileNotificationService.pushFCMNotification(registrationKey, notification);
+            }
             } catch (Exception e) {
                 e.printStackTrace();
             }
