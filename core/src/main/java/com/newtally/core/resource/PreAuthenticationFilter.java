@@ -233,9 +233,7 @@ public class PreAuthenticationFilter implements ContainerRequestFilter {
 			branchNo = branchService.getBranchNoByBranchId(Long.valueOf(id));
             threadCtx.setMerchantBranchId(Long.parseLong(id));
             threadCtx.setCurrentBranchAccNum(branchNo);
-            
-        } 
-        else { 
+        } else { 
             ResponseBuilder responseBuilder = Response.status(Status.FORBIDDEN);
             Response response = responseBuilder.status(Status.FORBIDDEN).build();
             ctx.abortWith(response);
