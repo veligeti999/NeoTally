@@ -219,6 +219,7 @@ public class MerchantService extends AbstractService implements IAuthenticator {
         System.out.println("branchId"+branchId);
         query.executeUpdate();
         MerchantCounter counter = new MerchantCounter();
+        counter.setName(branch.getName());
         counter.setPhone(branch.getPhone());
         counter.setEmail(branch.getEmail());
         counter.setBranchId(branch.getId());
