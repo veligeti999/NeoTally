@@ -120,8 +120,9 @@ public class OrderInvoiceService extends AbstractService{
 		try {
 		    //check whether the transaction is pending
 		    Query txnStatusquery = em
-                    .createNativeQuery("select * from order_invoice where transaction_id=:transactionId and status='Pending'");
+                    .createNativeQuery("select * from order_invoice where transaction_id=:transactionId and status= :status");
 		    txnStatusquery.setParameter("transactionId", transactionId);
+		    txnStatusquery.setParameter("status", "Pending");
 		    List result=txnStatusquery.getResultList();
 		    System.out.println("result list"+result.size());
 		    if(!result.isEmpty()) {
