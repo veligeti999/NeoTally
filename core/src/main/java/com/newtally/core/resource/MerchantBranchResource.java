@@ -8,6 +8,7 @@ import java.util.List;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -214,7 +215,28 @@ public class MerchantBranchResource extends BaseResource{
 
         return Response.ok(gson_pretty.toJson(dto)).build();
     }
-	
+	@GET
+    @Path("/logout")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response logout(@Context HttpServletRequest req ) {
+        
+        ResponseDto dto=new ResponseDto();
+        try {
+        HttpSession session = req.getSession(false);
+        if(session != null) {
+            session.invalidate();
+        }
+        dto.setResponse_code(0);
+        dto.setResponse_message("Successfully logout");
+        } catch(Exception e) {
+            e.printStackTrace();
+            dto.setResponse_code(1);
+            dto.setResponse_message("Failed to logout");
+            dto.setResponse_data(e.getLocalizedMessage());
+        }
+
+        return Response.ok(dto).build();
+    }
 	
 	
 }

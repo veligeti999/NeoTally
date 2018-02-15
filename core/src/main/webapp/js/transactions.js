@@ -16,7 +16,7 @@ $(document).ready(function() {
                     { "data": "currencyAmount" },
                     { "data": "paymentAmount" },
                     { "data": "discountAmount" },
-                    { "data": function(data, type, full) { return moment(new Date(data.createdDate)).format("MMMM Do YYYY, h:mm:ss a"); } },
+                    { "data": function(data, type, full) { return moment(new Date(data.createdDate)).format("DD-MMM-YY HH:mm:SS"); } },
                     { "data": function(data, type, full) {
                       if(data.status=="Pending"){
                         return data.status + '<i class="fa fa-clock-o" data-toggle="tooltip" title="Pending" style="margin-left: 5px"></i>';//' <img src="images/icons/cancel.png">';
