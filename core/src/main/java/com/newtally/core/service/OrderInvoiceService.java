@@ -122,7 +122,9 @@ public class OrderInvoiceService extends AbstractService{
 			query.setParameter("transactionId", transactionId);
 			query.setParameter("modified_date", new Date());
 			query.executeUpdate();
+			System.out.println("before transactionId"+transactionId);
 			txn.commit();
+			System.out.println("transactionId"+transactionId);
             sendOrderStatusToDevice(transactionId);
 		} catch (Exception e) {
 			txn.rollback();
