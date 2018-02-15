@@ -133,7 +133,8 @@ public class OrderInvoiceService extends AbstractService{
 	public void sendOrderStatusToDevice(String transactionId) {
        
         Query query = em
-                .createNativeQuery("select distinct(d.registration_key), o.id from order_invoice o join devices d on o.counter_id=d.user_id where o.transaction_id=:transactionId");
+                .createNativeQuery("select distinct(d.registration_key), o.id from order_invoice o join devices d on o.counter_id=d.user_id"
+                        + " where o.transaction_id=:transactionId and o.status='Success'");
         query.setParameter("transactionId", transactionId);
         try {
         List rs=query.getResultList();
