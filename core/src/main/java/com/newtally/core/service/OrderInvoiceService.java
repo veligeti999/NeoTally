@@ -114,17 +114,18 @@ public class OrderInvoiceService extends AbstractService{
 	}
 
 	public void updateOrderStatusByTransactionId(String transactionId, String status) {
+	    EntityTransaction txn = null;
 	    Query txnStatusquery = em
                 .createNativeQuery("select * from order_invoice where transaction_id=:transactionId and status= :status");
         txnStatusquery.setParameter("transactionId", transactionId);
         txnStatusquery.setParameter("status", "Pending");
         List result=txnStatusquery.getResultList();
         System.out.println("result list"+result.size());
-		EntityTransaction txn = em.getTransaction();
-		txn.begin();
 		try {
 		    //check whether the transaction is pending
 		    if(!result.isEmpty()) {
+		        txn = em.getTransaction();
+		        txn.begin();
 		        Query query = em
 	                    .createNativeQuery("update order_invoice set status=:status, modified_date=:modified_date where transaction_id=:transactionId");
 	            query.setParameter("status", status);
