@@ -120,7 +120,6 @@ public class OrderInvoiceService extends AbstractService{
         txnStatusquery.setParameter("transactionId", transactionId);
         txnStatusquery.setParameter("status", "Pending");
         List result=txnStatusquery.getResultList();
-        System.out.println("result list"+result.size());
 		try {
 		    //check whether the transaction is pending
 		    if(!result.isEmpty()) {
@@ -133,7 +132,6 @@ public class OrderInvoiceService extends AbstractService{
 	            query.setParameter("modified_date", new Date());
 	            query.executeUpdate();
 	            txn.commit();
-	            System.out.println("transactionId update"+transactionId);
                 sendOrderStatusToDevice(transactionId);
             }
 		} catch (Exception e) {
@@ -150,16 +148,13 @@ public class OrderInvoiceService extends AbstractService{
         query.setParameter("transactionId", transactionId);
         try {
         List rs=query.getResultList();
-        System.out.println("result set"+rs.size());
         if(!rs.isEmpty()) {
             String registrationKey = ((Object[]) rs.get(0))[0].toString();
             Long orderId = ((BigInteger)((Object[]) rs.get(0))[1]).longValue();
             Notification notification=new Notification();
-            System.out.println("registration_key"+registrationKey);
             notification.setTitle("New Tally");
             notification.setBody("Order:"+ orderId+ " has been confirmed");
-           
-                MobileNotificationService.pushFCMNotification(registrationKey, notification);
+            MobileNotificationService.pushFCMNotification(registrationKey, notification);
             }
             } catch (Exception e) {
                 e.printStackTrace();

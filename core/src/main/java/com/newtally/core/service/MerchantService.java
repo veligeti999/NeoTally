@@ -227,7 +227,7 @@ public class MerchantService extends AbstractService implements IAuthenticator {
     }
 
     private void createDiscounts(Long merchantId) {
-        Query query = em.createNativeQuery("select id from currency");
+        Query query = em.createNativeQuery("select id from currency where active=true");
         List<Integer> currencyIds = query.getResultList();
         for(Integer currencyId:currencyIds) {
             Query queryForCreateDiscout = em.createNativeQuery("INSERT INTO discount (currency_id, merchant_id) values(:currencyId, :merchantId)");
