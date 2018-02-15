@@ -1,5 +1,6 @@
 package com.newtally.core.service;
 
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -123,7 +124,6 @@ public class OrderInvoiceService extends AbstractService{
 			query.setParameter("modified_date", new Date());
 			query.executeUpdate();
 			txn.commit();
-            sendOrderStatusToDevice(transactionId);
 		} catch (Exception e) {
 		    e.printStackTrace();
 			txn.rollback();
@@ -133,18 +133,19 @@ public class OrderInvoiceService extends AbstractService{
 	public void sendOrderStatusToDevice(String transactionId) {
        
         Query query = em
-                .createNativeQuery("select distinct(d.registration_key) from order_invoice o join devices d on o.counter_id=d.user_id where o.transaction_id=:transactionId");
+                .createNativeQuery("select distinct(d.registration_key), o.id rom order_invoice o join devices d on o.counter_id=d.user_id where o.transaction_id=:transactionId");
         query.setParameter("transactionId", transactionId);
         List rs=query.getResultList();
         System.out.println("result set"+rs.size());
         if(!rs.isEmpty()) {
-            String registration_key = (String) rs.get(0);
+            String registrationKey = ((Object[]) rs.get(0))[0].toString();
+            Long orderId = ((BigInteger)((Object[]) rs.get(0))[1]).longValue();
             Notification notification=new Notification();
-            System.out.println("registration_key"+registration_key);
+            System.out.println("registration_key"+registrationKey);
             notification.setTitle("New Tally");
-            notification.setBody("Transaction ID:"+ transactionId+ " has been confirmed");
+            notification.setBody("Order:"+ orderId+ " has been confirmed");
             try {
-                MobileNotificationService.pushFCMNotification(registration_key, notification);
+                MobileNotificationService.pushFCMNotification(registrationKey, notification);
             } catch (Exception e) {
                 e.printStackTrace();
             }

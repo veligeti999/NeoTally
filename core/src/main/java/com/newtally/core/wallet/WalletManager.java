@@ -126,6 +126,7 @@ public class WalletManager {
 					System.out.println("transaction depth"+transaction.getConfidence().getDepthInBlocks() );
 					if(transaction.getConfidence().getDepthInBlocks() == 1){
 						ServiceFactory.getInstance().getOrderInvoiceService().updateOrderStatusByTransactionId(transactionId, OrderStatus.Success.toString());
+						ServiceFactory.getInstance().getOrderInvoiceService().sendOrderStatusToDevice(transactionId);
 					}
 				}
 			}
