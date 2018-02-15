@@ -72,7 +72,7 @@ public class MerchantService extends AbstractService implements IAuthenticator {
             
             createDiscounts(merchant.getId());
             trn.commit();
-
+            sendNotification(merchant);
             merchant.setPassword(null);
             //
             return merchant;
@@ -80,6 +80,10 @@ public class MerchantService extends AbstractService implements IAuthenticator {
             trn.rollback();
             throw e;
         }
+    }
+
+    private void sendNotification(Merchant merchant) {
+        EmailService.sendEmail(merchant.getEmail(), "Merchant Registration", " Welcome to NewTally \n \n Merchant has been registered successfully \n\n Password:"+merchant.getPassword()+"\n\n From \n Newtally.com");
     }
 
     private void setCreateParams(Merchant merchant, Query query) {
@@ -247,6 +251,7 @@ public class MerchantService extends AbstractService implements IAuthenticator {
             createBranch(branch);
             System.out.println("branch"+branch.getEmail());
             trn.commit();
+            sendNotificationForBranch(branch);
             branch.setPassword(null);
 
             return branch;
@@ -256,7 +261,9 @@ public class MerchantService extends AbstractService implements IAuthenticator {
             throw e;
         }
     }
-
+    private void sendNotificationForBranch(MerchantBranch branch) {
+        EmailService.sendEmail(branch.getEmail(), "Branch Registration", " Welcome to NewTally \n \n Branch has been registered successfully \n\n Password:"+branch.getPassword()+"\n\n From \n Newtally.com");
+    }
     public void updateBranch(MerchantBranch branch) {
         EntityTransaction trn = em.getTransaction();
         trn.begin();
@@ -411,7 +418,7 @@ public class MerchantService extends AbstractService implements IAuthenticator {
 	            counter = ServiceFactory.getInstance().getMerchantBranchService()._registerCounter(counter);
 
 	            trx.commit();
-
+	            sendNotificationForCounter(counter);
 	            return counter;
 	        } catch (Exception e) {
 	            trx.rollback();
@@ -420,6 +427,9 @@ public class MerchantService extends AbstractService implements IAuthenticator {
 	        }
 	    }
 	 
+	 private void sendNotificationForCounter(MerchantCounter counter) {
+	        EmailService.sendEmail(counter.getEmail(), "Counter Registration", " Welcome to NewTally \n \n Counter has been registered successfully \n\n Password:"+counter.getPassword()+"\n\n From \n Newtally.com");
+	    }
 	 public List<DiscountDto> getDisounts(){
 	     Query query = em.createNativeQuery("select d.id, c.code, c.name, d.percentage from discount d join currency c on d.currency_id = c.id where merchant_id=:merchant_id");
 	        query.setParameter("merchant_id", ctx.getCurrentMerchantId());
