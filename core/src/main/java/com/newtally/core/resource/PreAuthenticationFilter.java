@@ -173,7 +173,11 @@ public class PreAuthenticationFilter implements ContainerRequestFilter {
         validateRoles(role, rolesSet, ctx);
         setPrincipalOnThreadContext(role, userId, ctx);
         HttpSession session = req.getSession(true);
-        session.setMaxInactiveInterval(60 * 30 ); // 30 minutes
+        if(role.equals(Role.BRANCH_COUNTER)) {
+            session.setMaxInactiveInterval(-1);
+        }else {
+            session.setMaxInactiveInterval(60 * 30 ); // 30 minutes
+        }
         session.setAttribute(ROLE_SESSION_ATTR, role);
         session.setAttribute(USER_ID_SESSION_ATTR, userId);
     }
