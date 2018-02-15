@@ -13,6 +13,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.FlushModeType;
 import org.bitcoinj.core.NetworkParameters;
+import org.bitcoinj.params.MainNetParams;
 import org.bitcoinj.params.RegTestParams;
 import org.bitcoinj.params.TestNet3Params;
 import org.bitcoinj.store.BlockStore;
@@ -44,9 +45,10 @@ public class ServiceFactory {
         //The environment is going to become MainNet eventually when moving to production
         //This is a one time operation and is going to take time(not sure how long)
         //Uncomment this when using testnet..Setting it to regtest to test non blockchain functionality
-        params = TestNet3Params.get();
-        File blockStoreFile=new File("block_store");
-
+        //params = TestNet3Params.get();
+        //File blockStoreFile=new File("block_store");
+        params = MainNetParams.get();
+        File blockStoreFile=new File("block_store_main");
         //params = RegTestParams.get();
         //this file is for regtest blockchain(local blockchain)
         //File blockStoreFile=new File("regtest_block_store");
