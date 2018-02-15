@@ -259,7 +259,9 @@ public class BranchCounterResource extends BaseResource{
         ResponseDto dto=new ResponseDto();
         try {
         HttpSession session = req.getSession(false);
-        session.invalidate();
+        if(session != null) {
+            session.invalidate();
+        }
         dto.setResponse_code(0);
         dto.setResponse_message("Successfully logout");
         } catch(Exception e) {
