@@ -43,7 +43,6 @@ public class MobileNotificationService {
        mobileNotification.setNotification(notification);
 
        OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-       System.out.println(gson.toJson(mobileNotification));
        wr.write(gson.toJson(mobileNotification));
        wr.flush();
        conn.getInputStream();

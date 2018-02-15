@@ -8,16 +8,12 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
-
 import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.wallet.Wallet;
-
-import com.newtally.core.ServiceFactory;
 import com.newtally.core.dto.Notification;
 import com.newtally.core.model.Order;
 import com.newtally.core.model.OrderStatus;
 import com.newtally.core.resource.ThreadContext;
-import com.newtally.core.wallet.BitcoinConfiguration;
 import com.newtally.core.wallet.WalletManager;
 
 public class OrderInvoiceService extends AbstractService{
@@ -44,7 +40,7 @@ public class OrderInvoiceService extends AbstractService{
             setCreateParams(order, query);
             query.executeUpdate();
             trn.commit();
-            order.setQrCode("https://chart.googleapis.com/chart?chs=250x250&cht=qr&chl=bitcoin:"+order.getWalletAddress()+"+?amount="+order.getCurrencyAmount());
+            order.setQrCode("https://chart.googleapis.com/chart?chs=250x250&cht=qr&chl=bitcoin:"+order.getWalletAddress()+"?amount="+order.getCurrencyAmount());
             return order;
         } catch (Exception e) {
             trn.rollback();
@@ -129,7 +125,6 @@ public class OrderInvoiceService extends AbstractService{
 	            query.setParameter("modified_date", new Date());
 	            query.executeUpdate();
 	            txn.commit();
-	            System.out.println("transactionId update"+transactionId);
                 sendOrderStatusToDevice(transactionId);
             }
 		} catch (Exception e) {
@@ -146,15 +141,14 @@ public class OrderInvoiceService extends AbstractService{
                         + " where o.transaction_id=:transactionId and o.status='Success'");
         query.setParameter("transactionId", transactionId);
         try {
-        List rs=query.getResultList();
+        List rs = query.getResultList();
         if(!rs.isEmpty()) {
             String registrationKey = ((Object[]) rs.get(0))[0].toString();
             Long orderId = ((BigInteger)((Object[]) rs.get(0))[1]).longValue();
             Notification notification=new Notification();
             notification.setTitle("New Tally");
             notification.setBody("Order:"+ orderId+ " has been confirmed");
-           
-                MobileNotificationService.pushFCMNotification(registrationKey, notification);
+            MobileNotificationService.pushFCMNotification(registrationKey, notification);
             }
             } catch (Exception e) {
                 e.printStackTrace();

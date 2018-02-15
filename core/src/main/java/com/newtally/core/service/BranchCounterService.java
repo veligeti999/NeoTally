@@ -28,6 +28,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -120,7 +121,7 @@ public class BranchCounterService extends AbstractService implements IAuthentica
 
     public List<CurrencyDiscountDto> getCurrencyDiscounts(Double paymentAmount) throws Exception {
 		Double discount = null;
-		Query query = em.createNativeQuery("SELECT  id, code, name FROM currency");
+		Query query = em.createNativeQuery("SELECT  id, code, name FROM currency where active=true");
 
         List rs = query.getResultList();
         List<Currency> currencies = new ArrayList<>();
@@ -152,7 +153,7 @@ public class BranchCounterService extends AbstractService implements IAuthentica
             payableAmount=paymentAmount-currencyDiscountDto.getDiscount_amount();
             Double coinAmount=0d;
             if(getBitCoinCostInINR()>0) {
-            coinAmount=payableAmount/getBitCoinCostInINR();
+            coinAmount=BigDecimal.valueOf(payableAmount/getBitCoinCostInINR()).setScale(8, RoundingMode.HALF_DOWN).doubleValue();
             }
             currencyDiscountDto.setCurrency_amount(coinAmount);
             currencyDiscountDtos.add(currencyDiscountDto);
