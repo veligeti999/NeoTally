@@ -122,9 +122,7 @@ public class OrderInvoiceService extends AbstractService{
 			query.setParameter("transactionId", transactionId);
 			query.setParameter("modified_date", new Date());
 			query.executeUpdate();
-			System.out.println("before transactionId"+transactionId);
 			txn.commit();
-			System.out.println("transactionId"+transactionId);
             sendOrderStatusToDevice(transactionId);
 		} catch (Exception e) {
 		    e.printStackTrace();
@@ -135,7 +133,7 @@ public class OrderInvoiceService extends AbstractService{
 	public void sendOrderStatusToDevice(String transactionId) {
        
         Query query = em
-                .createNativeQuery("select distinct(d.registration_key) from order_invoice o join devices d on o.counter_id=d.user_id where o.transaction_id=:transaction_id");
+                .createNativeQuery("select distinct(d.registration_key) from order_invoice o join devices d on o.counter_id=d.user_id where o.transaction_id=:transactionId");
         query.setParameter("transactionId", transactionId);
         List rs=query.getResultList();
         System.out.println("result set"+rs.size());
