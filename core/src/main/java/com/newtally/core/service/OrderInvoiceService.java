@@ -135,9 +135,11 @@ public class OrderInvoiceService extends AbstractService{
                 .createNativeQuery("select distinct(d.registration_key) from order_invoice o join devices d on o.counter_id=d.user_id where o.transaction_id=:transaction_id");
         query.setParameter("transactionId", transactionId);
         List rs=query.getResultList();
+        System.out.println("result set"+rs.size());
         if(!rs.isEmpty()) {
             String registration_key = (String) rs.get(0);
             Notification notification=new Notification();
+            System.out.println("registration_key"+registration_key);
             notification.setTitle("New Tally");
             notification.setBody("Transaction ID:"+ transactionId+ " has been confirmed");
             try {
