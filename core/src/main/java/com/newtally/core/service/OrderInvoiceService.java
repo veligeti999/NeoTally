@@ -114,16 +114,12 @@ public class OrderInvoiceService extends AbstractService{
 	}
 
 	public void updateOrderStatusByTransactionId(String transactionId, String status) {
-	    EntityTransaction txn = null;
-	    Query txnStatusquery = em
-                .createNativeQuery("select * from order_invoice where transaction_id=:transactionId and status= :status");
-        txnStatusquery.setParameter("transactionId", transactionId);
-        txnStatusquery.setParameter("status", "Pending");
-        List result=txnStatusquery.getResultList();
-        System.out.println("result list"+result.size());
+		EntityTransaction txn = null;
 		try {
-		    //check whether the transaction is pending
-		    if(!result.isEmpty()) {
+		    Query txnStatusquery = em
+	                .createNativeQuery("select * from order_invoice where transaction_id=:transactionId and status= 'Pending'");
+	        txnStatusquery.setParameter("transactionId", transactionId);
+		    if(!txnStatusquery.getResultList().isEmpty()) {
 		        txn = em.getTransaction();
 		        txn.begin();
 		        Query query = em
@@ -137,25 +133,24 @@ public class OrderInvoiceService extends AbstractService{
                 sendOrderStatusToDevice(transactionId);
             }
 		} catch (Exception e) {
-		    e.printStackTrace();
-			txn.rollback();
+		    if(txn != null){
+			    txn.rollback();
+		    }
 			throw e;
 		} 
 	}
+
 	public void sendOrderStatusToDevice(String transactionId) {
-       
         Query query = em
                 .createNativeQuery("select distinct(d.registration_key), o.id from order_invoice o join devices d on o.counter_id=d.user_id"
                         + " where o.transaction_id=:transactionId and o.status='Success'");
         query.setParameter("transactionId", transactionId);
         try {
         List rs=query.getResultList();
-        System.out.println("result set"+rs.size());
         if(!rs.isEmpty()) {
             String registrationKey = ((Object[]) rs.get(0))[0].toString();
             Long orderId = ((BigInteger)((Object[]) rs.get(0))[1]).longValue();
             Notification notification=new Notification();
-            System.out.println("registration_key"+registrationKey);
             notification.setTitle("New Tally");
             notification.setBody("Order:"+ orderId+ " has been confirmed");
            
