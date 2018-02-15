@@ -124,13 +124,14 @@ public class OrderInvoiceService extends AbstractService{
 		    txnStatusquery.setParameter("transactionId", transactionId);
 		    List result=txnStatusquery.getResultList();
 		    System.out.println("result list"+result.size());
-		    if(!txnStatusquery.getResultList().isEmpty()) {
+		    if(!result.isEmpty()) {
 		        Query query = em
 	                    .createNativeQuery("update order_invoice set status=:status, modified_date=:modified_date where transaction_id=:transactionId");
 	            query.setParameter("status", status);
 	            query.setParameter("transactionId", transactionId);
 	            query.setParameter("modified_date", new Date());
 	            query.executeUpdate();
+	            txn.commit();
 	            System.out.println("transactionId update"+transactionId);
                 sendOrderStatusToDevice(transactionId);
             }
