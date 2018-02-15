@@ -1,5 +1,6 @@
 package com.newtally.core.service;
 
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -113,39 +114,55 @@ public class OrderInvoiceService extends AbstractService{
 	}
 
 	public void updateOrderStatusByTransactionId(String transactionId, String status) {
-		EntityTransaction txn = em.getTransaction();
-		txn.begin();
+	    EntityTransaction txn = null;
+	    Query txnStatusquery = em
+                .createNativeQuery("select * from order_invoice where transaction_id=:transactionId and status= :status");
+        txnStatusquery.setParameter("transactionId", transactionId);
+        txnStatusquery.setParameter("status", "Pending");
+        List result=txnStatusquery.getResultList();
+        System.out.println("result list"+result.size());
 		try {
-			Query query = em
-					.createNativeQuery("update order_invoice set status=:status, modified_date=:modified_date where transaction_id=:transactionId");
-			query.setParameter("status", status);
-			query.setParameter("transactionId", transactionId);
-			query.setParameter("modified_date", new Date());
-			query.executeUpdate();
-			txn.commit();
+		    //check whether the transaction is pending
+		    if(!result.isEmpty()) {
+		        txn = em.getTransaction();
+		        txn.begin();
+		        Query query = em
+	                    .createNativeQuery("update order_invoice set status=:status, modified_date=:modified_date where transaction_id=:transactionId");
+	            query.setParameter("status", status);
+	            query.setParameter("transactionId", transactionId);
+	            query.setParameter("modified_date", new Date());
+	            query.executeUpdate();
+	            txn.commit();
+	            System.out.println("transactionId update"+transactionId);
+                sendOrderStatusToDevice(transactionId);
+            }
 		} catch (Exception e) {
+		    e.printStackTrace();
 			txn.rollback();
 			throw e;
-		} finally {
-            sendOrderStatusToDevice(transactionId);
-		}
+		} 
 	}
 	public void sendOrderStatusToDevice(String transactionId) {
        
         Query query = em
-                .createNativeQuery("select distinct(d.registration_key) from order_invoice o join devices d on o.counter_id=d.user_id where o.transaction_id=:transaction_id");
+                .createNativeQuery("select distinct(d.registration_key), o.id from order_invoice o join devices d on o.counter_id=d.user_id"
+                        + " where o.transaction_id=:transactionId and o.status='Success'");
         query.setParameter("transactionId", transactionId);
+        try {
         List rs=query.getResultList();
+        System.out.println("result set"+rs.size());
         if(!rs.isEmpty()) {
-            String registration_key = (String) rs.get(0);
+            String registrationKey = ((Object[]) rs.get(0))[0].toString();
+            Long orderId = ((BigInteger)((Object[]) rs.get(0))[1]).longValue();
             Notification notification=new Notification();
+            System.out.println("registration_key"+registrationKey);
             notification.setTitle("New Tally");
-            notification.setBody("Transaction ID:"+ transactionId+ " has been confirmed");
-            try {
-                MobileNotificationService.pushFCMNotification(registration_key, notification);
+            notification.setBody("Order:"+ orderId+ " has been confirmed");
+           
+                MobileNotificationService.pushFCMNotification(registrationKey, notification);
+            }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-    }
 }

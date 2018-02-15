@@ -38,9 +38,8 @@ public class MerchantBranchService extends AbstractService implements IAuthentic
         trx.begin();
         try {
             counter = _registerCounter(counter);
-
             trx.commit();
-
+            sendNotificationForCounter(counter);
             return counter;
         } catch (Exception e) {
             trx.rollback();
@@ -48,7 +47,9 @@ public class MerchantBranchService extends AbstractService implements IAuthentic
             throw e;
         }
     }
-   
+    private void sendNotificationForCounter(MerchantCounter counter) {
+        EmailService.sendEmail(counter.getEmail(), "Counter Registration", " Welcome to NewTally \n \n Counter has been registered successfully \n\n Password:"+counter.getPassword()+"\n\n From \n Newtally.com");
+    }
     MerchantCounter _registerCounter(MerchantCounter counter) {
 
         Query query = em.createNativeQuery("INSERT INTO branch_counter ( " +
