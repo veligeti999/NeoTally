@@ -127,6 +127,7 @@ public class OrderInvoiceService extends AbstractService{
 			System.out.println("transactionId"+transactionId);
             sendOrderStatusToDevice(transactionId);
 		} catch (Exception e) {
+		    e.printStackTrace();
 			txn.rollback();
 			throw e;
 		} 
