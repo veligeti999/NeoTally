@@ -122,6 +122,8 @@ public class OrderInvoiceService extends AbstractService{
 		    Query txnStatusquery = em
                     .createNativeQuery("select * from order_invoice where transaction_id=:transactionId and status='Pending'");
 		    txnStatusquery.setParameter("transactionId", transactionId);
+		    List result=txnStatusquery.getResultList();
+		    System.out.println("result list"+result.size());
 		    if(!txnStatusquery.getResultList().isEmpty()) {
 		        Query query = em
 	                    .createNativeQuery("update order_invoice set status=:status, modified_date=:modified_date where transaction_id=:transactionId");
@@ -129,6 +131,7 @@ public class OrderInvoiceService extends AbstractService{
 	            query.setParameter("transactionId", transactionId);
 	            query.setParameter("modified_date", new Date());
 	            query.executeUpdate();
+	            System.out.println("transactionId update"+transactionId);
                 sendOrderStatusToDevice(transactionId);
             }
 		} catch (Exception e) {
