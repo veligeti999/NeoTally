@@ -152,5 +152,4 @@ public class OrderInvoiceService extends AbstractService{
                 e.printStackTrace();
             }
         }
-    }
 }
