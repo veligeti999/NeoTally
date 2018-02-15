@@ -264,8 +264,8 @@ public class BranchCounterService extends AbstractService implements IAuthentica
         EntityTransaction trn = em.getTransaction();
         trn.begin();
         try {
-        Query queryToCheck = em.createNativeQuery("select id from devices where registration_key=:registration_key"); 
-        queryToCheck.setParameter("registration_key", device.getRegistrationKey());
+        Query queryToCheck = em.createNativeQuery("select id from devices where user_id=:user_id"); 
+        queryToCheck.setParameter("user_id", device.getUserId());
         List rs= queryToCheck.getResultList();
         if(rs.isEmpty()) {
             Query query = em.createNativeQuery("INSERT INTO devices ( " +
