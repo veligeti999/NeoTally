@@ -1,6 +1,9 @@
 package com.newtally.core.model;
 
 public class MerchantBranch {
+
+    public static final String MERCHANT_ID = "MERCHANT_ID";
+    public static final String BRANCH_NO = "BRANCH_NO";
     private long id;
     private long merchantId;
     private String name;

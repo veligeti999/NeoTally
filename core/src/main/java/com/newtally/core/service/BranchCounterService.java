@@ -300,4 +300,15 @@ public class BranchCounterService extends AbstractService implements IAuthentica
         throw e;
     }
     }
+
+	public Map<String, Object> getMerchantIdAndBranchNoByCounterPwd(String counterPassword) {
+		Map<String, Object> params = new HashMap<>();
+		Query query = em.createNativeQuery("select mb.merchant_id, mb.branch_no from merchant_branch mb join "
+				+ "branch_counter bc on mb.id = bc.branch_id and bc.password=:counterPassword");
+		query.setParameter("counterPassword", counterPassword);
+		Object[] obj = (Object[]) query.getResultList().get(0);
+		params.put(MerchantBranch.MERCHANT_ID, obj[0]);
+		params.put(MerchantBranch.BRANCH_NO, obj[1]);
+		return params;
+	}
 }

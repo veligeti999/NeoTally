@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MerchantBranchService extends AbstractService implements IAuthenticator {
@@ -218,6 +219,16 @@ public class MerchantBranchService extends AbstractService implements IAuthentic
 		return (int) query.getResultList().get(0);
 	}
 	
+	public Map<String, Object> getMerchantIdAndBranchNoByBranchId(long branchId){
+		Map<String, Object> params = new HashMap<>();
+		Query query = em.createNativeQuery("select merchant_id, branch_no from merchant_branch where id=:branchId");
+		query.setParameter("branchId", branchId);
+		Object[] obj = (Object[])query.getResultList().get(0);
+		params.put(MerchantBranch.MERCHANT_ID, obj[0]);
+		params.put(MerchantBranch.BRANCH_NO, obj[1]);
+		return params;
+	}
+
     public List<MerchantCounter> getCounters() {
         // TODO Auto-generated method stub
         return getCounters(ctx.getCurrentBranchId());

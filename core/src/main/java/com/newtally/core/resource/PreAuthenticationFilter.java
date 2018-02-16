@@ -1,12 +1,12 @@
 package com.newtally.core.resource;
 
 import com.newtally.core.ServiceFactory;
+import com.newtally.core.model.MerchantBranch;
 import com.newtally.core.model.Role;
 import com.newtally.core.service.BranchCounterService;
 import com.newtally.core.service.IAuthenticator;
 import com.newtally.core.service.MerchantBranchService;
 import com.newtally.core.service.MerchantService;
-import com.newtally.core.service.UserService;
 import com.newtally.core.wallet.WalletManager;
 
 import javax.annotation.Priority;
@@ -41,7 +41,6 @@ public class PreAuthenticationFilter implements ContainerRequestFilter {
     private static final String AUTHENTICATION_SCHEME = "Basic";
     public static final String USER_ID_SESSION_ATTR = "id";
     public static final String ROLE_SESSION_ATTR = "role";
-    private final RuntimeException ACCESS_DENY = new RuntimeException("Access denied");
 
     private final Map<String, IAuthenticator> roleVsAuth = new HashMap<>();
 
@@ -60,7 +59,6 @@ public class PreAuthenticationFilter implements ContainerRequestFilter {
 
     public PreAuthenticationFilter() {
         ServiceFactory instance = ServiceFactory.getInstance();
-
         roleVsAuth.put(Role.USER, instance.getUserService());
         roleVsAuth.put(Role.MERCHANT, instance.getMerchantService());
         roleVsAuth.put(Role.BRANCH_MANAGER, instance.getMerchantBranchService());
@@ -152,7 +150,6 @@ public class PreAuthenticationFilter implements ContainerRequestFilter {
 					for (BigInteger branchId : branchIds) {
 						try {
 							setPrincipalOnThreadContext(Role.BRANCH_MANAGER, branchId.toString(), ctx);
-							threadCtx.setCurrentMerchantId(Long.parseLong(userId));
 							initializeWallet(branchId.toString(), "");
 						} catch (UnreadableWalletException e) {
 							// TODO Auto-generated catch block
@@ -216,8 +213,8 @@ public class PreAuthenticationFilter implements ContainerRequestFilter {
     }
 
     public void setPrincipalOnThreadContext(String role, String id, ContainerRequestContext ctx) {
-		String branchId = null;
-		int branchNo = 0;
+        Map<String, Object> params = null;
+		//int branchNo = 0;
         // clear previous ones
         threadCtx.clearContext();
         if(role.equals(Role.USER)) {
@@ -225,14 +222,18 @@ public class PreAuthenticationFilter implements ContainerRequestFilter {
         } else if(role.equals(Role.MERCHANT)) {
             threadCtx.setCurrentMerchantId(Long.parseLong(id));
         } else if(role.equals(Role.BRANCH_COUNTER)) {
-			branchId = branchCounterService.getBranchIdByCounterPwd(id);
-			branchNo = branchService.getBranchNoByBranchId(Long.valueOf(branchId));
+			//branchId = branchCounterService.getBranchIdByCounterPwd(id);
+			//branchNo = branchService.getBranchNoByBranchId(Long.valueOf(branchId));
+            params = branchCounterService.getMerchantIdAndBranchNoByCounterPwd(id);
             threadCtx.setCurrentMerchantCounterId(id);
-            threadCtx.setCurrentBranchAccNum(branchNo);
+            threadCtx.setCurrentBranchAccNum((Integer)params.get(MerchantBranch.BRANCH_NO));
+            threadCtx.setCurrentMerchantId(((BigInteger)params.get(MerchantBranch.MERCHANT_ID)).longValue());
         } else if(role.equals(Role.BRANCH_MANAGER)) {
-			branchNo = branchService.getBranchNoByBranchId(Long.valueOf(id));
+			//branchNo = branchService.getBranchNoByBranchId(Long.valueOf(id));
+            params = branchService.getMerchantIdAndBranchNoByBranchId(Long.valueOf(id));
             threadCtx.setMerchantBranchId(Long.parseLong(id));
-            threadCtx.setCurrentBranchAccNum(branchNo);
+            threadCtx.setCurrentBranchAccNum((Integer)params.get(MerchantBranch.BRANCH_NO));
+            threadCtx.setCurrentMerchantId(((BigInteger)params.get(MerchantBranch.MERCHANT_ID)).longValue());
         } else { 
             ResponseBuilder responseBuilder = Response.status(Status.FORBIDDEN);
             Response response = responseBuilder.status(Status.FORBIDDEN).build();
