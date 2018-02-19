@@ -97,6 +97,7 @@ $(function() {
             postJson.phone = document.getElementById('phone').value;
             postJson.email = document.getElementById('email').value;
             postJson.branch_no = data.branch_no;
+            postJson.head_quarter = data.head_quarter;
             var address = {};
             address.address = document.getElementById('address').value;
             address.city = document.getElementById('city').value;
