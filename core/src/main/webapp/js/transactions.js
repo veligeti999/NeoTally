@@ -14,8 +14,8 @@ $(document).ready(function() {
                     { "data": "id" },
                     { "data": "currencyCode" },
                     { "data": "currencyAmount" },
+                    { "data": "paymentAmount" },
                     { "data": function(data, type, full) { return data.paymentAmount-data.discountAmount; } },
-                    { "data": "discountAmount" },
                     { "data": function(data, type, full) { return moment(new Date(data.createdDate)).format("DD-MMM-YY, h:mm:ss a"); } },
                     { "data": function(data, type, full) {
                       if(data.status=="Pending"){
