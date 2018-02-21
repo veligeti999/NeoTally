@@ -2,6 +2,7 @@ package com.newtally.core;
 
 import com.newtally.core.resource.ThreadContext;
 import com.newtally.core.service.MerchantBranchService;
+import com.newtally.core.service.ApplicationService;
 import com.newtally.core.service.BranchCounterService;
 import com.newtally.core.service.MerchantService;
 import com.newtally.core.service.OrderInvoiceService;
@@ -35,6 +36,7 @@ public class ServiceFactory {
     private final BlockStore blockStore;
     private final BitcoinConfiguration bitcoinConfiguration;
     private final WalletManager walletManager;
+    private final ApplicationService applicationService;
 
     private ServiceFactory(EntityManagerFactory emf) throws BlockStoreException {
         this.emf = emf;
@@ -61,6 +63,7 @@ public class ServiceFactory {
         branchService = new MerchantBranchService(em, sessionContext);
         merchantService = new MerchantService(em, sessionContext);
         orderInvoiceService= new OrderInvoiceService(em, sessionContext, counterService, walletManager);
+        applicationService=new ApplicationService(em, sessionContext);
     }
 
     static synchronized void initializeFactory(EntityManagerFactory emf) throws BlockStoreException {
@@ -110,4 +113,8 @@ public class ServiceFactory {
 	public WalletManager getWalletManager(){
 		return walletManager;
 	}
+
+    public ApplicationService getApplicationService() {
+        return applicationService;
+    }
 }

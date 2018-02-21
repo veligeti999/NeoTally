@@ -22,6 +22,13 @@ var logL = document.getElementById('showLoginLoader');
 // logD.setAttribute("disabled", false);
 logL.style.display = 'none';
 
+function forgetPassword(){
+    var usertype = $('input[name=inlineRadioOptions]:checked').val();
+    console.log("usertype",usertype)
+    localStorage.setItem('usertype', usertype);
+    window.location.href = "forget_password.html";
+}
+
 $(function() {
     // Initialize form validation on the registration form.
     // It has the name attribute "registration"

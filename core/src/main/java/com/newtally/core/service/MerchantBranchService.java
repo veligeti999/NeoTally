@@ -295,4 +295,35 @@ public class MerchantBranchService extends AbstractService implements IAuthentic
     }
         
     }
+    
+    @Override
+    public boolean checkEmail(String email) {
+        Query query = em.createNativeQuery("select email from merchant_branch where email=:email");
+        query.setParameter("email", email);
+        List rs=query.getResultList();
+        if(rs.isEmpty())
+            return false;
+        else
+            return true;
+    }
+    
+    @Override
+    public void resetPassword(String email, String password) {
+        EntityTransaction trn = em.getTransaction();
+        trn.begin();
+        try {
+            Query query = em.createNativeQuery("UPDATE merchant_branch SET password = :password " +
+                    "WHERE email = :email");
+
+            query.setParameter("password", password);
+            query.setParameter("email", email);
+            query.executeUpdate();
+
+            trn.commit();
+
+        } catch (Exception e) {
+            trn.rollback();
+            throw e;
+        }
+    }
 }

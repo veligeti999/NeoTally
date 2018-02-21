@@ -549,4 +549,35 @@ public class MerchantService extends AbstractService implements IAuthenticator {
                 throw e;
             }
     }
+
+    @Override
+    public boolean checkEmail(String email) {
+        Query query = em.createNativeQuery("select email from merchant where email=:email");
+        query.setParameter("email", email);
+        List rs=query.getResultList();
+        if(rs.isEmpty())
+            return false;
+        else
+            return true;
+    }
+
+    @Override
+    public void resetPassword(String email, String password) {
+        EntityTransaction trn = em.getTransaction();
+        trn.begin();
+        try {
+            Query query = em.createNativeQuery("UPDATE merchant SET password = :password " +
+                    "WHERE email = :email");
+
+            query.setParameter("password", password);
+            query.setParameter("email", email);
+            query.executeUpdate();
+
+            trn.commit();
+
+        } catch (Exception e) {
+            trn.rollback();
+            throw e;
+        }
+    }
 }
