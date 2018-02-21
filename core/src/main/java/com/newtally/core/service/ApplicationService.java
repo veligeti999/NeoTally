@@ -18,6 +18,8 @@ import com.newtally.core.resource.ThreadContext;
 public class ApplicationService extends AbstractService{
     
     private final Map<String, IAuthenticator> roleVsAuth = new HashMap<>();
+    
+    private final String domainURI="http://18.219.39.174:8080/new-tally/";
 
     public ApplicationService(EntityManager em, ThreadContext sessionContext) {
         super(em, sessionContext);
@@ -72,7 +74,7 @@ public class ApplicationService extends AbstractService{
     }
     
     private void sendNotification(String token, String userType, String email) {
-        EmailService.sendEmail(email, "Reset Newtally Password", " Hi \n \n Password reset Link: http://localhost:8080/new-tally/reset_password.html?token="+token+"&userType="+userType+"\n\n From \n Newtally.com");
+        EmailService.sendEmail(email, "Reset Newtally Password", " Hi \n \n Password reset Link: "+domainURI+"reset_password.html?token="+token+"&userType="+userType+"\n\n From \n Newtally.com");
     }
     public void resetPassword(HashMap passwordMap, String token, String userType) {
 
