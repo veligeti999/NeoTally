@@ -56,7 +56,9 @@ public class MerchantService extends AbstractService implements IAuthenticator {
             //TO-DO -> we need to store the encrypted the mnemonic string in the DB
             List<String> mnemonicWords= this.generateMnemonic();
             this.setMnemonicForMerchant(String.join(",", mnemonicWords), merchantId);
-
+            if(!EmailService.emailValidator(merchant.getEmail())) {
+                throw new RuntimeException("Email doesn't existed");
+            }
             MerchantBranch branch = new MerchantBranch();
             branch.setMerchantId(merchant.getId());
             branch.setName(merchant.getName());
@@ -72,7 +74,8 @@ public class MerchantService extends AbstractService implements IAuthenticator {
             
             createDiscounts(merchant.getId());
             trn.commit();
-            sendNotification(merchant);
+            ServiceFactory.getInstance().getApplicationService().generateConfirmEmailLink(merchant.getEmail());
+//            sendNotification(merchant);
             merchant.setPassword(null);
             //
             return merchant;
@@ -225,7 +228,7 @@ public class MerchantService extends AbstractService implements IAuthenticator {
         counter.setBranchId(branch.getId());
 
         ServiceFactory.getInstance().getMerchantBranchService()._registerCounter(counter);
-        sendNotificationForCounter(counter);
+        //sendNotificationForCounter(counter);
     }
 
     private void createDiscounts(Long merchantId) {
@@ -325,7 +328,7 @@ public class MerchantService extends AbstractService implements IAuthenticator {
 
     public boolean authenticate(String username, String password) {
         Query query = em.createNativeQuery("SELECT  count(*) FROM merchant " +
-                "WHERE email = :email AND password = :password");
+                "WHERE email = :email AND password = :password AND active=true");
 
         query.setParameter("email", username);
         query.setParameter("password", password);
@@ -579,5 +582,13 @@ public class MerchantService extends AbstractService implements IAuthenticator {
             trn.rollback();
             throw e;
         }
+    }
+
+    public void updateMerchantAfterCofirmEmail(String email) {
+            Query query = em.createNativeQuery("UPDATE merchant SET active = true " +
+                    "WHERE email = :email");
+
+            query.setParameter("email", email);
+            query.executeUpdate();
     }
 }

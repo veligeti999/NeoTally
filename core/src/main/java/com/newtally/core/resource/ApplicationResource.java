@@ -7,6 +7,7 @@ import java.util.HashMap;
 import javax.annotation.security.PermitAll;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -75,6 +76,29 @@ public class ApplicationResource extends BaseResource {
         }catch (IOException e) {
             dto.setResponse_code(1);
             dto.setResponse_message("Failed to reset password");
+            dto.setResponse_data(e.getLocalizedMessage());
+        }
+
+        return Response.ok(gson_pretty.toJson(dto)).build();
+    }
+    
+    @PermitAll
+    @GET
+    @Path("confirm/email/{token}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response confirmEmail(@PathParam("token") String token){
+
+        ResponseDto dto=new ResponseDto();
+        try {
+        appService.confirmEmail(token);
+        
+        dto.setResponse_code(0);
+        dto.setResponse_message("Successfully confirmed the email");
+        } catch(RuntimeException e) {
+            e.printStackTrace();
+            dto.setResponse_code(1);
+            dto.setResponse_message(e.getLocalizedMessage());
             dto.setResponse_data(e.getLocalizedMessage());
         }
 

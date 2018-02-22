@@ -114,4 +114,59 @@ public class ApplicationService extends AbstractService{
         
     }
 
+    public void confirmEmail(String token) {
+        Query query = em.createNativeQuery("select email from confirm_email_token where token = :token and active=true");
+
+        query.setParameter("token", token);
+        List rs=query.getResultList();
+        if(!rs.isEmpty()) {
+            String email=(String) rs.get(0);
+            EntityTransaction trn = em.getTransaction();
+            trn.begin();
+            try {
+                Query queryToInActive = em.createNativeQuery("UPDATE confirm_email_token " +
+                        "SET active = false where token = :token and active=true");
+    
+                queryToInActive.setParameter("token", token);
+                queryToInActive.executeUpdate();
+    
+                trn.commit();
+    
+            } catch (Exception e) {
+                trn.rollback();
+                throw e;
+            }
+            
+        }
+        else {
+            throw new RuntimeException("Invalid token to confirm the email");
+        }
+        
+    }
+    public void generateConfirmEmailLink(String email) {
+            EntityTransaction trn = em.getTransaction();
+            trn.begin();
+            try {
+                Query queryToCreate = em.createNativeQuery("INSERT INTO confirm_email_token ( " +
+                        "token, email, generated_time, active) " +
+                        "VALUES( :token, :email, :generated_time, true)");
+    
+                String token=generateToken();
+                queryToCreate.setParameter("token", token);
+                queryToCreate.setParameter("email", email);
+                queryToCreate.setParameter("generated_time", new Date());
+                queryToCreate.executeUpdate();
+                ServiceFactory.getInstance().getMerchantService().updateMerchantAfterCofirmEmail(email);
+                trn.commit();
+                sendNotificationForEmailConfirmation(token, email);
+    
+            } catch (Exception e) {
+                trn.rollback();
+                throw e;
+            }
+    }
+
+    private void sendNotificationForEmailConfirmation(String token, String email) {
+        EmailService.sendEmail(email, "Email confirmation for Newtally", " Hi \n \n Confirm your email on click of this link: "+domainURI+"email_confirmation.html?token="+token+"\n\n From \n Newtally.com");
+    }
 }
