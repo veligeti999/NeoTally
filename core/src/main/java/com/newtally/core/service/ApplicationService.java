@@ -167,6 +167,6 @@ public class ApplicationService extends AbstractService{
     }
 
     private void sendNotificationForEmailConfirmation(String token, String email) {
-        EmailService.sendEmail(email, "Email confirmation for Newtally", " Hi \n \n Confirm your email on click of this link: "+domainURI+"email_confirmation.html?token="+token+"\n\n From \n Newtally.com");
+        EmailService.sendEmail(email, "Email confirmation for Newtally", " Hi \n \n Welcome to NewTally \n \n Merchant has been registered successfully \n \n Please confirm your email on click of this link: "+domainURI+"email_confirmation.html?token="+token+"\n\n From \n Newtally.com");
     }
 }
