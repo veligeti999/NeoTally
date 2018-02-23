@@ -4,6 +4,7 @@ import com.newtally.core.ServiceFactory;
 import com.newtally.core.dto.CoinDto;
 import com.newtally.core.dto.DiscountDto;
 import com.newtally.core.dto.ResponseDto;
+import com.newtally.core.dto.WalletDto;
 import com.newtally.core.model.MerchantBranch;
 import com.newtally.core.model.MerchantCounter;
 import com.newtally.core.model.Order;
@@ -334,6 +335,7 @@ public class MerchantResource extends BaseResource {
         }
         return Response.ok(gson.toJson(dto)).build();
     }
+    
     @RolesAllowed({Role.MERCHANT})
     @GET
     @Path("/currency/discounts")
@@ -356,6 +358,7 @@ public class MerchantResource extends BaseResource {
 
         return Response.ok(gson_pretty.toJson(dto)).build();
     }
+    
     @RolesAllowed({Role.MERCHANT})
     @POST
     @Path("/currency/discounts")
@@ -426,5 +429,74 @@ public class MerchantResource extends BaseResource {
 
         return Response.ok(gson_pretty.toJson(dto)).build();
     }
+	
+	@RolesAllowed({Role.MERCHANT})
+    @GET
+    @Path("/wallet/addresses")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getWalletAddress(@Context HttpServletRequest req ){
+
+	    ResponseDto dto=new ResponseDto();
+        try {
+        List<WalletDto> discounts=mrctServ.getWalletAddress();
+        
+        dto.setResponse_code(0);
+        dto.setResponse_message("Successfully get all wallet addresses");
+        dto.setResponse_data(discounts);
+        } catch(Exception e) {
+            e.printStackTrace();
+            dto.setResponse_code(1);
+            dto.setResponse_message("Failed to get get all wallet addresses");
+            dto.setResponse_data(e.getLocalizedMessage());
+        }
+
+        return Response.ok(gson_pretty.toJson(dto)).build();
+    }
+	
+	@RolesAllowed({Role.MERCHANT})
+    @POST
+    @Path("/wallet/save")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response saveWalletAddress(@Context HttpServletRequest req ){
+
+        ResponseDto dto=new ResponseDto();
+        try {
+        WalletDto wallet = gson_pretty.fromJson(new InputStreamReader(req.getInputStream()), WalletDto.class);
+        wallet=mrctServ.saveWalletAddress(wallet);
+        
+        dto.setResponse_code(0);
+        dto.setResponse_message("Successfully to save the wallet address");
+        } catch(Exception e) {
+            e.printStackTrace();
+            dto.setResponse_code(1);
+            dto.setResponse_message("Failed to save the wallet address");
+            dto.setResponse_data(e.getLocalizedMessage());
+        }
+
+        return Response.ok(gson_pretty.toJson(dto)).build();
+    }
+	@RolesAllowed({Role.MERCHANT})
+    @POST
+    @Path("/wallet/update")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateWalletAddress(@Context HttpServletRequest req ){
+
+        ResponseDto dto=new ResponseDto();
+        try {
+        WalletDto wallet = gson_pretty.fromJson(new InputStreamReader(req.getInputStream()), WalletDto.class);
+        wallet=mrctServ.updateWalletAddress(wallet);
+        
+        dto.setResponse_code(0);
+        dto.setResponse_message("Successfully to save the wallet address");
+        } catch(Exception e) {
+            e.printStackTrace();
+            dto.setResponse_code(1);
+            dto.setResponse_message("Failed to save the wallet address");
+            dto.setResponse_data(e.getLocalizedMessage());
+        }
+
+        return Response.ok(gson_pretty.toJson(dto)).build();
+    }
+	
 
 }
