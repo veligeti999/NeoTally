@@ -228,7 +228,7 @@ public class MerchantService extends AbstractService implements IAuthenticator {
         counter.setBranchId(branch.getId());
 
         ServiceFactory.getInstance().getMerchantBranchService()._registerCounter(counter);
-        //sendNotificationForCounter(counter);
+        sendNotificationForCounter(counter);
     }
 
     private void createDiscounts(Long merchantId) {
