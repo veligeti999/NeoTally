@@ -7,6 +7,7 @@ import com.newtally.core.ServiceFactory;
 import com.newtally.core.dto.CoinDto;
 import com.newtally.core.dto.DiscountDto;
 import com.newtally.core.dto.ResponseDto;
+import com.newtally.core.dto.WalletDto;
 import com.newtally.core.model.*;
 import com.newtally.core.resource.ThreadContext;
 
@@ -596,5 +597,65 @@ public class MerchantService extends AbstractService implements IAuthenticator {
 
             query.setParameter("email", email);
             query.executeUpdate();
+    }
+
+    public List<WalletDto> getWalletAddress() {
+        Query query = em.createNativeQuery("select w.id, w.currency_id, c.code, c.name, w.wallet_address from merchant_personal_wallet w join currency c on w.currency_id = c.id where merchant_id=:merchant_id");
+        query.setParameter("merchant_id", ctx.getCurrentMerchantId());
+        List rs = query.getResultList();
+        List<WalletDto> wallets = new ArrayList<>();
+        for(Object ele : rs) {
+            Object [] fields = (Object[]) ele;
+
+            WalletDto wallet = new WalletDto();
+            wallet.setId(((Integer) fields[0]));
+            wallet.setCurrencyId(((Integer) fields[1]));
+            wallet.setCurrencyCode( fields[2].toString());              
+            wallet.setCurrencyName(fields[3].toString());
+            wallet.setWalletAddress(fields[4].toString());
+            
+            wallets.add(wallet);
+        }
+        return wallets;
+    }
+
+    public WalletDto saveWalletAddress(WalletDto wallet) {
+        EntityTransaction trn = em.getTransaction();
+        trn.begin();
+        try {
+            Query query = em.createNativeQuery("INSERT INTO merchant_personal_wallet(currency_id, merchant_id, wallet_address)" +
+                    " values(:currency_id, :merchant_id, :wallet_address)");
+
+            query.setParameter("currency_id", wallet.getCurrencyId());
+            query.setParameter("merchant_id", ctx.getCurrentMerchantId());
+            query.setParameter("wallet_address", wallet.getWalletAddress());
+            query.executeUpdate();
+
+            trn.commit();
+            return wallet;
+
+        } catch (Exception e) {
+            trn.rollback();
+            throw e;
+        }
+    }
+
+    public WalletDto updateWalletAddress(WalletDto wallet) {
+        EntityTransaction trn = em.getTransaction();
+        trn.begin();
+        try {
+            Query query = em.createNativeQuery("UPDATE merchant_personal_wallet SET wallet_address=:wallet_address where id=:id");
+
+            query.setParameter("id", wallet.getId());
+            query.setParameter("wallet_address", wallet.getWalletAddress());
+            query.executeUpdate();
+
+            trn.commit();
+            return wallet;
+
+        } catch (Exception e) {
+            trn.rollback();
+            throw e;
+        }
     }
 }

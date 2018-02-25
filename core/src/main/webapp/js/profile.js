@@ -85,19 +85,165 @@ $(function() {
                         }, 1000);
                     } else {
                         checkSession();
-                        $('#loginDisable').removeAttr('disabled');
-                        signupL.style.display = 'none';
+                        // $('#loginDisable').removeAttr('disabled');
+                        // signupL.style.display = 'none';
                         toastr.error(result.response_message, 'ERROR');
                     }
 
                 },
                 error: function(error) {
                     checkSession();
-                    $('#submitDisable').removeAttr("disabled");
-                    signupL.style.display = 'none';
+                    // $('#submitDisable').removeAttr("disabled");
+                    // signupL.style.display = 'none';
                     toastr.error("Failed to update password", 'ERROR');
                 }
             });
         }
     });
 });
+
+function getWalletAddress(){
+  $.ajax({
+        type: "GET",
+        url: "/new-tally/rest/merchants/wallet/addresses",
+        dataType: 'json',
+        async: false,
+        success: function(result) {
+          if(result.response_data.length > 0){
+              $.each(result.response_data, function(index, value) {
+              $("#walletConfigForm").empty().append('<div class="form-group row">'+
+                                          '<label for="example-text-input" class="col-2 col-form-label">Wallet Address Saved</label>'+
+                                        '</div>'+
+                                        '<div class="form-group row">'+
+                                          '<label for="example-text-input" class="col-2 col-form-label">Bit Coin </label>'+
+                                          '<div class="col-6">'+
+                                              '<input class="form-control p-input" id="newAddress" name="newAddress" placeholder="Enter valid address" type="text" value='+value.wallet_address+'>'+
+                                          '</div>'+
+                                          '<button id="submitButton" class="btn btn-primary col-2" title="Save wallet address" data-toggle="tooltip" onClick="saveExistedWalletAddress('+value.id+')">Save</button>'+
+                                          '<button id="editButton" class="btn btn-primary col-2" title="Edit wallet address" data-toggle="tooltip" onClick="editWalletAddress()">Edit</button>'+
+                                      '</div>');
+            });
+            disableImputs();
+          }
+          else{
+           $("#walletConfigForm").empty().append('<div class="form-group row">'+
+                                        '<label for="example-text-input" class="col-2 col-form-label">No Address saved</label>'+
+                                      '</div>'+
+                                      '<div class="form-group row">'+
+                                        '<label for="example-text-input" class="col-2 col-form-label">Bit Coin </label>'+
+                                        '<div class="col-6">'+
+                                            '<input class="form-control p-input" id="newAddress" name="newAddress" placeholder="Enter valid address" type="text">'+
+                                        '</div>'+
+                                        '<button id="submitButton" class="btn btn-primary col-2" title="Save wallet address" data-toggle="tooltip" onClick="saveWalletAddress()">Save</button>'+
+                                    '</div>');
+          }
+        }
+    });
+}
+
+
+function disableImputs() {
+  var editButton = document.getElementById('editButton');
+  var submitButton = document.getElementById('submitButton');
+  var editBtcInput = document.getElementById('newAddress');
+    submitButton.style.display = 'none';
+    editButton.style.display = 'block';
+    editBtcInput.setAttribute('disabled', true);
+    // editLtcInput.setAttribute('disabled', true);
+}
+
+
+function editWalletAddress() {
+    var editButton = document.getElementById('editButton');
+    var submitButton = document.getElementById('submitButton');
+    var editBtcInput = document.getElementById('newAddress');
+    // editBtcInput.value = inputs.btc;
+    // editLtcInput.value = inputs.ltc;
+    submitButton.style.display = 'block';
+    editButton.style.display = 'none';
+    $('#newAddress').removeAttr('disabled');
+    // $('#litecoinDiscount').removeAttr('disabled');
+}
+function saveExistedWalletAddress(data) {
+  console.log("wallet", data);
+    var postJson={};
+        postJson.id=data;
+        postJson.wallet_address=document.getElementById('newAddress').value;
+        $.ajax({
+              type: "POST",
+              url: "/new-tally/rest/merchants/wallet/update",
+              dataType: 'json',
+              async: false,
+              data: JSON.stringify(postJson),
+              headers: {
+                  "Content-Type": "application/json"
+              },
+              success: function(result) {
+                  console.log(result);
+                  if (result.response_code == 0) {
+                      localStorage.setItem('myCat', 'Tom');
+
+                      toastr.success(result.response_message, "SUCCESS");
+                      getWalletAddress();
+                      // setTimeout(function() {
+                      //     // window.history.go(-window.history.length);
+                      //     window.location.href = "#menu2";
+                      // }, 1000);
+                  } else {
+                      checkSession();
+                      // $('#loginDisable').removeAttr('disabled');
+                      // signupL.style.display = 'none';
+                      toastr.error(result.response_message, 'ERROR');
+                  }
+
+              },
+              error: function(error) {
+                  checkSession();
+                  // $('#submitDisable').removeAttr("disabled");
+                  // signupL.style.display = 'none';
+                  toastr.error("Failed to add new address", 'ERROR');
+              }
+          });
+    // $('#litecoinDiscount').removeAttr('disabled');
+}
+
+function saveWalletAddress(){
+        var postJson={};
+        postJson.currency_id=1;
+        postJson.wallet_address=document.getElementById('newAddress').value;
+        $.ajax({
+              type: "POST",
+              url: "/new-tally/rest/merchants/wallet/save",
+              dataType: 'json',
+              async: false,
+              data: JSON.stringify(postJson),
+              headers: {
+                  "Content-Type": "application/json"
+              },
+              success: function(result) {
+                  console.log(result);
+                  if (result.response_code == 0) {
+                      localStorage.setItem('myCat', 'Tom');
+
+                      toastr.success(result.response_message, "SUCCESS");
+                      getWalletAddress();
+                      // setTimeout(function() {
+                      //     // window.history.go(-window.history.length);
+                      //     window.location.href = "#menu2";
+                      // }, 1000);
+                  } else {
+                      checkSession();
+                      // $('#loginDisable').removeAttr('disabled');
+                      // signupL.style.display = 'none';
+                      toastr.error(result.response_message, 'ERROR');
+                  }
+
+              },
+              error: function(error) {
+                  checkSession();
+                  // $('#submitDisable').removeAttr("disabled");
+                  // signupL.style.display = 'none';
+                  toastr.error("Failed to add new address", 'ERROR');
+              }
+          });
+}

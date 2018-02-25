@@ -17871,6 +17871,9 @@ tr.shown td.details-control {
 .mt-4{
     margin-top: 4ex;
 }
-
+.remove-bullet{
+    list-style-type: none;
+    padding-left: 0px;
+}
 
 /*# sourceMappingURL=maps/style.css.map */
