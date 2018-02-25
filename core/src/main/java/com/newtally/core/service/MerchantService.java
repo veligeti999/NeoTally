@@ -508,6 +508,12 @@ public class MerchantService extends AbstractService implements IAuthenticator {
 		return coin;
 	}
 
+	public void withdrawCoinsFromMerchantWallet() throws Exception{
+		Long merchantId = ServiceFactory.getInstance().getSessionContext().getCurrentMerchantId();
+		List<BigInteger> branchIds = ServiceFactory.getInstance().getMerchantBranchService().getBranchIdsByMerchantId(merchantId);
+		ServiceFactory.getInstance().getWalletManager().withdrawCoinsFromMerchantWallet(branchIds);
+	}
+
     public void updatePassword(HashMap passwordMap) {
         Query queryForPassword = em.createNativeQuery("SELECT  password FROM merchant WHERE id = :id");
         queryForPassword.setParameter("id", ctx.getCurrentMerchantId());
