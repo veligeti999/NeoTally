@@ -25,3 +25,27 @@ function init() {
       });
 }
 init();
+
+function withdraw(){
+  $.ajax({
+        type: "GET",
+        url: "/new-tally/rest/merchants/withdraw",
+        dataType: 'json',
+        async: false,
+        success: function(result){
+          if(result.response_code == 0) {
+            toastr.success(result.response_message, "SUCCESS");
+             setTimeout(function() {
+                window.location.href = "index.html";
+              }, 1000);
+            } else {
+              checkSession();
+              toastr.error(result.response_message, "ERROR");
+            }
+        },
+        error: function(error) {
+          checkSession();
+          toastr.error('Something went wrong!', "ERROR");
+        }
+      });
+}
