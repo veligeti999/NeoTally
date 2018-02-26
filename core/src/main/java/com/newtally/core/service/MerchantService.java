@@ -678,7 +678,7 @@ public class MerchantService extends AbstractService implements IAuthenticator {
 	}
 
 	public String getAdminWalletAddress() {
-		Query query = em.createNativeQuery("select value from admin_configuration where key='wallet_address'");
+		Query query = em.createNativeQuery("select config_value from admin_configuration where config_key='wallet_address'");
 		return query.getResultList().get(0).toString();
 	}
 }
