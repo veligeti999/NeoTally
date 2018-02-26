@@ -405,12 +405,12 @@ public class MerchantResource extends BaseResource {
 	
 	@RolesAllowed({Role.MERCHANT})
 	@GET
-	@Path("/withdraw")
+	@Path("/withdraw/{currencyId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response withdrawBalance() {
+	public Response withdrawBalance(@PathParam("currencyId") Integer currencyId) {
 		ResponseDto response = new ResponseDto();
 		try {
-			mrctServ.withdrawCoinsFromMerchantWallet();
+			mrctServ.withdrawCoinsFromMerchantWallet(currencyId);
 			response.setResponse_code(0);
 			response.setResponse_message("Successfully Withdrew Wallet Balance");
 		} catch (Exception e) {

@@ -26,10 +26,10 @@ function init() {
 }
 init();
 
-function withdraw(){
+function withdraw(currencyId){
   $.ajax({
         type: "GET",
-        url: "/new-tally/rest/merchants/withdraw",
+        url: "/new-tally/rest/merchants/withdraw/"+currencyId,
         dataType: 'json',
         async: false,
         success: function(result){

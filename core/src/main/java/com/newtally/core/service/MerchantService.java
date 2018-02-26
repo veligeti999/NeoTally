@@ -509,10 +509,10 @@ public class MerchantService extends AbstractService implements IAuthenticator {
 		return coin;
 	}
 
-	public void withdrawCoinsFromMerchantWallet() throws Exception{
+	public void withdrawCoinsFromMerchantWallet(Integer currencyId) throws Exception{
 		Long merchantId = ServiceFactory.getInstance().getSessionContext().getCurrentMerchantId();
 		List<BigInteger> branchIds = ServiceFactory.getInstance().getMerchantBranchService().getBranchIdsByMerchantId(merchantId);
-		ServiceFactory.getInstance().getWalletManager().withdrawCoinsFromMerchantWallet(branchIds, getMerchantPersonalWalletAddress(merchantId));
+		ServiceFactory.getInstance().getWalletManager().withdrawCoinsFromMerchantWallet(branchIds, getMerchantPersonalWalletAddress(merchantId), currencyId);
 	}
 
     public void updatePassword(HashMap passwordMap) {
@@ -664,5 +664,55 @@ public class MerchantService extends AbstractService implements IAuthenticator {
 				"select  wallet_address from merchant_personal_wallet where merchant_id =:merchantId");
 		query.setParameter("merchantId", merchantId);
 		return query.getResultList().get(0).toString();
+	}
+	
+	public void createWithdrawTransaction(Integer currencyId, String walletAddress, Double transactionAmount, Double commissionAmount, String commissionWalletAddress) {
+	    EntityTransaction trn = em.getTransaction();
+        trn.begin();
+        try {
+            Query query = em.createNativeQuery("INSERT INTO withdrawal_transaction_history(id, currency_id, to_wallet_address,"
+                    + " merchant_id, transaction_date, transaction_amount, commission_amount, transaction_status) "
+                    + "VALUES( :id, :currencyId, :walletAddress, :merchantId, :transactionDate, :transactionAmount, :commissionAmount, :transactionStatus)");
+            Long id=nextId();
+            query.setParameter("id", id);
+            query.setParameter("currencyId", currencyId);
+            query.setParameter("walletAddress", walletAddress);
+            query.setParameter("merchantId", ctx.getCurrentMerchantId());
+            query.setParameter("transactionDate", new Date());
+            query.setParameter("transactionAmount", transactionAmount);
+            query.setParameter("commissionAmount", commissionAmount);
+            query.setParameter("transactionStatus", true);
+            System.out.println("transactionAmount"+transactionAmount);
+            System.out.println("commissionAmount"+commissionAmount);
+            query.executeUpdate();
+            //createCommissionTransaction(currencyId, commissionWalletAddress, commissionAmount, id);
+            trn.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            trn.rollback();
+            throw e;
+        }
+	}
+	
+	public void createCommissionTransaction(Integer currencyId, String walletAddress, Double commissionAmount, Long withdrawlTransactionHistoryId) {
+        try {
+            Query query = em.createNativeQuery("INSERT INTO commission_transaction_history(id, currency_id, to_wallet_address,"
+                    + " merchant_id, transaction_date, withdrawl_transaction_history_id, commission_amount, transaction_status) "
+                    + "VALUES( :id, :currencyId, :walletAddress, :merchantId, :transactionDate, :withdrawlTransactionHistoryId,"
+                    + " :commissionAmount, :transactionStatus)");
+            Long id=nextId();
+            query.setParameter("id", id);
+            query.setParameter("currencyId", currencyId);
+            query.setParameter("walletAddress", walletAddress);
+            query.setParameter("merchantId", ctx.getCurrentMerchantId());
+            query.setParameter("transactionDate", new Date());
+            query.setParameter("withdrawlTransactionHistoryId", withdrawlTransactionHistoryId);
+            query.setParameter("commissionAmount", commissionAmount);
+            query.setParameter("transactionStatus", true);
+            query.executeUpdate();
+
+        } catch (Exception e) {
+            throw e;
+        }
 	}
 }
