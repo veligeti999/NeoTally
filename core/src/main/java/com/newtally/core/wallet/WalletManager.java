@@ -16,9 +16,9 @@ import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.InsufficientMoneyException;
 import org.bitcoinj.core.Transaction;
-import org.bitcoinj.core.TransactionBroadcast;
 import org.bitcoinj.core.TransactionOutput;
 import org.bitcoinj.crypto.MnemonicCode;
+import org.bitcoinj.protocols.channels.ValueOutOfRangeException;
 import org.bitcoinj.wallet.DeterministicKeyChain;
 import org.bitcoinj.wallet.DeterministicSeed;
 import org.bitcoinj.wallet.SendRequest;
@@ -185,34 +185,36 @@ public class WalletManager {
 		return balance;
 	}
 
-	public void withdrawCoinsFromMerchantWallet(List<BigInteger> walletIds, String merchantWalletAddress, Integer currencyId) throws InsufficientMoneyException, IOException, InterruptedException, ExecutionException{
+	public void withdrawCoinsFromMerchantWallet(List<BigInteger> walletIds, String merchantWalletAddress, String adminWalletAddress, Integer currencyId) throws InsufficientMoneyException, IOException, InterruptedException, ExecutionException, ValueOutOfRangeException{
 		//send 90%(excluding the transaction fee) funds to the merchant personal wallet address and 10% to the new tally admin's wallet address
 		for(BigInteger walletId : walletIds){
 			wallet = wallets.get(walletId.toString());
-			withdrawCoinsFromWallet(wallet, walletId.toString(), merchantWalletAddress, currencyId);
+			withdrawCoinsFromWallet(wallet, walletId.toString(), merchantWalletAddress, adminWalletAddress, currencyId);
 		}
 	}
 
-	public void withdrawCoinsFromWallet(Wallet wallet, String walletId,String merchantWalletAddress, Integer currencyId) throws InsufficientMoneyException, IOException, InterruptedException, ExecutionException{
+	public void withdrawCoinsFromWallet(Wallet wallet, String walletId, String merchantWalletAddress, String adminWalletAddress, Integer currencyId) throws InsufficientMoneyException, IOException, InterruptedException, ExecutionException, ValueOutOfRangeException{
 		//calculate the amount that needs to be sent to the merchant after the commission(hard coding it to 90% at the moment)
 		long finalAmount = (long) (wallet.getBalance().value - (0.1 * wallet.getBalance().value));
 		//SendRequest request = SendRequest.to(new Address(configuration.getParams(), "mmcowgasoDW9EbmAA9r3nZLjSvAoXsbPfM"), Coin.valueOf(finalAmount));
 		Double transactionAmount=(double) (finalAmount/Coin.COIN.getValue());
-		SendRequest request = SendRequest.to(new Address(configuration.getParams(), merchantWalletAddress), Coin.valueOf(finalAmount));
-		wallet.completeTx(request);
-		wallet.commitTx(request.tx);
+		SendRequest merchantRequest = SendRequest.to(Address.fromBase58(configuration.getParams(), merchantWalletAddress), Coin.valueOf(finalAmount));
+		wallet.completeTx(merchantRequest);
+		wallet.commitTx(merchantRequest.tx);
 		wallet.saveToFile(new File(walletId));
-		ListenableFuture<Transaction> future = configuration.getPeerGroup().broadcastTransaction(request.tx).broadcast();
+		ListenableFuture<Transaction> future = configuration.getPeerGroup().broadcastTransaction(merchantRequest.tx).broadcast();
 		future.get();
 		System.out.println("available balance"+wallet.getBalance().value);
-		long commissionValue = (long)(wallet.getBalance().value - (0.0005 * wallet.getBalance().value));
-		Double commissionAmount=(double) (commissionValue/Coin.COIN.getValue());
-		String commissionWalletAddress="muxuG1SaKLSmwjiy8wPB4vycPxPhAmgCBT";
-		SendRequest newRequest = SendRequest.to(new Address(configuration.getParams(), commissionWalletAddress), Coin.valueOf(commissionValue));
-		wallet.completeTx(newRequest);
-		wallet.commitTx(newRequest.tx);
+		//SendRequest adminRequest = SendRequest.to(new Address(configuration.getParams(), adminWalletAddress), Coin.valueOf((long)(wallet.getBalance().value - (0.0005 * wallet.getBalance().value))));
+		Coin valueAfterFee = wallet.getBalance().subtract(Transaction.DEFAULT_TX_FEE);
+        Double commissionAmount=(double) (valueAfterFee.value/Coin.COIN.getValue());
+		if (Transaction.MIN_NONDUST_OUTPUT.compareTo(valueAfterFee) > 0)
+            throw new ValueOutOfRangeException("totalValue too small to use");
+		SendRequest adminRequest = SendRequest.to(Address.fromBase58(configuration.getParams(), adminWalletAddress), valueAfterFee);
+		wallet.completeTx(adminRequest);
+		wallet.commitTx(adminRequest.tx);
 		wallet.saveToFile(new File(walletId));
-		ListenableFuture<Transaction> newFuture = configuration.getPeerGroup().broadcastTransaction(newRequest.tx).broadcast();
+		ListenableFuture<Transaction> newFuture = configuration.getPeerGroup().broadcastTransaction(adminRequest.tx).broadcast();
 		newFuture.get();
 //		ServiceFactory.getInstance().getMerchantService().createWithdrawTransaction(currencyId, merchantWalletAddress, transactionAmount, commissionAmount, commissionWalletAddress);
 	}

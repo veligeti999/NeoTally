@@ -24,6 +24,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.bitcoinj.core.InsufficientMoneyException;
 import org.bitcoinj.wallet.Wallet;
 
 import java.io.IOException;
@@ -413,11 +414,19 @@ public class MerchantResource extends BaseResource {
 			mrctServ.withdrawCoinsFromMerchantWallet(currencyId);
 			response.setResponse_code(0);
 			response.setResponse_message("Successfully Withdrew Wallet Balance");
-		} catch (Exception e) {
-			e.printStackTrace();
+		}catch(InsufficientMoneyException e){
 			response.setResponse_code(1);
-			response.setResponse_message("Failed To Withdraw Wallet Balance");
-			response.setResponse_data(e.getLocalizedMessage());
+			response.setResponse_message("Insufficient Funds");
+		}catch (Exception e) {
+			e.printStackTrace();
+			if(e.getMessage().equals("Address Undefined")){
+				response.setResponse_code(1);
+				response.setResponse_message("Configure Merchant's Personal Wallet");
+			}else{
+			    response.setResponse_code(1);
+			    response.setResponse_message("Failed To Withdraw Wallet Balance");
+			    response.setResponse_data(e.getLocalizedMessage());
+			}
 		}
 		return Response.ok(gson_pretty.toJson(response)).build();
 	}

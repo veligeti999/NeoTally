@@ -12,10 +12,10 @@ $(document).ready(function() {
             $('#branch_table').DataTable({
                 "data": result.response_data,
                 "columns": [
-                    { "data": "id" },
                     { "data": "name" },
                     { "data": "phone" },
                     { "data": "email" },
+                    { "data": "password" },
                     { "data": function(data, type, full) {
                             if(data.active) {
                                return '<i class="fa fa-check fa-1-5x cursor text-success ml-3" data-toggle="tooltip" title="Active"></i>';
