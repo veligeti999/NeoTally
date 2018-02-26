@@ -510,9 +510,14 @@ public class MerchantService extends AbstractService implements IAuthenticator {
 	}
 
 	public void withdrawCoinsFromMerchantWallet() throws Exception{
+		try{
 		Long merchantId = ServiceFactory.getInstance().getSessionContext().getCurrentMerchantId();
+		String merchantWalletAddress =  getMerchantPersonalWalletAddress(merchantId);
 		List<BigInteger> branchIds = ServiceFactory.getInstance().getMerchantBranchService().getBranchIdsByMerchantId(merchantId);
-		ServiceFactory.getInstance().getWalletManager().withdrawCoinsFromMerchantWallet(branchIds, getMerchantPersonalWalletAddress(merchantId), getAdminWalletAddress());
+		ServiceFactory.getInstance().getWalletManager().withdrawCoinsFromMerchantWallet(branchIds, merchantWalletAddress, getAdminWalletAddress());
+		}catch(Exception e){
+			throw e;
+		}
 	}
 
     public void updatePassword(HashMap passwordMap) {
@@ -659,11 +664,17 @@ public class MerchantService extends AbstractService implements IAuthenticator {
         }
     }
 
-	public String getMerchantPersonalWalletAddress(long merchantId) {
+	public String getMerchantPersonalWalletAddress(long merchantId) throws Exception{
+		String walletAddress = null;
 		Query query = em.createNativeQuery(
 				"select  wallet_address from merchant_personal_wallet where merchant_id =:merchantId");
 		query.setParameter("merchantId", merchantId);
-		return query.getResultList().get(0).toString();
+		if(query.getResultList().isEmpty()){
+			throw new Exception("Address Undefined");
+		}else{
+			walletAddress = query.getResultList().get(0).toString();
+		}
+		return walletAddress;
 	}
 
 	public String getAdminWalletAddress() {
