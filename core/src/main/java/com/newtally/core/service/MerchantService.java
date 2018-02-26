@@ -512,7 +512,7 @@ public class MerchantService extends AbstractService implements IAuthenticator {
 	public void withdrawCoinsFromMerchantWallet() throws Exception{
 		Long merchantId = ServiceFactory.getInstance().getSessionContext().getCurrentMerchantId();
 		List<BigInteger> branchIds = ServiceFactory.getInstance().getMerchantBranchService().getBranchIdsByMerchantId(merchantId);
-		ServiceFactory.getInstance().getWalletManager().withdrawCoinsFromMerchantWallet(branchIds, getMerchantPersonalWalletAddress(merchantId));
+		ServiceFactory.getInstance().getWalletManager().withdrawCoinsFromMerchantWallet(branchIds, getMerchantPersonalWalletAddress(merchantId), getAdminWalletAddress());
 	}
 
     public void updatePassword(HashMap passwordMap) {
@@ -663,6 +663,11 @@ public class MerchantService extends AbstractService implements IAuthenticator {
 		Query query = em.createNativeQuery(
 				"select  wallet_address from merchant_personal_wallet where merchant_id =:merchantId");
 		query.setParameter("merchantId", merchantId);
+		return query.getResultList().get(0).toString();
+	}
+
+	public String getAdminWalletAddress() {
+		Query query = em.createNativeQuery("select value from admin_configuration where key='wallet_address'");
 		return query.getResultList().get(0).toString();
 	}
 }
