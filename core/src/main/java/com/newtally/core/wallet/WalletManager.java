@@ -9,13 +9,19 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+
+import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
+import org.bitcoinj.core.InsufficientMoneyException;
 import org.bitcoinj.core.Transaction;
+import org.bitcoinj.core.TransactionBroadcast;
 import org.bitcoinj.core.TransactionOutput;
 import org.bitcoinj.crypto.MnemonicCode;
 import org.bitcoinj.wallet.DeterministicKeyChain;
 import org.bitcoinj.wallet.DeterministicSeed;
+import org.bitcoinj.wallet.SendRequest;
 import org.bitcoinj.wallet.UnreadableWalletException;
 import org.bitcoinj.wallet.Wallet;
 import org.bitcoinj.wallet.WalletExtension;
@@ -23,6 +29,8 @@ import org.bitcoinj.wallet.WalletProtobufSerializer;
 import org.bitcoinj.wallet.listeners.WalletChangeEventListener;
 import org.bitcoinj.wallet.listeners.WalletCoinsReceivedEventListener;
 import org.bitcoinj.wallet.listeners.WalletCoinsSentEventListener;
+
+import com.google.common.util.concurrent.ListenableFuture;
 import com.newtally.core.ServiceFactory;
 import com.newtally.core.model.OrderStatus;
 import com.newtally.core.resource.ThreadContext;
@@ -177,4 +185,30 @@ public class WalletManager {
 		return balance;
 	}
 
+	public void withdrawCoinsFromMerchantWallet(List<BigInteger> walletIds, String merchantWalletAddress) throws InsufficientMoneyException, IOException, InterruptedException, ExecutionException{
+		//send 90%(excluding the transaction fee) funds to the merchant personal wallet address and 10% to the new tally admin's wallet address
+		for(BigInteger walletId : walletIds){
+			wallet = wallets.get(walletId.toString());
+			withdrawCoinsFromWallet(wallet, walletId.toString(), merchantWalletAddress);
+		}
+	}
+
+	public void withdrawCoinsFromWallet(Wallet wallet, String walletId,String merchantWalletAddress) throws InsufficientMoneyException, IOException, InterruptedException, ExecutionException{
+		//calculate the amount that needs to be sent to the merchant after the commission(hard coding it to 90% at the moment)
+		long finalAmount = (long) (wallet.getBalance().value - (0.1 * wallet.getBalance().value));
+		//SendRequest request = SendRequest.to(new Address(configuration.getParams(), "mmcowgasoDW9EbmAA9r3nZLjSvAoXsbPfM"), Coin.valueOf(finalAmount));
+		SendRequest request = SendRequest.to(new Address(configuration.getParams(), merchantWalletAddress), Coin.valueOf(finalAmount));
+		wallet.completeTx(request);
+		wallet.commitTx(request.tx);
+		wallet.saveToFile(new File(walletId));
+		ListenableFuture<Transaction> future = configuration.getPeerGroup().broadcastTransaction(request.tx).broadcast();
+		future.get();
+		System.out.println("available balance"+wallet.getBalance().value);
+		SendRequest newRequest = SendRequest.to(new Address(configuration.getParams(), "muxuG1SaKLSmwjiy8wPB4vycPxPhAmgCBT"), Coin.valueOf((long)(wallet.getBalance().value - (0.0005 * wallet.getBalance().value))));
+		wallet.completeTx(newRequest);
+		wallet.commitTx(newRequest.tx);
+		wallet.saveToFile(new File(walletId));
+		ListenableFuture<Transaction> newFuture = configuration.getPeerGroup().broadcastTransaction(newRequest.tx).broadcast();
+		newFuture.get();
+	}
 }
