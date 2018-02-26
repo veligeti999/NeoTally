@@ -16,7 +16,6 @@ import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.InsufficientMoneyException;
 import org.bitcoinj.core.Transaction;
-import org.bitcoinj.core.TransactionBroadcast;
 import org.bitcoinj.core.TransactionOutput;
 import org.bitcoinj.crypto.MnemonicCode;
 import org.bitcoinj.wallet.DeterministicKeyChain;
@@ -204,7 +203,8 @@ public class WalletManager {
 		ListenableFuture<Transaction> future = configuration.getPeerGroup().broadcastTransaction(merchantRequest.tx).broadcast();
 		future.get();
 		System.out.println("available balance"+wallet.getBalance().value);
-		SendRequest adminRequest = SendRequest.to(new Address(configuration.getParams(), adminWalletAddress), Coin.valueOf((long)(wallet.getBalance().value - (0.0005 * wallet.getBalance().value))));
+		//SendRequest adminRequest = SendRequest.to(new Address(configuration.getParams(), adminWalletAddress), Coin.valueOf((long)(wallet.getBalance().value - (0.0005 * wallet.getBalance().value))));
+		SendRequest adminRequest = SendRequest.to(new Address(configuration.getParams(), adminWalletAddress), Coin.valueOf((long)(wallet.getBalance().subtract(Transaction.REFERENCE_DEFAULT_MIN_TX_FEE)).value));
 		wallet.completeTx(adminRequest);
 		wallet.commitTx(adminRequest.tx);
 		wallet.saveToFile(new File(walletId));
