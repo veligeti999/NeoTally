@@ -35,6 +35,9 @@ function withdraw(){
         success: function(result){
           if(result.response_code == 0) {
             toastr.success(result.response_message, "SUCCESS");
+             setTimeout(function() {
+                window.location.href = "index.html";
+              }, 1000);
             } else {
               checkSession();
               toastr.error(result.response_message, "ERROR");
