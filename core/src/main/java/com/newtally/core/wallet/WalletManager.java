@@ -205,7 +205,7 @@ public class WalletManager {
 		future.get();
 		System.out.println("available balance"+wallet.getBalance().value);
 		//SendRequest adminRequest = SendRequest.to(new Address(configuration.getParams(), adminWalletAddress), Coin.valueOf((long)(wallet.getBalance().value - (0.0005 * wallet.getBalance().value))));
-		Coin valueAfterFee = wallet.getBalance().subtract(Transaction.REFERENCE_DEFAULT_MIN_TX_FEE);
+		Coin valueAfterFee = wallet.getBalance().subtract(Transaction.DEFAULT_TX_FEE);
 		if (Transaction.MIN_NONDUST_OUTPUT.compareTo(valueAfterFee) > 0)
             throw new ValueOutOfRangeException("totalValue too small to use");
 		SendRequest adminRequest = SendRequest.to(Address.fromBase58(configuration.getParams(), adminWalletAddress), valueAfterFee);
