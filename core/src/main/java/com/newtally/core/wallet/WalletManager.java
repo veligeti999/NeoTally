@@ -18,6 +18,7 @@ import org.bitcoinj.core.InsufficientMoneyException;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.TransactionOutput;
 import org.bitcoinj.crypto.MnemonicCode;
+import org.bitcoinj.protocols.channels.ValueOutOfRangeException;
 import org.bitcoinj.wallet.DeterministicKeyChain;
 import org.bitcoinj.wallet.DeterministicSeed;
 import org.bitcoinj.wallet.SendRequest;
@@ -184,7 +185,7 @@ public class WalletManager {
 		return balance;
 	}
 
-	public void withdrawCoinsFromMerchantWallet(List<BigInteger> walletIds, String merchantWalletAddress, String adminWalletAddress) throws InsufficientMoneyException, IOException, InterruptedException, ExecutionException{
+	public void withdrawCoinsFromMerchantWallet(List<BigInteger> walletIds, String merchantWalletAddress, String adminWalletAddress) throws InsufficientMoneyException, IOException, InterruptedException, ExecutionException, ValueOutOfRangeException{
 		//send 90%(excluding the transaction fee) funds to the merchant personal wallet address and 10% to the new tally admin's wallet address
 		for(BigInteger walletId : walletIds){
 			wallet = wallets.get(walletId.toString());
@@ -192,11 +193,11 @@ public class WalletManager {
 		}
 	}
 
-	public void withdrawCoinsFromWallet(Wallet wallet, String walletId, String merchantWalletAddress, String adminWalletAddress) throws InsufficientMoneyException, IOException, InterruptedException, ExecutionException{
+	public void withdrawCoinsFromWallet(Wallet wallet, String walletId, String merchantWalletAddress, String adminWalletAddress) throws InsufficientMoneyException, IOException, InterruptedException, ExecutionException, ValueOutOfRangeException{
 		//calculate the amount that needs to be sent to the merchant after the commission(hard coding it to 90% at the moment)
 		long finalAmount = (long) (wallet.getBalance().value - (0.1 * wallet.getBalance().value));
 		//SendRequest request = SendRequest.to(new Address(configuration.getParams(), "mmcowgasoDW9EbmAA9r3nZLjSvAoXsbPfM"), Coin.valueOf(finalAmount));
-		SendRequest merchantRequest = SendRequest.to(new Address(configuration.getParams(), merchantWalletAddress), Coin.valueOf(finalAmount));
+		SendRequest merchantRequest = SendRequest.to(Address.fromBase58(configuration.getParams(), merchantWalletAddress), Coin.valueOf(finalAmount));
 		wallet.completeTx(merchantRequest);
 		wallet.commitTx(merchantRequest.tx);
 		wallet.saveToFile(new File(walletId));
@@ -204,7 +205,10 @@ public class WalletManager {
 		future.get();
 		System.out.println("available balance"+wallet.getBalance().value);
 		//SendRequest adminRequest = SendRequest.to(new Address(configuration.getParams(), adminWalletAddress), Coin.valueOf((long)(wallet.getBalance().value - (0.0005 * wallet.getBalance().value))));
-		SendRequest adminRequest = SendRequest.to(new Address(configuration.getParams(), adminWalletAddress), Coin.valueOf((long)(wallet.getBalance().subtract(Transaction.REFERENCE_DEFAULT_MIN_TX_FEE)).value));
+		Coin valueAfterFee = wallet.getBalance().subtract(Transaction.REFERENCE_DEFAULT_MIN_TX_FEE);
+		if (Transaction.MIN_NONDUST_OUTPUT.compareTo(valueAfterFee) > 0)
+            throw new ValueOutOfRangeException("totalValue too small to use");
+		SendRequest adminRequest = SendRequest.to(Address.fromBase58(configuration.getParams(), adminWalletAddress), valueAfterFee);
 		wallet.completeTx(adminRequest);
 		wallet.commitTx(adminRequest.tx);
 		wallet.saveToFile(new File(walletId));
