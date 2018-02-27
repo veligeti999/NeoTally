@@ -17843,6 +17843,9 @@ input {
     font-size: 1.5em;
 }
 
+button {
+    cursor: pointer;
+}
 
 #inlineRadio1,
 #inlineRadio2,
