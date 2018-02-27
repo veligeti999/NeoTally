@@ -236,7 +236,7 @@ public class BranchCounterResource extends BaseResource{
         ResponseDto dto=new ResponseDto();
         try {
             Device device = gson_pretty.fromJson(new InputStreamReader(req.getInputStream()), Device.class);
-        
+            System.out.println("Input Registration:::::"+device.getRegistrationKey());
             device = counterServ.saveDevice(device);
         
         dto.setResponse_code(0);

@@ -133,6 +133,7 @@ public class WalletManager {
 					transactionId = transaction.getHash().toString();
 					System.out.println("transaction depth"+transaction.getConfidence().getDepthInBlocks() );
 					if(transaction.getConfidence().getDepthInBlocks() == 1){
+					    System.out.println("transactionId::"+transactionId);
 						ServiceFactory.getInstance().getOrderInvoiceService().updateOrderStatusByTransactionId(transactionId, OrderStatus.Success.toString());
 					}
 				}
