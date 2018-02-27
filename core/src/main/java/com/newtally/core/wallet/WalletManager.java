@@ -133,7 +133,9 @@ public class WalletManager {
 					transactionId = transaction.getHash().toString();
 					System.out.println("transaction depth"+transaction.getConfidence().getDepthInBlocks() );
 					if(transaction.getConfidence().getDepthInBlocks() == 1){
-						ServiceFactory.getInstance().getOrderInvoiceService().updateOrderStatusByTransactionId(transactionId, OrderStatus.Success.toString());
+						if(ServiceFactory.getInstance().getOrderInvoiceService().checkTransaction(transactionId)){
+						    ServiceFactory.getInstance().getOrderInvoiceService().updateOrderStatusByTransactionId(transactionId, OrderStatus.Success.toString());
+						}
 					}
 				}
 			}
@@ -145,15 +147,19 @@ public class WalletManager {
 			public void onCoinsReceived(Wallet wallet, Transaction tx, Coin prevBalance, Coin newBalance) {
 				String address;
 				String transactionId;
-				try{
-				List<TransactionOutput> walletTxnOutputs = tx.getWalletOutputs(wallet);
-				for(TransactionOutput txnOutput : walletTxnOutputs){
-					address = txnOutput.getAddressFromP2PKHScript(configuration.getParams()).toString();
-					transactionId = txnOutput.getParentTransaction().getHash().toString();
-					//update the transactionId for the address to which the coins are sent
-					ServiceFactory.getInstance().getOrderInvoiceService().updateOrderStatus(transactionId, address, OrderStatus.Pending.toString());
-				}
-				}catch(Exception e){
+				try {
+					List<TransactionOutput> walletTxnOutputs = tx.getWalletOutputs(wallet);
+					for (TransactionOutput txnOutput : walletTxnOutputs) {
+						address = txnOutput.getAddressFromP2PKHScript(configuration.getParams()).toString();
+						transactionId = txnOutput.getParentTransaction().getHash().toString();
+						// update the transactionId for the address to which the
+						// coins are sent
+						if(ServiceFactory.getInstance().getOrderInvoiceService().checkAddress(address)){
+						    ServiceFactory.getInstance().getOrderInvoiceService().updateOrderStatus(transactionId, address,
+								OrderStatus.Pending.toString());
+						}
+					}
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -196,18 +202,16 @@ public class WalletManager {
 	public void withdrawCoinsFromWallet(Wallet wallet, String walletId, String merchantWalletAddress, String adminWalletAddress, Integer currencyId) throws InsufficientMoneyException, IOException, InterruptedException, ExecutionException, ValueOutOfRangeException{
 		//calculate the amount that needs to be sent to the merchant after the commission(hard coding it to 90% at the moment)
 		long finalAmount = (long) (wallet.getBalance().value - (0.1 * wallet.getBalance().value));
-		//SendRequest request = SendRequest.to(new Address(configuration.getParams(), "mmcowgasoDW9EbmAA9r3nZLjSvAoXsbPfM"), Coin.valueOf(finalAmount));
-		Double transactionAmount=(double) (finalAmount/Coin.COIN.getValue());
+		double transactionAmount=(double) (finalAmount/Coin.COIN.getValue());
 		SendRequest merchantRequest = SendRequest.to(Address.fromBase58(configuration.getParams(), merchantWalletAddress), Coin.valueOf(finalAmount));
 		wallet.completeTx(merchantRequest);
 		wallet.commitTx(merchantRequest.tx);
 		wallet.saveToFile(new File(walletId));
 		ListenableFuture<Transaction> future = configuration.getPeerGroup().broadcastTransaction(merchantRequest.tx).broadcast();
 		future.get();
-		System.out.println("available balance"+wallet.getBalance().value);
 		//SendRequest adminRequest = SendRequest.to(new Address(configuration.getParams(), adminWalletAddress), Coin.valueOf((long)(wallet.getBalance().value - (0.0005 * wallet.getBalance().value))));
 		Coin valueAfterFee = wallet.getBalance().subtract(Transaction.DEFAULT_TX_FEE);
-        Double commissionAmount=(double) (valueAfterFee.value/Coin.COIN.getValue());
+        double commissionAmount=(double) (valueAfterFee.value/Coin.COIN.getValue());
 		if (Transaction.MIN_NONDUST_OUTPUT.compareTo(valueAfterFee) > 0)
             throw new ValueOutOfRangeException("totalValue too small to use");
 		SendRequest adminRequest = SendRequest.to(Address.fromBase58(configuration.getParams(), adminWalletAddress), valueAfterFee);
@@ -216,6 +220,6 @@ public class WalletManager {
 		wallet.saveToFile(new File(walletId));
 		ListenableFuture<Transaction> newFuture = configuration.getPeerGroup().broadcastTransaction(adminRequest.tx).broadcast();
 		newFuture.get();
-//		ServiceFactory.getInstance().getMerchantService().createWithdrawTransaction(currencyId, merchantWalletAddress, transactionAmount, commissionAmount, commissionWalletAddress);
+		ServiceFactory.getInstance().getMerchantService().createWithdrawTransaction(currencyId, merchantWalletAddress, transactionAmount, commissionAmount, adminWalletAddress);
 	}
 }
