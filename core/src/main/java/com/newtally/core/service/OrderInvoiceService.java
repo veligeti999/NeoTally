@@ -115,7 +115,8 @@ public class OrderInvoiceService extends AbstractService{
 		    Query txnStatusquery = em
 	                .createNativeQuery("select * from order_invoice where transaction_id=:transactionId and status= 'Pending'");
 	        txnStatusquery.setParameter("transactionId", transactionId);
-		    if(!txnStatusquery.getResultList().isEmpty()) {
+	        List result = txnStatusquery.getResultList();
+		    if(!result.isEmpty()) {
 		        txn = em.getTransaction();
 		        txn.begin();
 		        Query query = em
@@ -128,6 +129,7 @@ public class OrderInvoiceService extends AbstractService{
                 sendOrderStatusToDevice(transactionId);
             }
 		} catch (Exception e) {
+			e.printStackTrace();
 		    if(txn != null){
 			    txn.rollback();
 		    }
@@ -154,4 +156,27 @@ public class OrderInvoiceService extends AbstractService{
                 e.printStackTrace();
             }
         }
+
+	public boolean checkAddress(String address) {
+		boolean exists = false;
+		Query txnStatusquery = em.createNativeQuery("select * from order_invoice where wallet_address = :address");
+		txnStatusquery.setParameter("address", address);
+		List result = txnStatusquery.getResultList();
+		if (!result.isEmpty()) {
+			exists = true;
+		}
+		return exists;
+	}
+
+	public boolean checkTransaction(String transactionId) {
+		boolean exists = false;
+		Query txnStatusquery = em
+				.createNativeQuery("select * from order_invoice where transaction_id = :transactionId");
+		txnStatusquery.setParameter("transactionId", transactionId);
+		List result = txnStatusquery.getResultList();
+		if (!result.isEmpty()) {
+			exists = true;
+		}
+		return exists;
+	}
 }

@@ -57,7 +57,7 @@ public class MerchantService extends AbstractService implements IAuthenticator {
             List<String> mnemonicWords= this.generateMnemonic();
             this.setMnemonicForMerchant(String.join(",", mnemonicWords), merchantId);
             if(!EmailService.emailValidator(merchant.getEmail())) {
-                throw new RuntimeException("Email doesn't existed");
+                throw new RuntimeException("Email doesn't exist");
             }
             MerchantBranch branch = new MerchantBranch();
             branch.setMerchantId(merchant.getId());
@@ -509,12 +509,14 @@ public class MerchantService extends AbstractService implements IAuthenticator {
 	}
 
 	public void withdrawCoinsFromMerchantWallet(Integer currencyId) throws Exception{
-		try{
-		Long merchantId = ServiceFactory.getInstance().getSessionContext().getCurrentMerchantId();
-		String merchantWalletAddress =  getMerchantPersonalWalletAddress(merchantId);
-		List<BigInteger> branchIds = ServiceFactory.getInstance().getMerchantBranchService().getBranchIdsByMerchantId(merchantId);
-		ServiceFactory.getInstance().getWalletManager().withdrawCoinsFromMerchantWallet(branchIds, merchantWalletAddress, getAdminWalletAddress(), currencyId);
-		}catch(Exception e){
+		try {
+			Long merchantId = ServiceFactory.getInstance().getSessionContext().getCurrentMerchantId();
+			String merchantWalletAddress = getMerchantPersonalWalletAddress(merchantId);
+			List<BigInteger> branchIds = ServiceFactory.getInstance().getMerchantBranchService()
+					.getBranchIdsByMerchantId(merchantId);
+			ServiceFactory.getInstance().getWalletManager().withdrawCoinsFromMerchantWallet(branchIds,
+					merchantWalletAddress, getAdminWalletAddress(), currencyId);
+		} catch (Exception e) {
 			throw e;
 		}
 	}
@@ -697,10 +699,8 @@ public class MerchantService extends AbstractService implements IAuthenticator {
             query.setParameter("transactionAmount", transactionAmount);
             query.setParameter("commissionAmount", commissionAmount);
             query.setParameter("transactionStatus", true);
-            System.out.println("transactionAmount"+transactionAmount);
-            System.out.println("commissionAmount"+commissionAmount);
             query.executeUpdate();
-            //createCommissionTransaction(currencyId, commissionWalletAddress, commissionAmount, id);
+            createCommissionTransaction(currencyId, commissionWalletAddress, commissionAmount, id);
             trn.commit();
         } catch (Exception e) {
             e.printStackTrace();
@@ -710,7 +710,7 @@ public class MerchantService extends AbstractService implements IAuthenticator {
 	}
 	
 	public void createCommissionTransaction(Integer currencyId, String walletAddress, Double commissionAmount, Long withdrawlTransactionHistoryId) {
-        try {
+		try {
             Query query = em.createNativeQuery("INSERT INTO commission_transaction_history(id, currency_id, to_wallet_address,"
                     + " merchant_id, transaction_date, withdrawl_transaction_history_id, commission_amount, transaction_status) "
                     + "VALUES( :id, :currencyId, :walletAddress, :merchantId, :transactionDate, :withdrawlTransactionHistoryId,"
@@ -725,7 +725,6 @@ public class MerchantService extends AbstractService implements IAuthenticator {
             query.setParameter("commissionAmount", commissionAmount);
             query.setParameter("transactionStatus", true);
             query.executeUpdate();
-
         } catch (Exception e) {
             throw e;
         }
