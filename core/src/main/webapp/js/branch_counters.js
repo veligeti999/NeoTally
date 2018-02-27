@@ -31,12 +31,14 @@ $(document).ready(function() {
                     }
                 ]
             });
+        },
+         error: function(error) {
+          timeoutSession(error);
         }
     });
 });
 
 function editCounter(id){
-    checkSession();
     _.forEach(counterData, function(item) {
         if(id == item.id){
             localStorage.setItem('EC', JSON.stringify(item));
@@ -60,6 +62,9 @@ function init() {
             document.getElementById("branch-name").innerHTML = result.response_data.name;
             //document.getElementById("merchant-name-footer").innerHTML = result.response_data.name;
             document.getElementById("manager-name").innerHTML = result.response_data.managerName;
+        },
+         error: function(error) {
+          timeoutSession(error);
         }
     });
 }

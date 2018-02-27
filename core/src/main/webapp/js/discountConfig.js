@@ -8,6 +8,9 @@ function init() {
             console.log(result);
             document.getElementById("merchant-name").innerHTML = result.response_data.name;
             document.getElementById("owner-name").innerHTML = result.response_data.ownerName;
+        },
+         error: function(error) {
+          timeoutSession(error);
         }
     });
 
@@ -18,6 +21,9 @@ function init() {
         async: false,
         success: function(result) {
             console.log(result);
+        },
+         error: function(error) {
+          timeoutSession(error);
         }
     });
 }
@@ -39,7 +45,6 @@ disableImputs();
 
 
 function editData() {
-    checkSession();
     editBtcInput.value = inputs.btc;
     // editLtcInput.value = inputs.ltc;
     submitButton.style.display = 'block';
@@ -75,6 +80,9 @@ function getConfigs() {
                 // $('#config-discounts').append('<div class="form-group row"><label for="example-text-input" class="col-2 col-form-label">' + value.currency_name + '  <span style="color: red;">' + value.percentage + '%</span></label><div class="col-4"><input  id="' + value.id + '" style="background: green; color: #fff;" class="form-control" type="text" value="Edit" id="example-text-input"></div></div>');
             });
             // $('#config-discounts').append('<div class="form-group row"><label for="example-text-input" class="col-2 col-form-label"></label><div class="col-10"><div style="margin-top: 10px;" class="form-group"><button type="submit"  id="save" class="btn btn-primary">Save</button></div></div></div>');
+        },
+         error: function(error) {
+          timeoutSession(error);
         }
     });
 }
@@ -103,6 +111,9 @@ function save() {
             success: function(result) {
                 console.log(result);
                 item = result.response_data;
+            },
+             error: function(error) {
+              timeoutSession(error);
             }
         });
     });

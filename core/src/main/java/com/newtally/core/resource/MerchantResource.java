@@ -9,6 +9,7 @@ import com.newtally.core.model.MerchantBranch;
 import com.newtally.core.model.MerchantCounter;
 import com.newtally.core.model.Order;
 import com.newtally.core.model.Role;
+import com.newtally.core.model.Withdrawal;
 import com.newtally.core.model.Discount;
 import com.newtally.core.model.Merchant;
 import com.newtally.core.service.MerchantBranchService;
@@ -430,6 +431,26 @@ public class MerchantResource extends BaseResource {
 		}
 		return Response.ok(gson_pretty.toJson(response)).build();
 	}
+	
+	@RolesAllowed({Role.MERCHANT})
+    @GET
+    @Path("/withdrawals")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getWithdrawals() {
+        ResponseDto response = new ResponseDto();
+        try {
+            List<Withdrawal> withdrawals=mrctServ.getWithdrawals();
+            response.setResponse_code(0);
+            response.setResponse_message("Successfully to get the Withdrawals");
+            response.setResponse_data(withdrawals);
+        }catch (Exception e) {
+            e.printStackTrace();
+            response.setResponse_code(1);
+            response.setResponse_message("Failed to get the Withdrawals");
+            response.setResponse_data(e.getLocalizedMessage());
+        }
+        return Response.ok(gson.toJson(response)).build();
+    }
 
 	@RolesAllowed({Role.MERCHANT})
     @POST

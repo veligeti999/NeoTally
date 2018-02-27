@@ -26,7 +26,10 @@
                     } }
                  ]
              });
-         }
+         },
+          error: function(error) {
+          timeoutSession(error);
+        }
      });
  });
  
@@ -41,7 +44,10 @@
              document.getElementById("branch-name").innerHTML = result.response_data.name;
              document.getElementById("merchant-name-footer").innerHTML = result.response_data.name;
              document.getElementById("manager-name").innerHTML = result.response_data.managerName;
-         }
+         },
+          error: function(error) {
+          timeoutSession(error);
+        }
      });
  }
  init();

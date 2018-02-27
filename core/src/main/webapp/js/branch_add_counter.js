@@ -9,6 +9,9 @@ function init() {
             document.getElementById("branch-name").innerHTML = result.response_data.name;
             // document.getElementById("merchant-name-footer").innerHTML = result.response_data.name;
             document.getElementById("manager-name").innerHTML = result.response_data.managerName;
+        },
+         error: function(error) {
+          timeoutSession(error);
         }
     });
 }
@@ -107,17 +110,15 @@ $(function() {
                                 window.location.href = "branch_counters.html";
                             }, 1000);
                         } else {
-                            checkSession();
                             $('#addCounterSubmit').removeAttr('disabled');
                             addCounterLoader.style.display = 'none';
                             toastr.error(result.response_message, "ERROR");
                         }
                     },
                     error: function(error) {
-                        checkSession();
                         $('#addCounterSubmit').removeAttr('disabled');
                         addCounterLoader.style.display = 'none';
-                        toastr.error('Something went wrong!', "ERROR");
+                        timeoutSession(error);
                     }
                 });
             } else {
@@ -137,17 +138,15 @@ $(function() {
                                 window.location.href = "branch_counters.html";
                             }, 1000);
                         } else {
-                            checkSession();
                             $('#addCounterSubmit').removeAttr('disabled');
                             addCounterLoader.style.display = 'none';
                             toastr.error(result.response_message, "ERROR");
                         }
                     },
                     error: function(error) {
-                        checkSession();
                         $('#addCounterSubmit').removeAttr('disabled');
                         addCounterLoader.style.display = 'none';
-                        toastr.error('Something went wrong!', "ERROR");
+                        timeoutSession(error);
                     }
                 });
             }

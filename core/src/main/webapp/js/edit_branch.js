@@ -125,17 +125,15 @@ $(function() {
                             window.location.href = "branches.html";
                         }, 1000);
                     } else {
-                        checkSession();
                         $('#editBranchSubmit').removeAttr('disabled');
                         editBranchLoader.style.display = 'none';
                         toastr.error(result.response_message, "ERROR");
                     }
                 },
                 error: function(error) {
-                    checkSession();
                     $('#editBranchSubmit').removeAttr('disabled');
                     editBranchLoader.style.display = 'none';
-                    toastr.error('Something went wrong!', "ERROR");
+                    timeoutSession(error);
                 }
             });
         }

@@ -14,7 +14,10 @@ function init() {
             document.getElementById("phone").innerHTML = "Business Name Contact : " + result.response_data.phone;
             document.getElementById("email").innerHTML = "Business Email : " + result.response_data.email;
 
-        }
+        },
+         error: function(error) {
+            timeoutSession(error);
+          }        
     });
 }
 init();
@@ -84,19 +87,13 @@ $(function() {
                             window.location.href = "profile.html";
                         }, 1000);
                     } else {
-                        checkSession();
-                        // $('#loginDisable').removeAttr('disabled');
-                        // signupL.style.display = 'none';
                         toastr.error(result.response_message, 'ERROR');
                     }
 
                 },
                 error: function(error) {
-                    checkSession();
-                    // $('#submitDisable').removeAttr("disabled");
-                    // signupL.style.display = 'none';
-                    toastr.error("Failed to update password", 'ERROR');
-                }
+                    timeoutSession(error);
+                  }
             });
         }
     });
@@ -137,6 +134,9 @@ function getWalletAddress(){
                                         '<button id="submitButton" class="btn btn-primary col-2" title="Save wallet address" data-toggle="tooltip" onClick="saveWalletAddress()">Save</button>'+
                                     '</div>');
           }
+        },
+         error: function(error) {
+          timeoutSession(error);
         }
     });
 }
@@ -185,23 +185,13 @@ function saveExistedWalletAddress(data) {
 
                       toastr.success(result.response_message, "SUCCESS");
                       getWalletAddress();
-                      // setTimeout(function() {
-                      //     // window.history.go(-window.history.length);
-                      //     window.location.href = "#menu2";
-                      // }, 1000);
                   } else {
-                      checkSession();
-                      // $('#loginDisable').removeAttr('disabled');
-                      // signupL.style.display = 'none';
-                      toastr.error(result.response_message, 'ERROR');
+                     toastr.error(result.response_message, 'ERROR');
                   }
 
               },
-              error: function(error) {
-                  checkSession();
-                  // $('#submitDisable').removeAttr("disabled");
-                  // signupL.style.display = 'none';
-                  toastr.error("Failed to add new address", 'ERROR');
+               error: function(error) {
+                timeoutSession(error);
               }
           });
     // $('#litecoinDiscount').removeAttr('disabled');
@@ -227,23 +217,13 @@ function saveWalletAddress(){
 
                       toastr.success(result.response_message, "SUCCESS");
                       getWalletAddress();
-                      // setTimeout(function() {
-                      //     // window.history.go(-window.history.length);
-                      //     window.location.href = "#menu2";
-                      // }, 1000);
                   } else {
-                      checkSession();
-                      // $('#loginDisable').removeAttr('disabled');
-                      // signupL.style.display = 'none';
                       toastr.error(result.response_message, 'ERROR');
                   }
 
               },
-              error: function(error) {
-                  checkSession();
-                  // $('#submitDisable').removeAttr("disabled");
-                  // signupL.style.display = 'none';
-                  toastr.error("Failed to add new address", 'ERROR');
-              }
+               error: function(error) {
+                  timeoutSession(error);
+                }
           });
 }

@@ -31,6 +31,9 @@ $(document).ready(function() {
                     }
                 ]
             });
+        },
+         error: function(error) {
+          timeoutSession(error);
         }
     });
 });
@@ -39,7 +42,6 @@ function viewBranch(id){
 }
 
 function editBranch(id){
-    checkSession();
     _.forEach(dataSaved, function(item){
         if(item.id == id){
             localStorage.setItem('branchId', JSON.stringify(item));
@@ -57,6 +59,9 @@ function init() {
         success: function(result) {
             document.getElementById("merchant-name").innerHTML = result.response_data.name;
             document.getElementById("owner-name").innerHTML = result.response_data.ownerName;
+        },
+         error: function(error) {
+          timeoutSession(error);
         }
     });
 }
