@@ -1,6 +1,6 @@
 function checkSession() {
     if (!localStorage.getItem('myCat')) {
-        toastr.error('Invalid Session! Please login again..', 'ERROR');
+        toastr.error('Invaild Session! Please login again..', 'ERROR');
         setTimeout(function() {
             window.location.href = 'login.html'
             return false;
@@ -8,6 +8,22 @@ function checkSession() {
     }
 }
 checkSession();
+function timeoutSession(error){
+    if(error.status == '401'){
+        if(localStorage.getItem('myCat')){
+            localStorage.clear();
+            toastr.error('Session Timed Out! Please login again..', 'ERROR');
+            setTimeout(function() {
+                window.location.href = 'login.html'
+                return false;
+            }, 1000);
+        } else {
+            return false;
+        }
+    }else{
+      toastr.error('Something went wrong!', "ERROR");
+    }
+}
 
 function logout() {
     $.ajax({

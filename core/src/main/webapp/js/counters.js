@@ -31,12 +31,14 @@ $(document).ready(function() {
                     }
                 ]
             });
+        },
+         error: function(error) {
+          timeoutSession(error);
         }
     });
 });
 
 function editCounter(id){
-    checkSession();
     _.forEach(dataReceieved, function(item){
         if(item.id == id){
             localStorage.setItem('editCounter', JSON.stringify(item));
@@ -56,6 +58,9 @@ function init() {
         success: function(result) {
             document.getElementById("merchant-name").innerHTML = result.response_data.name;
             document.getElementById("owner-name").innerHTML = result.response_data.ownerName;
+        },
+         error: function(error) {
+          timeoutSession(error);
         }
     });
 }

@@ -70,6 +70,12 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="withdrawals.html">
+                                <img src="images/icons/004-sheet.png" alt="">
+                                <span class="menu-title">Withdrawals</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="profile.html">
                                 <img src="images/icons/profile.png" alt="">
                                 <span class="menu-title">Profile</span>
@@ -96,7 +102,7 @@
                         <div class="form-group row">
                             <label for="example-text-input" class="col-2 col-form-label">Bitcoin</label>
                             <div class="col-2">
-                                <input id="bitcoinDiscount" class="form-control" type="text" pattern="/d*" maxlength="3" max="100">
+                                <input id="bitcoinDiscount" class="form-control" type="text" pattern="^((100)|(\d{1,2}(.\d*)?))%$" >
                             </div>
                         </div>
                         <!-- <div class="form-group row">

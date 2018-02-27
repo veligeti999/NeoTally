@@ -7,6 +7,9 @@ function init() {
         success: function(result) {
             document.getElementById("merchant-name").innerHTML = result.response_data.name;
             document.getElementById("owner-name").innerHTML = result.response_data.ownerName;
+        },
+         error: function(error) {
+          timeoutSession(error);
         }
     });
 }
@@ -105,17 +108,15 @@ $(function() {
                                 window.location.href = "counters.html";
                             }, 1000);
                         } else {
-                            checkSession();
                             $('#addCounterSubmit').removeAttr('disabled');
                             addCounterLoader.style.display = 'none';
                             toastr.error(result.response_message, "ERROR");
                         }
                     },
                     error: function(error) {
-                        checkSession();
                         $('#addCounterSubmit').removeAttr('disabled');
                         addCounterLoader.style.display = 'none';
-                        toastr.error('Something went wrong!', "ERROR");
+                        timeoutSession(error);
                     }
                 });
             } else {
@@ -136,17 +137,15 @@ $(function() {
                                 window.location.href = "counters.html";
                             }, 1000);
                         } else {
-                            checkSession();
                             $('#addCounterSubmit').removeAttr('disabled');
                             addCounterLoader.style.display = 'none';
                             toastr.error(result.response_message, "ERROR");
                         }
                     },
                     error: function(error) {
-                        checkSession();
                         $('#addCounterSubmit').removeAttr('disabled');
                         addCounterLoader.style.display = 'none';
-                        toastr.error('Something went wrong!', "ERROR");
+                        timeoutSession(error);
                     }
                 });
             }

@@ -22,29 +22,34 @@ public class MobileNotificationService {
 
     // userDeviceIdKey is the device id you will query from your database
 
-    public static void pushFCMNotification(String userDeviceIdKey, Notification notification) throws Exception{
+    public static void pushFCMNotification(String userDeviceIdKey, Notification notification){
+        try {
+            String authKey = AUTH_KEY_FCM; // You FCM AUTH key
+            String FMCurl = API_URL_FCM; 
 
-       String authKey = AUTH_KEY_FCM; // You FCM AUTH key
-       String FMCurl = API_URL_FCM; 
+            URL url = new URL(FMCurl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
-       URL url = new URL(FMCurl);
-       HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setUseCaches(false);
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
 
-       conn.setUseCaches(false);
-       conn.setDoInput(true);
-       conn.setDoOutput(true);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization","key="+authKey);
+            conn.setRequestProperty("Content-Type","application/json");
 
-       conn.setRequestMethod("POST");
-       conn.setRequestProperty("Authorization","key="+authKey);
-       conn.setRequestProperty("Content-Type","application/json");
+            MobileNotification mobileNotification = new MobileNotification();
+            System.out.println("Registration key:::" +userDeviceIdKey);
+            mobileNotification.setTo(userDeviceIdKey.trim());
+            mobileNotification.setNotification(notification);
 
-       MobileNotification mobileNotification = new MobileNotification();
-       mobileNotification.setTo(userDeviceIdKey.trim());
-       mobileNotification.setNotification(notification);
-
-       OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-       wr.write(gson.toJson(mobileNotification));
-       wr.flush();
-       conn.getInputStream();
+            OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+            wr.write(gson.toJson(mobileNotification));
+            wr.flush();
+            conn.getInputStream();
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 }

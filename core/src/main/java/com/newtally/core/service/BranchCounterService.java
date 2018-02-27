@@ -265,10 +265,12 @@ public class BranchCounterService extends AbstractService implements IAuthentica
         EntityTransaction trn = em.getTransaction();
         trn.begin();
         try {
+            System.out.println("user_id:::"+device.getUserId());
         Query queryToCheck = em.createNativeQuery("select id from devices where user_id=:user_id"); 
         queryToCheck.setParameter("user_id", device.getUserId());
         List rs= queryToCheck.getResultList();
         if(rs.isEmpty()) {
+            System.out.println("counter_id:::"+device.getUserId());
             Query query = em.createNativeQuery("INSERT INTO devices ( " +
                     "deviceid, device_type, registration_key, user_id, created_date) " +
                     "VALUES( :deviceid, :device_type, :registration_key, :user_id, :created_date)");
@@ -282,9 +284,11 @@ public class BranchCounterService extends AbstractService implements IAuthentica
             query.executeUpdate();
             trn.commit();
         } else {
-            Query query = em.createNativeQuery("update devices set deviceid=:deviceid, device_type=:device_type, user_id=:user_id, modified_date=:modified_date " +
+            System.out.println("id:::"+(Integer) rs.get(0));
+            Query query = em.createNativeQuery("update devices set registration_key=:registration_key, deviceid=:deviceid, device_type=:device_type, user_id=:user_id, modified_date=:modified_date " +
                     " where id=:id");
-
+            
+            query.setParameter("registration_key", device.getRegistrationKey());
             query.setParameter("deviceid", device.getDeviceId());
             query.setParameter("device_type", device.getDeviceType());
             query.setParameter("user_id", device.getUserId());

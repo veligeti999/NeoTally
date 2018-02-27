@@ -82,7 +82,6 @@ $(function() {
                             window.location.href = "profile.html";
                         }, 1000);
                     } else {
-                        checkSession();
                         $('#loginDisable').removeAttr('disabled');
                         signupL.style.display = 'none';
                         toastr.error(result.response_message, 'ERROR');
@@ -90,10 +89,9 @@ $(function() {
 
                 },
                 error: function(error) {
-                    checkSession();
                     $('#submitDisable').removeAttr("disabled");
                     signupL.style.display = 'none';
-                    toastr.error("Failed to update password", 'ERROR');
+                    timeoutSession(error);
                 }
             });
         }

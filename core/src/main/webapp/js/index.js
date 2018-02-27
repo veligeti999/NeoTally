@@ -9,6 +9,9 @@ function init() {
             document.getElementById("merchant-name").innerHTML = result.response_data.name;
             document.getElementById("merchant-name-footer").innerHTML = result.response_data.name;
             document.getElementById("owner-name").innerHTML = result.response_data.ownerName;
+        },
+         error: function(error) {
+          timeoutSession(error);
         }
     });
     $.ajax({
@@ -21,6 +24,9 @@ function init() {
           document.getElementById("coin_code").innerHTML = result.response_data.coin_code;
           document.getElementById("coin_value").innerHTML = result.response_data.coin_value;
           document.getElementById("coin_value_in_currency").innerHTML = result.response_data.coin_value_in_currency+' INR';
+        },
+         error: function(error) {
+          timeoutSession(error);
         }
       });
 }
@@ -39,13 +45,11 @@ function withdraw(currencyId){
                 window.location.href = "index.html";
               }, 1000);
             } else {
-              checkSession();
               toastr.error(result.response_message, "ERROR");
             }
         },
         error: function(error) {
-          checkSession();
-          toastr.error('Something went wrong!', "ERROR");
+          timeoutSession(error);
         }
       });
 }

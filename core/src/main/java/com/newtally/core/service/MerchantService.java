@@ -10,7 +10,6 @@ import com.newtally.core.dto.ResponseDto;
 import com.newtally.core.dto.WalletDto;
 import com.newtally.core.model.*;
 import com.newtally.core.resource.ThreadContext;
-
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -730,4 +729,29 @@ public class MerchantService extends AbstractService implements IAuthenticator {
             throw e;
         }
 	}
+
+    public List<Withdrawal> getWithdrawals() {
+        Query query = em.createNativeQuery("select c.code, c.name, h.id, h.transaction_date, "
+                + "h.to_wallet_address, h.transaction_amount, h.commission_amount, h.transaction_status"
+                + " from withdrawal_transaction_history h join currency c on h.currency_id=c.id "
+                + "where h.merchant_id=:merchantId");
+        query.setParameter("merchantId", ctx.getCurrentMerchantId());
+        List rs=query.getResultList();
+        List<Withdrawal> withdrawals = new ArrayList<>();
+        for(Object ele : rs) {
+            Object [] fields = (Object[]) ele;
+
+            Withdrawal withdrawal = new Withdrawal();
+            withdrawal.setCurrencyCode((String)fields[0]);
+            withdrawal.setCurrencyName((String)fields[1]);
+            withdrawal.setId(((BigInteger) fields[2]).longValue());
+            withdrawal.setTransactionDate((Date)fields[3]);
+            withdrawal.setWalletAddress((String)fields[4]);
+            withdrawal.setTransactionAmount((Double)fields[5]);
+            withdrawal.setCommissionAmount((Double)fields[6]);
+            withdrawal.setStatus((Boolean)fields[7]);
+            withdrawals.add(withdrawal);
+        }
+        return withdrawals;
+    }
 }
