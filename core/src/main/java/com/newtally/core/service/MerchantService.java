@@ -683,7 +683,7 @@ public class MerchantService extends AbstractService implements IAuthenticator {
 		return query.getResultList().get(0).toString();
 	}
 	
-	public void createWithdrawTransaction(Integer currencyId, String walletAddress, Double transactionAmount, Double commissionAmount, String commissionWalletAddress) {
+	public void createWithdrawTransaction(Integer currencyId, String walletAddress, long transactionAmount, long commissionAmount, String commissionWalletAddress) {
 	    EntityTransaction trn = em.getTransaction();
         trn.begin();
         try {
@@ -709,7 +709,7 @@ public class MerchantService extends AbstractService implements IAuthenticator {
         }
 	}
 	
-	public void createCommissionTransaction(Integer currencyId, String walletAddress, Double commissionAmount, Long withdrawlTransactionHistoryId) {
+	public void createCommissionTransaction(Integer currencyId, String walletAddress, long commissionAmount, Long withdrawlTransactionHistoryId) {
 		try {
             Query query = em.createNativeQuery("INSERT INTO commission_transaction_history(id, currency_id, to_wallet_address,"
                     + " merchant_id, transaction_date, withdrawl_transaction_history_id, commission_amount, transaction_status) "
@@ -747,8 +747,8 @@ public class MerchantService extends AbstractService implements IAuthenticator {
             withdrawal.setId(((BigInteger) fields[2]).longValue());
             withdrawal.setTransactionDate((Date)fields[3]);
             withdrawal.setWalletAddress((String)fields[4]);
-            withdrawal.setTransactionAmount((Double)fields[5]);
-            withdrawal.setCommissionAmount((Double)fields[6]);
+            withdrawal.setTransactionAmount((double)((BigInteger)fields[5]).longValue()/Coin.COIN.getValue());
+            withdrawal.setCommissionAmount((double)((BigInteger)fields[6]).longValue()/Coin.COIN.getValue());
             withdrawal.setStatus((Boolean)fields[7]);
             withdrawals.add(withdrawal);
         }

@@ -53,10 +53,6 @@ public class OrderInvoiceService extends AbstractService{
 		String branchId = counterService.getBranchIdByCounterId(order.getCounterId());
 		Map<String, Wallet> wallets = walletManager.getBranchWallets();
 		Wallet wallet = wallets.get(branchId);
-		//this piece of code is used for testing hooks
-		DeterministicKey watchingKey = wallet.getActiveKeyChain().getWatchingKey();
-		System.out.println("watching key path"+watchingKey.getPath());
-		System.out.println("key address"+watchingKey.toAddress(walletManager.getBitcoinConfiguration().getParams()));
 		DeterministicKey counterKey = wallet.freshReceiveKey();
 		System.out.println("counterKey"+counterKey);
 		String address = counterKey.toAddress(walletManager.getBitcoinConfiguration().getParams()).toString();
@@ -93,7 +89,9 @@ public class OrderInvoiceService extends AbstractService{
 
 	public void updateOrderStatus(String transactionId, String address, String status) {
 		EntityTransaction txn = em.getTransaction();
-		txn.begin();
+		if(!txn.isActive()){
+		    txn.begin();
+		}
 		try {
 			Query query = em.createNativeQuery(
 					"update order_invoice set status=:status, transaction_id=:transactionId, modified_date=:modified_date where wallet_address=:address");
@@ -118,7 +116,9 @@ public class OrderInvoiceService extends AbstractService{
 	        List result = txnStatusquery.getResultList();
 		    if(!result.isEmpty()) {
 		        txn = em.getTransaction();
-		        txn.begin();
+		        if(txn.isActive()){
+		            txn.begin();
+		        }
 		        Query query = em
 	                    .createNativeQuery("update order_invoice set status=:status, modified_date=:modified_date where transaction_id=:transactionId");
 	            query.setParameter("status", status);
