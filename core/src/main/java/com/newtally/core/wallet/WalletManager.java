@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -202,7 +204,7 @@ public class WalletManager {
 	public void withdrawCoinsFromWallet(Wallet wallet, String walletId, String merchantWalletAddress, String adminWalletAddress, Integer currencyId) throws InsufficientMoneyException, IOException, InterruptedException, ExecutionException, ValueOutOfRangeException{
 		//calculate the amount that needs to be sent to the merchant after the commission(hard coding it to 90% at the moment)
 		long finalAmount = (long) (wallet.getBalance().value - (0.1 * wallet.getBalance().value));
-		double transactionAmount=(double) (finalAmount/Coin.COIN.getValue());
+		double transactionAmount=BigDecimal.valueOf(finalAmount/Coin.COIN.getValue()).setScale(8, RoundingMode.HALF_DOWN).doubleValue();
 		SendRequest merchantRequest = SendRequest.to(Address.fromBase58(configuration.getParams(), merchantWalletAddress), Coin.valueOf(finalAmount));
 		wallet.completeTx(merchantRequest);
 		wallet.commitTx(merchantRequest.tx);
@@ -211,7 +213,7 @@ public class WalletManager {
 		future.get();
 		//SendRequest adminRequest = SendRequest.to(new Address(configuration.getParams(), adminWalletAddress), Coin.valueOf((long)(wallet.getBalance().value - (0.0005 * wallet.getBalance().value))));
 		Coin valueAfterFee = wallet.getBalance().subtract(Transaction.DEFAULT_TX_FEE);
-        double commissionAmount=(double) (valueAfterFee.value/Coin.COIN.getValue());
+        double commissionAmount=BigDecimal.valueOf(valueAfterFee.value/Coin.COIN.getValue()).setScale(8, RoundingMode.HALF_DOWN).doubleValue();
 		if (Transaction.MIN_NONDUST_OUTPUT.compareTo(valueAfterFee) > 0)
             throw new ValueOutOfRangeException("totalValue too small to use");
 		SendRequest adminRequest = SendRequest.to(Address.fromBase58(configuration.getParams(), adminWalletAddress), valueAfterFee);
