@@ -89,7 +89,9 @@ public class OrderInvoiceService extends AbstractService{
 
 	public void updateOrderStatus(String transactionId, String address, String status) {
 		EntityTransaction txn = em.getTransaction();
-		txn.begin();
+		if(!txn.isActive()){
+		    txn.begin();
+		}
 		try {
 			Query query = em.createNativeQuery(
 					"update order_invoice set status=:status, transaction_id=:transactionId, modified_date=:modified_date where wallet_address=:address");
@@ -114,7 +116,9 @@ public class OrderInvoiceService extends AbstractService{
 	        List result = txnStatusquery.getResultList();
 		    if(!result.isEmpty()) {
 		        txn = em.getTransaction();
-		        txn.begin();
+		        if(txn.isActive()){
+		            txn.begin();
+		        }
 		        Query query = em
 	                    .createNativeQuery("update order_invoice set status=:status, modified_date=:modified_date where transaction_id=:transactionId");
 	            query.setParameter("status", status);
