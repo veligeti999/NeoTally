@@ -47,13 +47,13 @@ public class ServiceFactory {
         //The environment is going to become MainNet eventually when moving to production
         //This is a one time operation and is going to take time(not sure how long)
         //Uncomment this when using testnet..Setting it to regtest to test non blockchain functionality
-        params = TestNet3Params.get();
-        File blockStoreFile=new File("block_store");
+        //params = TestNet3Params.get();
+        //File blockStoreFile=new File("block_store");
         //params = MainNetParams.get();
         //File blockStoreFile=new File("block_store_main");
-        //params = RegTestParams.get();
+        params = RegTestParams.get();
         //this file is for regtest blockchain(local blockchain)
-        //File blockStoreFile=new File("regtest_block_store");
+        File blockStoreFile=new File("regtest_block_store");
         blockStore = new SPVBlockStore(params, blockStoreFile);
         bitcoinConfiguration = new BitcoinConfiguration(params, blockStore);
         walletManager = new WalletManager(bitcoinConfiguration, sessionContext);
