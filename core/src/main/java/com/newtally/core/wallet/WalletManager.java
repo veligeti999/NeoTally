@@ -208,7 +208,7 @@ public class WalletManager {
 		SendRequest merchantRequest = SendRequest.to(Address.fromBase58(configuration.getParams(), merchantWalletAddress), Coin.valueOf(finalAmount));
 		wallet.completeTx(merchantRequest);
 		wallet.commitTx(merchantRequest.tx);
-		wallet.saveToFile(new File(walletId));
+		//wallet.saveToFile(new File(walletId));
 		ListenableFuture<Transaction> future = configuration.getPeerGroup().broadcastTransaction(merchantRequest.tx).broadcast();
 		future.get();
 		//SendRequest adminRequest = SendRequest.to(new Address(configuration.getParams(), adminWalletAddress), Coin.valueOf((long)(wallet.getBalance().value - (0.0005 * wallet.getBalance().value))));
@@ -219,7 +219,7 @@ public class WalletManager {
 		SendRequest adminRequest = SendRequest.to(Address.fromBase58(configuration.getParams(), adminWalletAddress), valueAfterFee);
 		wallet.completeTx(adminRequest);
 		wallet.commitTx(adminRequest.tx);
-		wallet.saveToFile(new File(walletId));
+		//wallet.saveToFile(new File(walletId));
 		ListenableFuture<Transaction> newFuture = configuration.getPeerGroup().broadcastTransaction(adminRequest.tx).broadcast();
 		newFuture.get();
 		ServiceFactory.getInstance().getMerchantService().createWithdrawTransaction(currencyId, merchantWalletAddress, transactionAmount, commissionAmount, adminWalletAddress);
