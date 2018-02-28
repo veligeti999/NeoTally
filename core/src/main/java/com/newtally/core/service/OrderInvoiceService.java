@@ -53,10 +53,6 @@ public class OrderInvoiceService extends AbstractService{
 		String branchId = counterService.getBranchIdByCounterId(order.getCounterId());
 		Map<String, Wallet> wallets = walletManager.getBranchWallets();
 		Wallet wallet = wallets.get(branchId);
-		//this piece of code is used for testing hooks
-		DeterministicKey watchingKey = wallet.getActiveKeyChain().getWatchingKey();
-		System.out.println("watching key path"+watchingKey.getPath());
-		System.out.println("key address"+watchingKey.toAddress(walletManager.getBitcoinConfiguration().getParams()));
 		DeterministicKey counterKey = wallet.freshReceiveKey();
 		System.out.println("counterKey"+counterKey);
 		String address = counterKey.toAddress(walletManager.getBitcoinConfiguration().getParams()).toString();
