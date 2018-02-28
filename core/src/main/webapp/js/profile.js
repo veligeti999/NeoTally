@@ -22,9 +22,76 @@ function init() {
 }
 init();
 
+var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : sParameterName[1];
+        }
+    }
+};
+
+function getWalletAddress(){
+  $.ajax({
+        type: "GET",
+        url: "/new-tally/rest/merchants/wallet/addresses",
+        dataType: 'json',
+        async: false,
+        success: function(result) {
+          if(result.response_data.length > 0){
+              $.each(result.response_data, function(index, value) {
+              $("#walletConfigForm").empty().append('<div class="form-group row">'+
+                                          '<label for="example-text-input" class="col-2 col-form-label">Wallet Address Saved</label>'+
+                                        '</div>'+
+                                        '<div class="form-group row">'+
+                                          '<label for="example-text-input" class="col-2 col-form-label">Bit Coin </label>'+
+                                          '<div class="col-6">'+
+                                              '<input class="form-control p-input" id="newAddress" name="newAddress" placeholder="Enter valid address" type="text" value='+value.wallet_address+'>'+
+                                          '</div>'+
+                                          '<button id="submitButton" class="btn btn-primary col-2" title="Save wallet address" data-toggle="tooltip" onClick="saveExistedWalletAddress('+value.id+')">Save</button>'+
+                                          '<button id="editButton" class="btn btn-primary col-2" title="Edit wallet address" data-toggle="tooltip" onClick="editWalletAddress()">Edit</button>'+
+                                      '</div>');
+            });
+            disableImputs();
+          }
+          else{
+           $("#walletConfigForm").empty().append('<div class="form-group row">'+
+                                        '<label for="example-text-input" class="col-2 col-form-label">No Address saved</label>'+
+                                      '</div>'+
+                                      '<div class="form-group row">'+
+                                        '<label for="example-text-input" class="col-2 col-form-label">Bit Coin </label>'+
+                                        '<div class="col-6">'+
+                                            '<input class="form-control p-input" id="newAddress" name="newAddress" placeholder="Enter valid address" type="text">'+
+                                        '</div>'+
+                                        '<button id="submitButton" class="btn btn-primary col-2" title="Save wallet address" data-toggle="tooltip" onClick="saveWalletAddress()">Save</button>'+
+                                    '</div>');
+          }
+        },
+         error: function(error) {
+          timeoutSession(error);
+        }
+    });
+}
 var signupD = document.getElementById('submitDisable');
 var signupL = document.getElementById('showSubmitLoader');
 signupL.style.display = 'none';
+
+var activeTab = getUrlParameter('activeTab');
+console.log("activeTab", activeTab);
+if(activeTab!=undefined){
+  $('a[href="#home"]').removeClass("active");;
+  $('a[href="#'+ activeTab +'"]').addClass("active");
+  $('a[href="#'+ activeTab +'"]').click();
+  $("#home").removeClass("active");
+  $("#" + activeTab).addClass("active");  
+  getWalletAddress();
+}
 
 $(function() {
     // Initialize form validation on the registration form.
@@ -99,47 +166,7 @@ $(function() {
     });
 });
 
-function getWalletAddress(){
-  $.ajax({
-        type: "GET",
-        url: "/new-tally/rest/merchants/wallet/addresses",
-        dataType: 'json',
-        async: false,
-        success: function(result) {
-          if(result.response_data.length > 0){
-              $.each(result.response_data, function(index, value) {
-              $("#walletConfigForm").empty().append('<div class="form-group row">'+
-                                          '<label for="example-text-input" class="col-2 col-form-label">Wallet Address Saved</label>'+
-                                        '</div>'+
-                                        '<div class="form-group row">'+
-                                          '<label for="example-text-input" class="col-2 col-form-label">Bit Coin </label>'+
-                                          '<div class="col-6">'+
-                                              '<input class="form-control p-input" id="newAddress" name="newAddress" placeholder="Enter valid address" type="text" value='+value.wallet_address+'>'+
-                                          '</div>'+
-                                          '<button id="submitButton" class="btn btn-primary col-2" title="Save wallet address" data-toggle="tooltip" onClick="saveExistedWalletAddress('+value.id+')">Save</button>'+
-                                          '<button id="editButton" class="btn btn-primary col-2" title="Edit wallet address" data-toggle="tooltip" onClick="editWalletAddress()">Edit</button>'+
-                                      '</div>');
-            });
-            disableImputs();
-          }
-          else{
-           $("#walletConfigForm").empty().append('<div class="form-group row">'+
-                                        '<label for="example-text-input" class="col-2 col-form-label">No Address saved</label>'+
-                                      '</div>'+
-                                      '<div class="form-group row">'+
-                                        '<label for="example-text-input" class="col-2 col-form-label">Bit Coin </label>'+
-                                        '<div class="col-6">'+
-                                            '<input class="form-control p-input" id="newAddress" name="newAddress" placeholder="Enter valid address" type="text">'+
-                                        '</div>'+
-                                        '<button id="submitButton" class="btn btn-primary col-2" title="Save wallet address" data-toggle="tooltip" onClick="saveWalletAddress()">Save</button>'+
-                                    '</div>');
-          }
-        },
-         error: function(error) {
-          timeoutSession(error);
-        }
-    });
-}
+
 
 
 function disableImputs() {
