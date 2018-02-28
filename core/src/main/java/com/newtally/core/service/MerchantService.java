@@ -747,8 +747,8 @@ public class MerchantService extends AbstractService implements IAuthenticator {
             withdrawal.setId(((BigInteger) fields[2]).longValue());
             withdrawal.setTransactionDate((Date)fields[3]);
             withdrawal.setWalletAddress((String)fields[4]);
-            withdrawal.setTransactionAmount((Double)fields[5]);
-            withdrawal.setCommissionAmount((Double)fields[6]);
+            withdrawal.setTransactionAmount((double)((BigInteger)fields[5]).longValue()/Coin.COIN.getValue());
+            withdrawal.setCommissionAmount((double)((BigInteger)fields[6]).longValue()/Coin.COIN.getValue());
             withdrawal.setStatus((Boolean)fields[7]);
             withdrawals.add(withdrawal);
         }
