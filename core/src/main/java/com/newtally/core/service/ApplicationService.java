@@ -129,9 +129,8 @@ public class ApplicationService extends AbstractService{
     
                 queryToInActive.setParameter("token", token);
                 queryToInActive.executeUpdate();
-    
+                ServiceFactory.getInstance().getMerchantService().updateMerchantAfterCofirmEmail(email);
                 trn.commit();
-    
             } catch (Exception e) {
                 trn.rollback();
                 throw e;
