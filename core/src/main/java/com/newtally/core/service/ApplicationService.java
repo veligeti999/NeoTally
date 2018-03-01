@@ -156,7 +156,6 @@ public class ApplicationService extends AbstractService{
                 queryToCreate.setParameter("email", email);
                 queryToCreate.setParameter("generated_time", new Date());
                 queryToCreate.executeUpdate();
-                ServiceFactory.getInstance().getMerchantService().updateMerchantAfterCofirmEmail(email);
                 trn.commit();
                 sendNotificationForEmailConfirmation(token, email);
     
