@@ -116,7 +116,7 @@ public class OrderInvoiceService extends AbstractService{
 	        List result = txnStatusquery.getResultList();
 		    if(!result.isEmpty()) {
 		        txn = em.getTransaction();
-		        if(txn.isActive()){
+		        if(!txn.isActive()){
 		            txn.begin();
 		        }
 		        Query query = em
