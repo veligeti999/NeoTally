@@ -87,9 +87,9 @@ console.log("activeTab", activeTab);
 if(activeTab!=undefined){
   $('a[href="#home"]').removeClass("active");;
   $('a[href="#'+ activeTab +'"]').addClass("active");
-  $('a[href="#'+ activeTab +'"]').click();
   $("#home").removeClass("active");
-  $("#" + activeTab).addClass("active");  
+  $("#" + activeTab).removeClass("fade");
+  $("#" + activeTab).addClass("active");
   getWalletAddress();
 }
 
@@ -147,7 +147,6 @@ $(function() {
                     console.log(result);
                     if (result.response_code == 0) {
                         localStorage.setItem('myCat', 'Tom');
-
                         toastr.success(result.response_message, "SUCCESS");
                         setTimeout(function() {
                             // window.history.go(-window.history.length);
@@ -165,9 +164,6 @@ $(function() {
         }
     });
 });
-
-
-
 
 function disableImputs() {
   var editButton = document.getElementById('editButton');
@@ -221,7 +217,6 @@ function saveExistedWalletAddress(data) {
                 timeoutSession(error);
               }
           });
-    // $('#litecoinDiscount').removeAttr('disabled');
 }
 
 function saveWalletAddress(){
@@ -241,7 +236,6 @@ function saveWalletAddress(){
                   console.log(result);
                   if (result.response_code == 0) {
                       localStorage.setItem('myCat', 'Tom');
-
                       toastr.success(result.response_message, "SUCCESS");
                       getWalletAddress();
                   } else {
