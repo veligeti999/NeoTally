@@ -129,9 +129,8 @@ public class ApplicationService extends AbstractService{
     
                 queryToInActive.setParameter("token", token);
                 queryToInActive.executeUpdate();
-    
+                ServiceFactory.getInstance().getMerchantService().updateMerchantAfterCofirmEmail(email);
                 trn.commit();
-    
             } catch (Exception e) {
                 trn.rollback();
                 throw e;
@@ -156,7 +155,6 @@ public class ApplicationService extends AbstractService{
                 queryToCreate.setParameter("email", email);
                 queryToCreate.setParameter("generated_time", new Date());
                 queryToCreate.executeUpdate();
-                ServiceFactory.getInstance().getMerchantService().updateMerchantAfterCofirmEmail(email);
                 trn.commit();
                 sendNotificationForEmailConfirmation(token, email);
     

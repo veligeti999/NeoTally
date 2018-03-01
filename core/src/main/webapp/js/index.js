@@ -53,3 +53,7 @@ function withdraw(currencyId){
         }
       });
 }
+
+function configureWallet(currencyId) {
+  window.location.href = "profile.html?activeTab=menu1";
+}
