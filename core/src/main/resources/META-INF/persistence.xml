@@ -13,7 +13,7 @@
 
         <properties>
 
-            <property name="hibernate.connection.url" value="jdbc:mysql://18.219.39.174:3306/new_tally?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC"></property>
+            <property name="hibernate.connection.url" value="jdbc:mysql://18.218.162.6:3306/new_tally?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=UTC"></property>
             <property name="hibernate.connection.username" value="newtally"></property>
             <property name="hibernate.connection.password" value="newtally@123"></property>
             <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"></property>
