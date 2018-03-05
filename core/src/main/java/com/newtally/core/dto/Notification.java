@@ -3,6 +3,7 @@ package com.newtally.core.dto;
 public class Notification {
     private String title;
     private String body;
+    private String message;
 
     public String getTitle() {
         return title;
@@ -20,4 +21,11 @@ public class Notification {
         this.body = body;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }
