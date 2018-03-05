@@ -150,6 +150,7 @@ public class OrderInvoiceService extends AbstractService{
             Notification notification=new Notification();
             notification.setTitle("New Tally");
             notification.setBody("Order:"+ orderId+ " has been confirmed");
+            notification.setMessage("Order:"+ orderId+ " has been confirmed");
             MobileNotificationService.pushFCMNotification(registrationKey, notification);
             }
             } catch (Exception e) {
