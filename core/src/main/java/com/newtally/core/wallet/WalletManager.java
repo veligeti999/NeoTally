@@ -204,29 +204,15 @@ public class WalletManager {
 	public void withdrawCoinsFromWallet(Wallet wallet, String walletId, String merchantWalletAddress, String adminWalletAddress, Integer currencyId) throws InsufficientMoneyException, IOException, InterruptedException, ExecutionException, ValueOutOfRangeException{
 		//calculate the amount that needs to be sent to the merchant after the commission(hard coding it to 90% at the moment)
 		long finalAmount = (long) (wallet.getBalance().value - (0.1 * wallet.getBalance().value));
-		//double transactionAmount=BigDecimal.valueOf(finalAmount/Coin.COIN.getValue()).setScale(8, RoundingMode.HALF_DOWN).doubleValue();
 		SendRequest merchantRequest = SendRequest.to(Address.fromBase58(configuration.getParams(), merchantWalletAddress), Coin.valueOf(finalAmount));
-
 		Wallet.SendResult result = wallet.sendCoins(merchantRequest);
 		result.broadcastComplete.get();
-
-		/*wallet.completeTx(merchantRequest);
-		wallet.commitTx(merchantRequest.tx);
-		ListenableFuture<Transaction> future = configuration.getPeerGroup().broadcastTransaction(merchantRequest.tx).broadcast();
-		future.get();*/
-
 		Coin valueAfterFee = wallet.getBalance().subtract(Transaction.DEFAULT_TX_FEE);
-        //double commissionAmount=BigDecimal.valueOf(valueAfterFee.value/Coin.COIN.getValue()).setScale(8, RoundingMode.HALF_DOWN).doubleValue();
 		if (Transaction.MIN_NONDUST_OUTPUT.compareTo(valueAfterFee) > 0)
             throw new ValueOutOfRangeException("totalValue too small to use");
 		SendRequest adminRequest = SendRequest.to(Address.fromBase58(configuration.getParams(), adminWalletAddress), valueAfterFee);
 		result = wallet.sendCoins(adminRequest);
 		result.broadcastComplete.get();
 
-		/*wallet.completeTx(adminRequest);
-		wallet.commitTx(adminRequest.tx);
-		ListenableFuture<Transaction> newFuture = configuration.getPeerGroup().broadcastTransaction(adminRequest.tx).broadcast();
-		newFuture.get();*/
-		ServiceFactory.getInstance().getMerchantService().createWithdrawTransaction(currencyId, merchantWalletAddress, finalAmount, valueAfterFee.value, adminWalletAddress);
 	}
 }
