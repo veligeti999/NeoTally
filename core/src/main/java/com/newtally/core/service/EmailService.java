@@ -12,9 +12,9 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 public class EmailService{
-    private static String userName = "hemasundar@sageabletech.com";
-    private static String password = "dhamayanthi";
-    private static String from= "hemasundar@sageabletech.com";
+    private static String userName = "newtallycom@gmail.com";
+    private static String password = "sageable123";
+    private static String from= "newtallycom@gmail.com";
     
     
    public static void main(String[] args) {
