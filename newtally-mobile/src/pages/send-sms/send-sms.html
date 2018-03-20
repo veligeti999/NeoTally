@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title text-uppercase="">send sms</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+  <form #form="ngForm" (submit)="send(form)">
+    <ion-list>
+      <!--[countryCode]="'91'"-->
+      <!--validateMobile-->
+      <ion-item no-padding margin-bottom="" mode="md">
+        <ion-input
+          placeholder="Phone no"
+          type="tel"
+          name="number"
+          pattern="[9][0-9]{9}"
+          #number="ngModel"
+          required
+          ngModel></ion-input>
+      </ion-item>
+      <div class="error" *ngIf="(form.submitted || number.dirty) && number.invalid">
+        <p ion-text="" color="danger" *ngIf="number.errors.pattern">Please enter a valid mobile number to proceed</p>
+        <!--<p ion-text="" color="danger" *ngIf="number.errors.invalidNumber && !number.errors.required">Please enter a valid mobile number to proceed</p>-->
+      </div>
+
+      <button ion-button="" block color="secondary" text-uppercase="">send</button>
+    </ion-list>
+  </form>
+
+</ion-content>

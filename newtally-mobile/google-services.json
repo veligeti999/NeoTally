@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "729360866832",
+    "firebase_url": "https://new-tally.firebaseio.com",
+    "project_id": "new-tally",
+    "storage_bucket": "new-tally.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:729360866832:android:3dd761b45253aef6",
+        "android_client_info": {
+          "package_name": "com.sageable.newtally"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "729360866832-v113jdcd1ihr1e8ifdm0di5he5b7ddgq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDb05tf_H-lYmKkYjDpu-r4Num-bgeBrsE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

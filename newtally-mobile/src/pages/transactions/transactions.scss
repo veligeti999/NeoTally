@@ -1,0 +1,15 @@
+.md, .ios {
+  page-transactions {
+    .status {
+      &.Success {
+        color: green;
+      }
+      &.Pending {
+        color: brown;
+      }
+      &.Failed {
+        color: red;
+      }
+    }
+  }
+}

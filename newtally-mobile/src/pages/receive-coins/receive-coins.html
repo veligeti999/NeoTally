@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title text-uppercase="">receive coins</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+  <ion-list no-lines="">
+    <ion-item text-center="">
+      <p text-wrap="">Scan the QR Code or Copy Address</p>
+      <img [src]="qrData?.qrCode"/>
+    </ion-item>
+
+    <ion-item>
+      <h2>Wallet Address</h2>
+      <p>{{ qrData?.walletAddress}}</p>
+    </ion-item>
+
+    <ion-item>
+      <ion-row no-padding="">
+        <ion-col no-padding="">
+          <h2>INR</h2>
+          <p>{{ (orderTotal - qrData?.discountAmount)  |  number:'1.2-2'}}</p>
+        </ion-col>
+        <ion-col no-padding="">
+          <h2>{{ qrData?.currencyCode}}</h2>
+          <p>{{ qrData?.currencyAmount}}</p>
+        </ion-col>
+      </ion-row>
+    </ion-item>
+    <button ion-button="" block color="secondary" text-uppercase="" (click)="sendSMS()">send sms</button>
+  </ion-list>
+</ion-content>

@@ -1,0 +1,7 @@
+.md, .ios {
+  page-login {
+    .label-ios + ion-input .text-input {
+      margin-left: 0;
+    }
+  }
+}

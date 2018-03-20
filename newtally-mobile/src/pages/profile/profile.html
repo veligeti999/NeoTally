@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title text-uppercase="">profile</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding="">
+  <ion-card class="bordered-card">
+    <ion-card-content>
+      <ion-card-title>{{ counter.merchant_name}}</ion-card-title>
+      <p>{{ counter.branch_name }}</p>
+      <!--<p>{{ counter.counter_name}}</p>-->
+      <ul class="address">
+        <li>{{ counter.address.address}}</li>
+        <li>{{ counter.address.city}},</li>
+        <li>{{ counter.address.country}} {{counter.address.zip}}</li>
+      </ul>
+    </ion-card-content>
+  </ion-card>
+  <ion-list>
+    <ion-item>
+      <h2>App Version</h2>
+      <ion-note item-end="">1.2</ion-note>
+    </ion-item>
+  </ion-list>
+</ion-content>

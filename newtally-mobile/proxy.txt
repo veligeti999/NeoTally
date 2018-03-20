@@ -1,0 +1,8 @@
+,
+  "proxies": [{
+    "path": "/new-tally/rest/counters/",
+    "proxyUrl": "http://18.219.39.174:8080/new-tally/rest/counters/"
+  }]
+
+
+YmN0cjo3OWU3ZDhkNi1jMDVhLTQ5ZDEtYjkxOS1lNTliNjgwNzRmNDU6NzllN2Q4ZDYtYzA1YS00OWQxLWI5MTktZTU5YjY4MDc0ZjQ1

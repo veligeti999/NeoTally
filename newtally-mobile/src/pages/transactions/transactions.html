@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title text-uppercase="">transactions</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content>
+  <ion-list class="bordered-list" no-lines="">
+    <ion-list-header>Latest transactions</ion-list-header>
+    <ng-container *ngIf="transactions && transactions.length">
+      <ion-item *ngFor="let transaction of transactions">
+        <ion-avatar item-start="" class="avatar-bordered">
+          <img [src]="'./assets/imgs/currency/' + transaction.currencyCode + '.svg'"/>
+        </ion-avatar>
+        <h2>{{ transaction.id }}</h2>
+        <p class="space-between flex-wrap">
+          <!--22-Feb-18 12:50:34 PM-->
+          <!--| date: 'dd-MMM-yy HH:mm:ss a'-->
+          <span>{{ transaction.createdDate  }}</span>
+          <span>{{ transaction.currencyAmount}}</span>
+        </p>
+        <p class="space-between">
+          <span class="status" [ngClass]="transaction.status" text-uppercase="">{{ transaction.status }}</span>
+          <span>&#8377;{{(transaction.paymentAmount - transaction.discountAmount) | number:'1.2-2'}}</span>
+        </p>
+      </ion-item>
+    </ng-container>
+
+  </ion-list>
+</ion-content>

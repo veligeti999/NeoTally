@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title align="center" text-uppercase>discount</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content>
+  <ion-list no-lines class="bordered-list">
+    <ion-item class="total">
+      <h2>&#8377; {{ orderTotal | number:'1.2-2'}}</h2>
+      <p>Order Total</p>
+    </ion-item>
+    <button ion-item *ngFor="let discount of discounts" class="currency-button" (click)="receiveCoins(discount, orderTotal)">
+      <ion-avatar item-start class="avatar-bordered">
+        <img [src]="'./assets/imgs/currency/' + discount.currency_code + '.svg'"/>
+      </ion-avatar>
+      <h2 class="space-between">
+        <span>{{ discount.currency_name }}</span>
+        <ion-note class="item-note">Discount - {{ discount.discount}}%</ion-note>
+      </h2>
+      <p>{{ discount.currency_amount }} {{ discount.currency_code }}</p>
+      <p> &#8377; {{ (orderTotal - discount.discount_amount) | number:'1.2-2'}}</p>
+    </button>
+  </ion-list>
+</ion-content>

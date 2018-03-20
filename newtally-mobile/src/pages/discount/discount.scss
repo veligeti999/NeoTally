@@ -1,0 +1,26 @@
+.md, .ios {
+  page-discount {
+    .list {
+      .item {
+        &:first-child {
+          padding: 10%;
+        }
+        &.currency-button {
+          h2 {color: map_get($colors, primary);}
+        }
+      }
+    }
+
+
+
+    .total {
+      h2 {font-size: 4rem;}
+    }
+
+    .item-note {
+      align-self: flex-start;
+      font-size: 1.2rem;
+      color: map_get($colors, secondary);
+    }
+  }
+}

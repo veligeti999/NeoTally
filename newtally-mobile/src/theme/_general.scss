@@ -1,0 +1,43 @@
+.md, .ios {
+  .header {
+    .toolbar-background {
+      background: map_get($colors, primary);
+    }
+
+    .toolbar-title, .back-button.bar-button {
+      color: map_get($colors, white);
+    }
+  }
+
+  .toolbar.transparent {
+    .toolbar-background {
+      background: none;
+    }
+  }
+
+
+  ion-avatar.avatar-bordered {
+    img {
+      width: 50px;
+      height: 50px;
+      border: 2px solid map_get($colors, primary);
+    }
+  }
+
+  .list.bordered-list {
+    .item {
+      border-bottom: 1px solid map_get($colors, primary);
+    }
+  }
+
+
+  .card.bordered-card {
+    border: 1px solid map_get($colors, primary);
+    ul.address {
+      padding: 0;
+      list-style: none;
+    }
+  }
+
+
+}

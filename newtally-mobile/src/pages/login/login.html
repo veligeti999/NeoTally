@@ -1,0 +1,33 @@
+<ion-content padding>
+  <form #form="ngForm" (submit)="login(form)">
+    <ion-list no-lines="">
+      <ion-item text-center>
+        <img src="./assets/imgs/logo.png"/>
+      </ion-item>
+      <ion-item no-padding="" mode="md">
+        <ion-label stacked>Sign in</ion-label>
+        <ion-input
+          placeholder="Secret code"
+          name="secret"
+          [(ngModel)]="secret"
+          required=""
+          #loginSecret="ngModel"
+          autocomplete
+          no-padding=""></ion-input>
+      </ion-item>
+      <div class="error" *ngIf="(form.submitted || loginSecret.dirty) && loginSecret.invalid">
+        <p ion-text="" color="danger" *ngIf="loginSecret.errors.required">Please enter your secret code.</p>
+      </div>
+    </ion-list>
+    <button ion-button block text-uppercase="">login</button>
+  </form>
+</ion-content>
+<ion-footer no-border="">
+  <ion-toolbar text-right class="transparent">
+    <button ion-button
+            clear
+            tooltip="Contact your Branch Manager to receive a new secret code"
+            duration="3000"
+            positionV="top" arrow>Forgot secret code?</button>
+  </ion-toolbar>
+</ion-footer>

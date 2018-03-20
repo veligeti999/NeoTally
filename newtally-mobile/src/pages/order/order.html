@@ -1,0 +1,43 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title text-uppercase="" align="center">amount details</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content>
+  <ion-card class="bordered-card">
+    <ion-card-content>
+      <ion-card-title>{{ counter.merchant_name }}</ion-card-title>
+      <p>{{ counter.branch_name}}</p>
+      <!--<p>{{ counter.counter_name}}</p>-->
+      <ul class="address">
+        <li>{{ counter.address.address}},</li>
+        <li>{{ counter.address.city}},</li>
+        <li>{{ counter.address.country}} {{counter.address.zip}}</li>
+      </ul>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card class="bordered-card">
+    <ion-card-content>
+      <ion-card-title text-capitalize="">Enter bill amount</ion-card-title>
+      <form #form="ngForm" (submit)="pay(form)">
+        <ion-item no-padding margin-bottom="" mode="md">
+          <ion-input
+            type="number"
+            name="amount"
+            placeholder="Bill Amount"
+            ngModel
+            #amount="ngModel"
+            required=""></ion-input>
+        </ion-item>
+        <div class="error" *ngIf="(form.submitted || amount.dirty) && amount.invalid">
+          <p ion-text="" color="danger" *ngIf="amount.errors.required">Please enter bill amount to proceed</p>
+        </div>
+        <button ion-button block color="secondary" text-uppercase="">pay</button>
+      </form>
+
+    </ion-card-content>
+  </ion-card>
+</ion-content>
